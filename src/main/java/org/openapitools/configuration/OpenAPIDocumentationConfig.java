@@ -27,11 +27,7 @@ public class OpenAPIDocumentationConfig {
         return new ApiInfoBuilder()
             .title("Human Review")
             .description("And API for manipulating Thread Indicator documents in STIX format")
-            .license("")
-            .licenseUrl("http://unlicense.org")
-            .termsOfServiceUrl("https://github.com/InfoSec812")
             .version("1.0.0")
-            .contact(new Contact("","", "deven.phillips@redhat.com"))
             .build();
     }
 
