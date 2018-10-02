@@ -18,3 +18,11 @@ mvn verify
 
 The report will be generated at the following directory.
 target/dependency-check-report.html
+
+## In memory database
+The h2 inmemory database is located at the following url.
+http://localhost:8080/api/v1/h2-console
+
+The jdbc url is:jdbc:h2:mem:testdb
+username: sa
+password: <blank>
