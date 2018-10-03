@@ -4,6 +4,5 @@ import org.openapitools.model.AuthCredentials;
 import org.springframework.data.repository.CrudRepository;
 
 public interface AuthCredentialsRepository extends CrudRepository<AuthCredentials, Long> {
-
-	public AuthCredentials findByUsername(String username);
+	AuthCredentials findByUsernameAndPassword(String username, String password);
 }

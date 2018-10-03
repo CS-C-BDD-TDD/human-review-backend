@@ -49,7 +49,7 @@ public interface UserApi {
 
     }
     
-    default AuthCredentials loadUserByUsername(String username) {
+    default AuthCredentials loadUserByUsername(String username, String password) {
     	return new AuthCredentials();
 	}
 

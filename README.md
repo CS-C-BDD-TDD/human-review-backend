@@ -20,7 +20,7 @@ The report will be generated at the following directory.
 target/dependency-check-report.html
 
 ## In memory database
-The h2 inmemory database is located at the following url.
+The h2 in memory database is located at the following url.
 http://localhost:8080/api/v1/h2-console
 
 The jdbc url is:jdbc:h2:mem:testdb
@@ -30,8 +30,8 @@ password: <blank>
 ## login username testing
 To verify go to the following address on a web browser.
 http://localhost:8080/api/v1/login
-
 The login screen will display.
-Enter Ranga as the username and Ranga as the password
+
+Enter User1 as the username and Pass1 as the password
 home will display
  

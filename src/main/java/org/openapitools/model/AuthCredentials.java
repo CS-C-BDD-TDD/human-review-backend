@@ -27,11 +27,11 @@ public class AuthCredentials {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
-	@Column(nullable = false)
+	@Column(name="username")
 	@JsonProperty("username")
 	private String username = null;
 
-	@Column(nullable = false)
+	@Column(name="password")
 	@JsonProperty("password")
 	private String password = null;
 
@@ -39,6 +39,18 @@ public class AuthCredentials {
 		this.username = username;
 		return this;
 	}
+
+	public Long getId() {
+		return id;
+	}
+
+
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+
 
 	/**
 	 * Get username
