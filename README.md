@@ -12,8 +12,8 @@ http://localhost:8080/api/v1/humanreview/pending
 The follow will display on the screen.
 [{"stix_id":42412345}]
 
-## Verify Maven dependicies
-To generate a report on the security of maven dependicies run the following command from the project folder.
+## Verify Maven dependencies
+To generate a report on the security of maven dependencies run the following command from the project folder.
 mvn verify
 
 The report will be generated at the following directory.
