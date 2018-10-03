@@ -6,6 +6,8 @@
 package org.openapitools.api;
 
 import io.swagger.annotations.*;
+
+import org.openapitools.model.AuthCredentials;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -46,5 +48,9 @@ public interface UserApi {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
     }
+    
+    default AuthCredentials loadUserByUsername(String username) {
+    	return new AuthCredentials();
+	}
 
 }

@@ -26,3 +26,12 @@ http://localhost:8080/api/v1/h2-console
 The jdbc url is:jdbc:h2:mem:testdb
 username: sa
 password: <blank>
+
+## login username testing
+To verify go to the following address on a web browser.
+http://localhost:8080/api/v1/login
+
+The login screen will display.
+Enter Ranga as the username and Ranga as the password
+home will display
+ 

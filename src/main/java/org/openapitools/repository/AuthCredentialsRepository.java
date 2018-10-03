@@ -5,5 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface AuthCredentialsRepository extends CrudRepository<AuthCredentials, Long> {
 
-	AuthCredentials findByUsername(String username);
+	public AuthCredentials findByUsername(String username);
 }
