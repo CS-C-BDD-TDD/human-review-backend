@@ -38,7 +38,6 @@ public class UserApiController implements UserApi {
 	}
 
 	@RequestMapping(value = "/loginCheck", method = RequestMethod.POST)
-	@ResponseBody
 	public String loginCheck(@ModelAttribute("user") User user) {
 		System.out.println(" entering loginCheck");
 		System.out.println(user.getUsername());
