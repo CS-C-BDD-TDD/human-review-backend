@@ -41,6 +41,7 @@
 				</configuration>
 				<executions>
 					<execution>
+						<phase>package</phase>
 						<goals>
 							<goal>check</goal>
 						</goals>
