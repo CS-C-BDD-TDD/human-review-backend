@@ -1,5 +1,6 @@
-package org.openapitools.api;
+package gov.dhs.nppd.humanreview.service;
 
+import org.openapitools.api.UserApi;
 import org.openapitools.model.AuthCredentials;
 import org.openapitools.model.User;
 import org.openapitools.repository.AuthCredentialsRepository;

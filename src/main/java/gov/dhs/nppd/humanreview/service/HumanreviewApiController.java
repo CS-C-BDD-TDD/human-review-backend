@@ -1,5 +1,6 @@
-package org.openapitools.api;
+package gov.dhs.nppd.humanreview.service;
 
+import org.openapitools.api.HumanreviewApi;
 import org.openapitools.model.HumanReviewItem;
 import org.openapitools.model.ListOfHumanReviewItems;
 import org.springframework.http.HttpHeaders;
