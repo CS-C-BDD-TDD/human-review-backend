@@ -1,4 +1,4 @@
-package org.openapitools.repository;
+package gov.dhs.nppd.humanreview.repository;
 
 import org.openapitools.model.HumanReviewItem;
 import org.openapitools.model.ListOfHumanReviewItems;

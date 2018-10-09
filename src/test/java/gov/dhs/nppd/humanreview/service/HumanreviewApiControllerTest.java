@@ -7,10 +7,11 @@ import static org.hamcrest.Matchers.empty;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.openapitools.model.ListOfHumanReviewItems;
-import org.openapitools.repository.HumanreviewRepository;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+
+import gov.dhs.nppd.humanreview.repository.HumanreviewRepository;
 
 @ComponentScan(basePackages = { "org.openapitools", "org.openapitools.api", "org.openapitools.configuration",
 		"gov.dhs.nppd.humanreview", "org.openapitools.repository" })

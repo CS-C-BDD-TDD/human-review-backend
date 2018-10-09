@@ -3,7 +3,6 @@ package gov.dhs.nppd.humanreview.service;
 import org.openapitools.api.UserApi;
 import org.openapitools.model.AuthCredentials;
 import org.openapitools.model.User;
-import org.openapitools.repository.AuthCredentialsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.NativeWebRequest;
 
+import gov.dhs.nppd.humanreview.repository.AuthCredentialsRepository;
 import io.swagger.annotations.ApiParam;
 
 import java.util.List;
