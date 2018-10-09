@@ -11,7 +11,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
 @ComponentScan(basePackages = { "org.openapitools", "org.openapitools.api", "org.openapitools.configuration",
-		"gov.dhs.nppd.humanreview" })
+		"gov.dhs.nppd.humanreview" ,
+		"gov.dhs.nppd.humanreview.service",
+		"gov.dhs.nppd.humanreview.repository"})
 public class OpenAPI2SpringBoot implements CommandLineRunner {
 
 	@Override

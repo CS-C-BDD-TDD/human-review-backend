@@ -1,4 +1,4 @@
-package gov.dhs.nppd.humanreview.repository;
+package org.openapitools.repository;
 
 import org.openapitools.model.AuthCredentials;
 import org.springframework.data.repository.CrudRepository;
