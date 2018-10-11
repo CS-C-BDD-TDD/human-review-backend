@@ -17,7 +17,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import javax.servlet.ServletContext;
 
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2018-09-28T12:48:27.866-04:00[America/New_York]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2018-10-11T09:52:13.189-04:00[America/New_York]")
 
 @Configuration
 @EnableSwagger2
@@ -27,7 +27,11 @@ public class OpenAPIDocumentationConfig {
         return new ApiInfoBuilder()
             .title("Human Review")
             .description("And API for manipulating Thread Indicator documents in STIX format")
+            .license("")
+            .licenseUrl("http://unlicense.org")
+            .termsOfServiceUrl("https://github.com/InfoSec812")
             .version("1.0.0")
+            .contact(new Contact("","", "deven.phillips@redhat.com"))
             .build();
     }
 

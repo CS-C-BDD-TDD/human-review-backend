@@ -12,7 +12,7 @@ import javax.validation.constraints.*;
 /**
  * APIOptionsVerb
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2018-09-28T12:48:27.866-04:00[America/New_York]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2018-10-11T09:52:13.189-04:00[America/New_York]")
 
 public class APIOptionsVerb   {
   @JsonProperty("description")

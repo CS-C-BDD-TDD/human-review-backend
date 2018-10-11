@@ -6,8 +6,6 @@
 package org.openapitools.api;
 
 import io.swagger.annotations.*;
-
-import org.openapitools.model.AuthCredentials;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +25,7 @@ import javax.validation.constraints.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2018-09-28T12:48:27.866-04:00[America/New_York]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2018-10-11T09:52:13.189-04:00[America/New_York]")
 
 @Validated
 @Api(value = "user", description = "the user API")
@@ -37,20 +35,16 @@ public interface UserApi {
         return Optional.empty();
     }
 
-    @ApiOperation(value = "", nickname = "userPut", notes = "", response = String.class, tags={  })
+    @ApiOperation(value = "", nickname = "userUsernamePut", notes = "", response = String.class, tags={  })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "OK", response = String.class) })
-    @RequestMapping(value = "/user",
+    @RequestMapping(value = "/user/{username}",
         produces = { "text/plain" }, 
         consumes = { "application/x-www-form-urlencoded" },
         method = RequestMethod.PUT)
-    default ResponseEntity<String> userPut(@ApiParam(value = "", defaultValue="null") @RequestParam(value="username", required=false)  String username,@ApiParam(value = "", defaultValue="null") @RequestParam(value="password", required=false)  String password) {
+    default ResponseEntity<String> userUsernamePut(@ApiParam(value = "", defaultValue="null") @RequestParam(value="username", required=false)  String username,@ApiParam(value = "", defaultValue="null") @RequestParam(value="password", required=false)  String password) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
     }
-    
-    default AuthCredentials loadUserByUsername(String username, String password) {
-    	return new AuthCredentials();
-	}
 
 }

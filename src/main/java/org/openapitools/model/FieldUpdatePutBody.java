@@ -9,32 +9,106 @@ import javax.validation.Valid;
 import javax.validation.constraints.*;
 
 /**
- * FieldUpdatePutBody
+ * a hr field is being updated
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2018-09-28T12:48:27.866-04:00[America/New_York]")
+@ApiModel(description = "a hr field is being updated")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2018-10-11T09:52:13.189-04:00[America/New_York]")
 
 public class FieldUpdatePutBody   {
-  @JsonProperty("value")
-  private String value = null;
+  @JsonProperty("original_value")
+  private String originalValue = null;
 
-  public FieldUpdatePutBody value(String value) {
-    this.value = value;
+  @JsonProperty("accepted_value")
+  private String acceptedValue = null;
+
+  @JsonProperty("field_name")
+  private String fieldName = null;
+
+  @JsonProperty("action_type")
+  private String actionType = null;
+
+  public FieldUpdatePutBody originalValue(String originalValue) {
+    this.originalValue = originalValue;
     return this;
   }
 
   /**
-   * Get value
-   * @return value
+   * Get originalValue
+   * @return originalValue
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(required = true, value = "")
+  @NotNull
 
 
-  public String getValue() {
-    return value;
+  public String getOriginalValue() {
+    return originalValue;
   }
 
-  public void setValue(String value) {
-    this.value = value;
+  public void setOriginalValue(String originalValue) {
+    this.originalValue = originalValue;
+  }
+
+  public FieldUpdatePutBody acceptedValue(String acceptedValue) {
+    this.acceptedValue = acceptedValue;
+    return this;
+  }
+
+  /**
+   * Get acceptedValue
+   * @return acceptedValue
+  **/
+  @ApiModelProperty(required = true, value = "")
+  @NotNull
+
+
+  public String getAcceptedValue() {
+    return acceptedValue;
+  }
+
+  public void setAcceptedValue(String acceptedValue) {
+    this.acceptedValue = acceptedValue;
+  }
+
+  public FieldUpdatePutBody fieldName(String fieldName) {
+    this.fieldName = fieldName;
+    return this;
+  }
+
+  /**
+   * Get fieldName
+   * @return fieldName
+  **/
+  @ApiModelProperty(required = true, value = "")
+  @NotNull
+
+
+  public String getFieldName() {
+    return fieldName;
+  }
+
+  public void setFieldName(String fieldName) {
+    this.fieldName = fieldName;
+  }
+
+  public FieldUpdatePutBody actionType(String actionType) {
+    this.actionType = actionType;
+    return this;
+  }
+
+  /**
+   * Get actionType
+   * @return actionType
+  **/
+  @ApiModelProperty(required = true, value = "")
+  @NotNull
+
+
+  public String getActionType() {
+    return actionType;
+  }
+
+  public void setActionType(String actionType) {
+    this.actionType = actionType;
   }
 
 
@@ -47,12 +121,15 @@ public class FieldUpdatePutBody   {
       return false;
     }
     FieldUpdatePutBody fieldUpdatePutBody = (FieldUpdatePutBody) o;
-    return Objects.equals(this.value, fieldUpdatePutBody.value);
+    return Objects.equals(this.originalValue, fieldUpdatePutBody.originalValue) &&
+        Objects.equals(this.acceptedValue, fieldUpdatePutBody.acceptedValue) &&
+        Objects.equals(this.fieldName, fieldUpdatePutBody.fieldName) &&
+        Objects.equals(this.actionType, fieldUpdatePutBody.actionType);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(value);
+    return Objects.hash(originalValue, acceptedValue, fieldName, actionType);
   }
 
   @Override
@@ -60,7 +137,10 @@ public class FieldUpdatePutBody   {
     StringBuilder sb = new StringBuilder();
     sb.append("class FieldUpdatePutBody {\n");
     
-    sb.append("    value: ").append(toIndentedString(value)).append("\n");
+    sb.append("    originalValue: ").append(toIndentedString(originalValue)).append("\n");
+    sb.append("    acceptedValue: ").append(toIndentedString(acceptedValue)).append("\n");
+    sb.append("    fieldName: ").append(toIndentedString(fieldName)).append("\n");
+    sb.append("    actionType: ").append(toIndentedString(actionType)).append("\n");
     sb.append("}");
     return sb.toString();
   }
