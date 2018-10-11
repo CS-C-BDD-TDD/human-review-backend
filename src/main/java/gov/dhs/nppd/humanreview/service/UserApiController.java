@@ -39,6 +39,14 @@ public class UserApiController implements UserApi {
 	@Autowired
 	AuthCredentialsRepository authCredentialsRepository;
 
+	public AuthCredentialsRepository getAuthCredentialsRepository() {
+		return authCredentialsRepository;
+	}
+
+	public void setAuthCredentialsRepository(AuthCredentialsRepository authCredentialsRepository) {
+		this.authCredentialsRepository = authCredentialsRepository;
+	}
+
 	@Override
 	public ResponseEntity<String> userPut(
 			@ApiParam(value = "Allow the user to submit their credentials and on success return a token for use in making other REST calls", required = true) @Valid @RequestBody AuthCredentials authCredentials) {
