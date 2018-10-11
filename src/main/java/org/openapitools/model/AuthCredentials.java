@@ -1,104 +1,123 @@
 package org.openapitools.model;
 
 import java.util.Objects;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
+
 import io.swagger.annotations.ApiModelProperty;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
 
 /**
  * AuthCredentials
  */
 @javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2018-10-11T09:52:13.189-04:00[America/New_York]")
 
-public class AuthCredentials   {
-  @JsonProperty("username")
-  private String username = null;
+@Entity
+@Table(name = "Auth_Credentials")
+public class AuthCredentials {
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
 
-  @JsonProperty("password")
-  private String password = null;
+	@Column(name = "username")
+	@JsonProperty("username")
+	private String username = null;
 
-  public AuthCredentials username(String username) {
-    this.username = username;
-    return this;
-  }
+	@Column(name = "password")
+	@JsonProperty("password")
+	private String password = null;
+	
+	public Long getId() {
+		return id;
+	}
 
-  /**
-   * Get username
-   * @return username
-  **/
-  @ApiModelProperty(value = "")
+	public void setId(Long id) {
+		this.id = id;
+	}
 
+	public AuthCredentials username(String username) {
+		this.username = username;
+		return this;
+	}
 
-  public String getUsername() {
-    return username;
-  }
+	/**
+	 * Get username
+	 * 
+	 * @return username
+	 **/
+	@ApiModelProperty(value = "")
 
-  public void setUsername(String username) {
-    this.username = username;
-  }
+	public String getUsername() {
+		return username;
+	}
 
-  public AuthCredentials password(String password) {
-    this.password = password;
-    return this;
-  }
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
-  /**
-   * Get password
-   * @return password
-  **/
-  @ApiModelProperty(value = "")
+	public AuthCredentials password(String password) {
+		this.password = password;
+		return this;
+	}
 
+	/**
+	 * Get password
+	 * 
+	 * @return password
+	 **/
+	@ApiModelProperty(value = "")
 
-  public String getPassword() {
-    return password;
-  }
+	public String getPassword() {
+		return password;
+	}
 
-  public void setPassword(String password) {
-    this.password = password;
-  }
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
+	@Override
+	public boolean equals(java.lang.Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		AuthCredentials authCredentials = (AuthCredentials) o;
+		return Objects.equals(this.username, authCredentials.username)
+				&& Objects.equals(this.password, authCredentials.password);
+	}
 
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    AuthCredentials authCredentials = (AuthCredentials) o;
-    return Objects.equals(this.username, authCredentials.username) &&
-        Objects.equals(this.password, authCredentials.password);
-  }
+	@Override
+	public int hashCode() {
+		return Objects.hash(username, password);
+	}
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(username, password);
-  }
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("class AuthCredentials {\n");
 
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class AuthCredentials {\n");
-    
-    sb.append("    username: ").append(toIndentedString(username)).append("\n");
-    sb.append("    password: ").append(toIndentedString(password)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
+		sb.append("    username: ").append(toIndentedString(username)).append("\n");
+		sb.append("    password: ").append(toIndentedString(password)).append("\n");
+		sb.append("}");
+		return sb.toString();
+	}
 
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(java.lang.Object o) {
-    if (o == null) {
-      return "null";
-    }
-    return o.toString().replace("\n", "\n    ");
-  }
+	/**
+	 * Convert the given object to string with each line indented by 4 spaces
+	 * (except the first line).
+	 */
+	private String toIndentedString(java.lang.Object o) {
+		if (o == null) {
+			return "null";
+		}
+		return o.toString().replace("\n", "\n    ");
+	}
 }
-

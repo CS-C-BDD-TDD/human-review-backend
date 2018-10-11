@@ -22,8 +22,9 @@ public class UserApiController implements UserApi {
     private final NativeWebRequest request;
 
     @org.springframework.beans.factory.annotation.Autowired
-    public UserApiController(NativeWebRequest request) {
+    public UserApiController(NativeWebRequest request, AuthCredentialsRepository authCredentialsRepository) {
         this.request = request;
+        authCredentialsRepository = authCredentialsRepository;
     }
 
     @Override
