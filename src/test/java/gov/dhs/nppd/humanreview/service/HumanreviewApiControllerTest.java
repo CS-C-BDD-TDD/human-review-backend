@@ -6,15 +6,18 @@ import static org.hamcrest.Matchers.empty;
 
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.openapitools.model.ListOfHumanReviewItems;
+import gov.dhs.nppd.model.ListOfHumanReviewItems;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
-import gov.dhs.nppd.humanreview.repository.HumanreviewRepository;
+import gov.dhs.nppd.api.HumanreviewApiController;
+import gov.dhs.nppd.repository.HumanreviewRepository;
 
 @ComponentScan(basePackages = { "org.openapitools", "org.openapitools.api", "org.openapitools.configuration",
-		"gov.dhs.nppd.humanreview", "org.openapitools.repository" })
+		"gov.dhs.nppd.model" ,
+		"gov.dhs.nppd.api",
+		"gov.dhs.nppd.repository"})
 public class HumanreviewApiControllerTest {
 
 	HumanreviewApiController hrApiCtrl = new HumanreviewApiController(null);
