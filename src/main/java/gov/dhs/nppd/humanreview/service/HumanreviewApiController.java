@@ -1,7 +1,8 @@
-package org.openapitools.api;
+package gov.dhs.nppd.humanreview.service;
 
 import java.util.Optional;
 
+import org.openapitools.api.HumanreviewApi;
 import org.openapitools.model.ListOfHumanReviewItems;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;

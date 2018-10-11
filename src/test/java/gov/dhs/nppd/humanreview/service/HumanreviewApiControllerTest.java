@@ -6,7 +6,6 @@ import static org.hamcrest.Matchers.empty;
 
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.openapitools.api.HumanreviewApiController;
 import org.openapitools.model.ListOfHumanReviewItems;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpHeaders;
