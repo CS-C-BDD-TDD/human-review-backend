@@ -5,46 +5,45 @@
  */
 package org.openapitools.api;
 
-import io.swagger.annotations.*;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.context.request.NativeWebRequest;
-import org.springframework.web.multipart.MultipartFile;
+import java.util.Optional;
 
 import javax.validation.Valid;
-import javax.validation.constraints.*;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2018-09-28T12:48:27.866-04:00[America/New_York]")
+
+import org.openapitools.model.AuthCredentials;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.context.request.NativeWebRequest;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2018-10-11T09:52:13.189-04:00[America/New_York]")
 
 @Validated
 @Api(value = "user", description = "the user API")
 public interface UserApi {
 
-    default Optional<NativeWebRequest> getRequest() {
-        return Optional.empty();
-    }
+	default Optional<NativeWebRequest> getRequest() {
+		return Optional.empty();
+	}
 
-    @ApiOperation(value = "", nickname = "userPut", notes = "", response = String.class, tags={  })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "OK", response = String.class) })
-    @RequestMapping(value = "/user",
-        produces = { "text/plain" }, 
-        consumes = { "application/x-www-form-urlencoded" },
-        method = RequestMethod.PUT)
-    default ResponseEntity<String> userPut(@ApiParam(value = "", defaultValue="null") @RequestParam(value="username", required=false)  String username,@ApiParam(value = "", defaultValue="null") @RequestParam(value="password", required=false)  String password) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+	 @ApiOperation(value = "", nickname = "userPut", notes = "", response = String.class, tags={  })
+	    @ApiResponses(value = { 
+	        @ApiResponse(code = 200, message = "OK", response = String.class) })
+	    @RequestMapping(value = "/user",
+	        produces = { "text/plain" }, 
+	        consumes = { "application/json" },
+	        method = RequestMethod.PUT)
+	    default ResponseEntity<String> userPut(@ApiParam(value = "Allow the user to submit their credentials and on success return a token for use in making other REST calls" ,required=true )  @Valid @RequestBody AuthCredentials authCredentials) {
+	        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
-    }
+	    }
 
 }

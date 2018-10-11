@@ -11,7 +11,7 @@ import javax.validation.constraints.*;
 /**
  * APIEndpointParameters
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2018-09-28T12:48:27.866-04:00[America/New_York]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2018-10-11T09:52:13.189-04:00[America/New_York]")
 
 public class APIEndpointParameters   {
   @JsonProperty("type")
