@@ -59,7 +59,7 @@ pipeline {
             steps {
                 script {
                     withSonarQubeEnv('sonar') {
-                        sh 'unset JAVA_TOOL_OPTIONS; ./sonar-scanner'
+                        sh 'mvn clean package sonar:sonar'
                     }
                     def qualitygate = waitForQualityGate()
                     if (qualitygate.status != "OK") {
