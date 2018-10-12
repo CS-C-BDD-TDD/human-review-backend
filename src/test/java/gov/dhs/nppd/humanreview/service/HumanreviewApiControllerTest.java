@@ -20,7 +20,7 @@ import gov.dhs.nppd.humanreview.repository.HumanreviewRepository;
 		"gov.dhs.nppd.repository"})
 public class HumanreviewApiControllerTest {
 
-	HumanreviewApiController hrApiCtrl = new HumanreviewApiController(null);
+	HumanreviewApiController hrApiCtrl = new HumanreviewApiController(null, null);
 
 	@Test
 	public void shouldGetEmptyList() {

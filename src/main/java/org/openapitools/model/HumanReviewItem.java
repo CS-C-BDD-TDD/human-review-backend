@@ -1,36 +1,50 @@
 package org.openapitools.model;
 
-import java.util.Objects;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import java.time.OffsetDateTime;
+import java.util.Objects;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.Valid;
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
+
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * HumanReviewItem
  */
 @javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2018-10-11T09:52:13.189-04:00[America/New_York]")
 
+@Entity
+@Table(name = "Human_Review_Item")
 public class HumanReviewItem   {
-  @JsonProperty("stix_id")
+	@Id
+	@JsonProperty("stix_id")
   private String stixId = null;
 
+	@Column(name = "field_name")
   @JsonProperty("field_name")
   private String fieldName = null;
 
+	@Column(name = "field_value")
   @JsonProperty("field_value")
   private String fieldValue = null;
 
+	@Column(name = "date")
   @JsonProperty("date")
   private OffsetDateTime date = null;
 
+	@Column(name = "object_type")
   @JsonProperty("object_type")
   private String objectType = null;
 
+	@Column(name = "status")
   @JsonProperty("status")
   private String status = null;
 
@@ -69,6 +83,7 @@ public class HumanReviewItem   {
     }
   }
 
+  @Column(name = "action")
   @JsonProperty("action")
   private ActionEnum action = null;
 
