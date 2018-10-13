@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
 @ComponentScan(basePackages = { "org.openapitools", "org.openapitools.api", "org.openapitools.configuration",
-		"gov.dhs.nppd.humanreview"})
+		"gov.dhs.nppd.humanreview" })
 public class OpenAPI2SpringBoot implements CommandLineRunner {
 
 	@Override
@@ -39,13 +39,13 @@ public class OpenAPI2SpringBoot implements CommandLineRunner {
 	@Bean
 	public WebMvcConfigurer webConfigurer() {
 		return new WebMvcConfigurer() {
-			/*
-			 * @Override public void addCorsMappings(CorsRegistry registry) {
-			 * registry.addMapping("/**") .allowedOrigins("*") .allowedMethods("*")
-			 * .allowedHeaders("Content-Type"); }
-			 */
+
+			@Override
+			public void addCorsMappings(CorsRegistry registry) {
+				registry.addMapping("/**").allowedOrigins("*").allowedMethods("*").allowedHeaders("Content-Type");
+			}
+
 		};
 	}
 
 }
-
