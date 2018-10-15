@@ -10,7 +10,10 @@ To verify go to the following address on a web browser.
 http://localhost:8080/api/v1/humanreview/pending 
 
 The follow will display on the screen.
-[{"stix_id":42412345}]
+[{"stix_id":"2131546","field_name":"Title","field_value":"SSN",
+"date":"2018-12-03T04:15:30-05:00","object_type":"Indicator","status":"New","action":"Redact"},
+{"stix_id":"5816537","field_name":"Description","field_value":"Address",
+"date":"2018-11-06T23:13:25-05:00","object_type":"Indicator","status":"New","action":"Not PII"}]
 
 ## Verify Maven dependicies
 To generate a report on the security of maven dependicies run the following command from the project folder.
@@ -28,11 +31,18 @@ username: sa
 password: <blank>
 
 ## login username testing
-To verify go to the following address on a web browser.
-http://localhost:8080/api/v1/login
-The login screen will display.
+To verify input the following url into Postman
+http://localhost:8080/api/v1/user
+Select put from the dropdown and select the body tab and the raw button
+Select JSON(application/json) from the last dropdown that is currently Text
+Add the folowing to box below
+{
+    "username": "User1",
+    "password": "Pass1",
+    "Content-Type": "json"
+}
 
-Enter User1 as the username and Pass1 as the password
-home will display
+Click on the send button
+Random and a decimal should display.
  
 

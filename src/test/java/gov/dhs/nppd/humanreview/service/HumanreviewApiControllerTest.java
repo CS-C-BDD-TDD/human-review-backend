@@ -8,11 +8,11 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.openapitools.model.ListOfHumanReviewItems;
+import org.openapitools.repository.HumanreviewRepository;
+import org.openapitools.service.HumanreviewApiController;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-
-import gov.dhs.nppd.humanreview.repository.HumanreviewRepository;
 
 @ComponentScan(basePackages = { "org.openapitools", "org.openapitools.api", "org.openapitools.configuration",
 		"gov.dhs.nppd.model" ,
@@ -20,13 +20,13 @@ import gov.dhs.nppd.humanreview.repository.HumanreviewRepository;
 		"gov.dhs.nppd.repository"})
 public class HumanreviewApiControllerTest {
 
-	HumanreviewApiController hrApiCtrl = new HumanreviewApiController(null);
+	HumanreviewApiController hrApiCtrl = new HumanreviewApiController(null, null);
 
 	@Test
 	public void shouldGetEmptyList() {
 		ListOfHumanReviewItems emptyList = new ListOfHumanReviewItems();
 		HumanreviewRepository mockHrRepo = Mockito.mock(HumanreviewRepository.class);
-		Mockito.when(mockHrRepo.getPending()).thenReturn(emptyList);
+		//Mockito.when(mockHrRepo.getPending()).thenReturn(emptyList);
 
 		hrApiCtrl.setHrRepo(mockHrRepo);
 		ResponseEntity<ListOfHumanReviewItems> resp = hrApiCtrl.humanreviewPendingGet();

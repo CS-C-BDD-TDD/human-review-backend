@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.openapitools.model.AuthCredentials;
 import org.openapitools.repository.AuthCredentialsRepository;
+import org.openapitools.service.UserApiController;
 import org.springframework.http.ResponseEntity;
 
 public class UserApiControllerTest {
