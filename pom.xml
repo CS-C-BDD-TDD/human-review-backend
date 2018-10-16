@@ -149,6 +149,19 @@
 					</execution>
 				</executions>
 			</plugin>
+			<!-- OWAP dependency check -->
+			<plugin>
+              <groupId>org.owasp</groupId>
+              <artifactId>dependency-check-maven</artifactId>
+              <version>3.3.2</version>
+              <executions>
+                  <execution>
+                      <goals>
+                          <goal>check</goal>
+                      </goals>
+                  </execution>
+              </executions>
+            </plugin>
 		</plugins>
 	</build>
 	<dependencies>
@@ -238,6 +251,12 @@
 			<artifactId>hamcrest-all</artifactId>
 			<version>1.3</version>
 			<scope>test</scope>
+		</dependency>
+		<!-- Owasp dependency checker -->
+		<dependency>
+			<groupId>org.owasp</groupId>
+			<artifactId>dependency-check-maven</artifactId>
+			<version>3.3.2</version>
 		</dependency>
 	</dependencies>
 </project>
