@@ -5,6 +5,8 @@ import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.Valid;
@@ -23,267 +25,278 @@ import io.swagger.annotations.ApiModelProperty;
 
 @Entity
 @Table(name = "Human_Review_Item")
-public class HumanReviewItem   {
+public class HumanReviewItem {
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
+
+	@Column(name = "stix_id")
 	@JsonProperty("stix_id")
-  private String stixId = null;
+	private String stixId = null;
 
 	@Column(name = "field_name")
-  @JsonProperty("field_name")
-  private String fieldName = null;
+	@JsonProperty("field_name")
+	private String fieldName = null;
 
 	@Column(name = "field_value")
-  @JsonProperty("field_value")
-  private String fieldValue = null;
+	@JsonProperty("field_value")
+	private String fieldValue = null;
 
 	@Column(name = "date")
-  @JsonProperty("date")
-  private OffsetDateTime date = null;
+	@JsonProperty("date")
+	private OffsetDateTime date = null;
 
 	@Column(name = "object_type")
-  @JsonProperty("object_type")
-  private String objectType = null;
+	@JsonProperty("object_type")
+	private String objectType = null;
 
 	@Column(name = "status")
-  @JsonProperty("status")
-  private String status = null;
+	@JsonProperty("status")
+	private String status = null;
 
-  /**
-   * Gets or Sets action
-   */
-  public enum ActionEnum {
-    CONFIRM_RISK("Confirm Risk"),
-    
-    EDIT("Edit"),
-    
-    NOT_PII("Not PII"),
-    
-    REDACT("Redact");
+	/**
+	 * Gets or Sets action
+	 */
+	public Long getId() {
+		return id;
+	}
 
-    private String value;
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    ActionEnum(String value) {
-      this.value = value;
-    }
+	public enum ActionEnum {
+		CONFIRM_RISK("Confirm Risk"),
 
-    @Override
-    @JsonValue
-    public String toString() {
-      return String.valueOf(value);
-    }
+		EDIT("Edit"),
 
-    @JsonCreator
-    public static ActionEnum fromValue(String text) {
-      for (ActionEnum b : ActionEnum.values()) {
-        if (String.valueOf(b.value).equals(text)) {
-          return b;
-        }
-      }
-      throw new IllegalArgumentException("Unexpected value '" + text + "'");
-    }
-  }
+		NOT_PII("Not PII"),
 
-  @Column(name = "action")
-  @JsonProperty("action")
-  private ActionEnum action = null;
+		REDACT("Redact");
 
-  public HumanReviewItem stixId(String stixId) {
-    this.stixId = stixId;
-    return this;
-  }
+		private String value;
 
-  /**
-   * Get stixId
-   * @return stixId
-  **/
-  @ApiModelProperty(required = true, value = "")
-  @NotNull
+		ActionEnum(String value) {
+			this.value = value;
+		}
 
+		@Override
+		@JsonValue
+		public String toString() {
+			return String.valueOf(value);
+		}
 
-  public String getStixId() {
-    return stixId;
-  }
+		@JsonCreator
+		public static ActionEnum fromValue(String text) {
+			for (ActionEnum b : ActionEnum.values()) {
+				if (String.valueOf(b.value).equals(text)) {
+					return b;
+				}
+			}
+			throw new IllegalArgumentException("Unexpected value '" + text + "'");
+		}
+	}
 
-  public void setStixId(String stixId) {
-    this.stixId = stixId;
-  }
+	@Column(name = "action")
+	@JsonProperty("action")
+	private ActionEnum action = null;
 
-  public HumanReviewItem fieldName(String fieldName) {
-    this.fieldName = fieldName;
-    return this;
-  }
+	public HumanReviewItem stixId(String stixId) {
+		this.stixId = stixId;
+		return this;
+	}
 
-  /**
-   * Get fieldName
-   * @return fieldName
-  **/
-  @ApiModelProperty(required = true, value = "")
-  @NotNull
+	/**
+	 * Get stixId
+	 * 
+	 * @return stixId
+	 **/
+	@ApiModelProperty(required = true, value = "")
+	@NotNull
 
+	public String getStixId() {
+		return stixId;
+	}
 
-  public String getFieldName() {
-    return fieldName;
-  }
+	public void setStixId(String stixId) {
+		this.stixId = stixId;
+	}
 
-  public void setFieldName(String fieldName) {
-    this.fieldName = fieldName;
-  }
+	public HumanReviewItem fieldName(String fieldName) {
+		this.fieldName = fieldName;
+		return this;
+	}
 
-  public HumanReviewItem fieldValue(String fieldValue) {
-    this.fieldValue = fieldValue;
-    return this;
-  }
+	/**
+	 * Get fieldName
+	 * 
+	 * @return fieldName
+	 **/
+	@ApiModelProperty(required = true, value = "")
+	@NotNull
 
-  /**
-   * Get fieldValue
-   * @return fieldValue
-  **/
-  @ApiModelProperty(required = true, value = "")
-  @NotNull
+	public String getFieldName() {
+		return fieldName;
+	}
 
+	public void setFieldName(String fieldName) {
+		this.fieldName = fieldName;
+	}
 
-  public String getFieldValue() {
-    return fieldValue;
-  }
+	public HumanReviewItem fieldValue(String fieldValue) {
+		this.fieldValue = fieldValue;
+		return this;
+	}
 
-  public void setFieldValue(String fieldValue) {
-    this.fieldValue = fieldValue;
-  }
+	/**
+	 * Get fieldValue
+	 * 
+	 * @return fieldValue
+	 **/
+	@ApiModelProperty(required = true, value = "")
+	@NotNull
 
-  public HumanReviewItem date(OffsetDateTime date) {
-    this.date = date;
-    return this;
-  }
+	public String getFieldValue() {
+		return fieldValue;
+	}
 
-  /**
-   * Get date
-   * @return date
-  **/
-  @ApiModelProperty(required = true, value = "")
-  @NotNull
+	public void setFieldValue(String fieldValue) {
+		this.fieldValue = fieldValue;
+	}
 
-  @Valid
+	public HumanReviewItem date(OffsetDateTime date) {
+		this.date = date;
+		return this;
+	}
 
-  public OffsetDateTime getDate() {
-    return date;
-  }
+	/**
+	 * Get date
+	 * 
+	 * @return date
+	 **/
+	@ApiModelProperty(required = true, value = "")
+	@NotNull
 
-  public void setDate(OffsetDateTime date) {
-    this.date = date;
-  }
+	@Valid
 
-  public HumanReviewItem objectType(String objectType) {
-    this.objectType = objectType;
-    return this;
-  }
+	public OffsetDateTime getDate() {
+		return date;
+	}
 
-  /**
-   * Get objectType
-   * @return objectType
-  **/
-  @ApiModelProperty(required = true, value = "")
-  @NotNull
+	public void setDate(OffsetDateTime date) {
+		this.date = date;
+	}
 
+	public HumanReviewItem objectType(String objectType) {
+		this.objectType = objectType;
+		return this;
+	}
 
-  public String getObjectType() {
-    return objectType;
-  }
+	/**
+	 * Get objectType
+	 * 
+	 * @return objectType
+	 **/
+	@ApiModelProperty(required = true, value = "")
+	@NotNull
 
-  public void setObjectType(String objectType) {
-    this.objectType = objectType;
-  }
+	public String getObjectType() {
+		return objectType;
+	}
 
-  public HumanReviewItem status(String status) {
-    this.status = status;
-    return this;
-  }
+	public void setObjectType(String objectType) {
+		this.objectType = objectType;
+	}
 
-  /**
-   * Get status
-   * @return status
-  **/
-  @ApiModelProperty(required = true, value = "")
-  @NotNull
+	public HumanReviewItem status(String status) {
+		this.status = status;
+		return this;
+	}
 
+	/**
+	 * Get status
+	 * 
+	 * @return status
+	 **/
+	@ApiModelProperty(required = true, value = "")
+	@NotNull
 
-  public String getStatus() {
-    return status;
-  }
+	public String getStatus() {
+		return status;
+	}
 
-  public void setStatus(String status) {
-    this.status = status;
-  }
+	public void setStatus(String status) {
+		this.status = status;
+	}
 
-  public HumanReviewItem action(ActionEnum action) {
-    this.action = action;
-    return this;
-  }
+	public HumanReviewItem action(ActionEnum action) {
+		this.action = action;
+		return this;
+	}
 
-  /**
-   * Get action
-   * @return action
-  **/
-  @ApiModelProperty(required = true, value = "")
-  @NotNull
+	/**
+	 * Get action
+	 * 
+	 * @return action
+	 **/
+	@ApiModelProperty(required = true, value = "")
+	@NotNull
 
+	public ActionEnum getAction() {
+		return action;
+	}
 
-  public ActionEnum getAction() {
-    return action;
-  }
+	public void setAction(ActionEnum action) {
+		this.action = action;
+	}
 
-  public void setAction(ActionEnum action) {
-    this.action = action;
-  }
+	@Override
+	public boolean equals(java.lang.Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		HumanReviewItem humanReviewItem = (HumanReviewItem) o;
+		return Objects.equals(this.stixId, humanReviewItem.stixId)
+				&& Objects.equals(this.fieldName, humanReviewItem.fieldName)
+				&& Objects.equals(this.fieldValue, humanReviewItem.fieldValue)
+				&& Objects.equals(this.date, humanReviewItem.date)
+				&& Objects.equals(this.objectType, humanReviewItem.objectType)
+				&& Objects.equals(this.status, humanReviewItem.status)
+				&& Objects.equals(this.action, humanReviewItem.action);
+	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hash(stixId, fieldName, fieldValue, date, objectType, status, action);
+	}
 
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    HumanReviewItem humanReviewItem = (HumanReviewItem) o;
-    return Objects.equals(this.stixId, humanReviewItem.stixId) &&
-        Objects.equals(this.fieldName, humanReviewItem.fieldName) &&
-        Objects.equals(this.fieldValue, humanReviewItem.fieldValue) &&
-        Objects.equals(this.date, humanReviewItem.date) &&
-        Objects.equals(this.objectType, humanReviewItem.objectType) &&
-        Objects.equals(this.status, humanReviewItem.status) &&
-        Objects.equals(this.action, humanReviewItem.action);
-  }
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("class HumanReviewItem {\n");
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(stixId, fieldName, fieldValue, date, objectType, status, action);
-  }
+		sb.append("    stixId: ").append(toIndentedString(stixId)).append("\n");
+		sb.append("    fieldName: ").append(toIndentedString(fieldName)).append("\n");
+		sb.append("    fieldValue: ").append(toIndentedString(fieldValue)).append("\n");
+		sb.append("    date: ").append(toIndentedString(date)).append("\n");
+		sb.append("    objectType: ").append(toIndentedString(objectType)).append("\n");
+		sb.append("    status: ").append(toIndentedString(status)).append("\n");
+		sb.append("    action: ").append(toIndentedString(action)).append("\n");
+		sb.append("}");
+		return sb.toString();
+	}
 
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class HumanReviewItem {\n");
-    
-    sb.append("    stixId: ").append(toIndentedString(stixId)).append("\n");
-    sb.append("    fieldName: ").append(toIndentedString(fieldName)).append("\n");
-    sb.append("    fieldValue: ").append(toIndentedString(fieldValue)).append("\n");
-    sb.append("    date: ").append(toIndentedString(date)).append("\n");
-    sb.append("    objectType: ").append(toIndentedString(objectType)).append("\n");
-    sb.append("    status: ").append(toIndentedString(status)).append("\n");
-    sb.append("    action: ").append(toIndentedString(action)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(java.lang.Object o) {
-    if (o == null) {
-      return "null";
-    }
-    return o.toString().replace("\n", "\n    ");
-  }
+	/**
+	 * Convert the given object to string with each line indented by 4 spaces
+	 * (except the first line).
+	 */
+	private String toIndentedString(java.lang.Object o) {
+		if (o == null) {
+			return "null";
+		}
+		return o.toString().replace("\n", "\n    ");
+	}
 }
-
