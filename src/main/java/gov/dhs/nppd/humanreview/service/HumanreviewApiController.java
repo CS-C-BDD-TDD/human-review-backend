@@ -1,4 +1,4 @@
-package org.openapitools.service;
+package gov.dhs.nppd.humanreview.service;
 
 import java.util.Optional;
 
@@ -17,30 +17,31 @@ import org.springframework.web.context.request.NativeWebRequest;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+
 @javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2018-10-11T09:52:13.189-04:00[America/New_York]")
 
 @Controller
 @RequestMapping("${openapi.humanReview.base-path:/api/v1}")
 public class HumanreviewApiController implements HumanreviewApi {
 
-    private final NativeWebRequest request;
+	private final NativeWebRequest request;
 
-    @org.springframework.beans.factory.annotation.Autowired
-    public HumanreviewApiController(NativeWebRequest request, HumanreviewRepository hrRepo) {
-        this.request = request;
-        hrRepo = hrRepo;
-    }
+	@org.springframework.beans.factory.annotation.Autowired
+	public HumanreviewApiController(NativeWebRequest request, HumanreviewRepository hrRepo) {
+		this.request = request;
+		hrRepo = hrRepo;
+	}
 
-    @Override
-    public Optional<NativeWebRequest> getRequest() {
-        return Optional.ofNullable(request);
-    }
-    
-    //
-    @Autowired
+	@Override
+	public Optional<NativeWebRequest> getRequest() {
+		return Optional.ofNullable(request);
+	}
+
+	//
+	@Autowired
 	private HumanreviewRepository hrRepo;
-    
-    @Override
+
+	@Override
 	@ApiOperation(value = "", nickname = "humanreviewPendingGet", notes = "", response = ListOfHumanReviewItems.class, tags = {})
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ListOfHumanReviewItems.class) })
 	@RequestMapping(value = "/humanreview/pending", produces = { "application/json" }, method = RequestMethod.GET)
@@ -58,18 +59,5 @@ public class HumanreviewApiController implements HumanreviewApi {
 	public void setHrRepo(HumanreviewRepository hrRepo) {
 		this.hrRepo = hrRepo;
 	}
-
-//	public ListOfHumanReviewItems getPending() {
-//		ListOfHumanReviewItems listOfHumanReviewItems = new ListOfHumanReviewItems();
-//		HumanReviewItem hrItem1 = new HumanReviewItem();
-//		hrItem1.setStixId("42412345");
-//		hrItem1.setFieldName("Name");
-//		hrItem1.setFieldValue("fieldValue");
-//		hrItem1.setObjectType("objectType");
-//
-//		listOfHumanReviewItems.add(hrItem1);
-//		return listOfHumanReviewItems;
-//	}
-	
 
 }
