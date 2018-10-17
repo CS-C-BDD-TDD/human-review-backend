@@ -1,0 +1,286 @@
+---
+openapi: 3.0.0
+info:
+  title: Human Review
+  description: And API for manipulating Thread Indicator documents in STIX format
+  contact:
+    name: Deven Phillips
+    url: https://github.com/InfoSec812
+    email: deven.phillips@redhat.com
+  version: 1.0.0
+servers:
+- url: https://humanreview-labs-dev.apps.domino.rht-labs.com/api/v1
+paths:
+  /humanreview:
+    description: Human Review
+  /humanreview/pending:
+    get:
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListOfHumanReviewItems'
+    options:
+      summary: Return endpoint API documents
+      description: When requested, this endpoint/verb combination returns documentation
+        explainin how this API endpoint works
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIOptionsResultList'
+  /humanreview/{stix_id}/{field}:
+    put:
+      description: update to support individual review
+      parameters:
+      - name: stix_id
+        in: path
+        description: The unique identifier of the STIX document
+        required: true
+        schema:
+          type: string
+      - name: field
+        in: path
+        description: The field to be updated
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Field update PUT request
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/FieldUpdatePutBody'
+        required: true
+      responses:
+        200:
+          description: OK
+  /humanreview/{stix_id}:
+    put:
+      parameters:
+      - name: stix_id
+        in: path
+        description: The ID of the STIX document
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Group action request
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/GroupAction'
+        required: true
+      responses:
+        200:
+          description: OK
+  /actionLists:
+    summary: Path used to manage the list of ActionLists.
+    description: The REST endpoint/path used to list and create zero or more `ActionList`
+      entities.  This path contains a `GET` and `POST` operation to perform the list
+      and create tasks, respectively.
+    get:
+      summary: List All ActionLists
+      description: Gets a list of all `ActionList` entities.
+      operationId: getActionLists
+      responses:
+        200:
+          description: Successful response - returns an array of `ActionList` entities.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ActionList'
+    post:
+      summary: Create a ActionList
+      description: Creates a new instance of a `ActionList`.
+      operationId: createActionList
+      requestBody:
+        description: A new `ActionList` to be created.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActionList'
+        required: true
+      responses:
+        201:
+          description: Successful response.
+  /actionLists/{actionListId}:
+    summary: Path used to manage a single ActionList.
+    description: The REST endpoint/path used to get, update, and delete single instances
+      of an `ActionList`.  This path contains `GET`, `PUT`, and `DELETE` operations
+      used to perform the get, update, and delete tasks, respectively.
+    get:
+      summary: Get a ActionList
+      description: Gets the details of a single instance of a `ActionList`.
+      operationId: getActionList
+      responses:
+        200:
+          description: Successful response - returns a single `ActionList`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionList'
+    put:
+      summary: Update a ActionList
+      description: Updates an existing `ActionList`.
+      operationId: updateActionList
+      requestBody:
+        description: Updated `ActionList` information.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActionList'
+        required: true
+      responses:
+        202:
+          description: Successful response.
+    delete:
+      summary: Delete a ActionList
+      description: Deletes an existing `ActionList`.
+      operationId: deleteActionList
+      responses:
+        204:
+          description: Successful response.
+    parameters:
+    - name: actionListId
+      in: path
+      description: A unique identifier for a `ActionList`.
+      required: true
+      schema:
+        type: string
+  /user:
+    put:
+      requestBody:
+        description: Allow the user to submit their credentials and on success return
+          a token for use in making other REST calls
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthCredentials'
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+components:
+  schemas:
+    AuthCredentials:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    ListOfHumanReviewItems:
+      type: array
+      items:
+        $ref: '#/components/schemas/HumanReviewItem'
+    FieldUpdatePutBody:
+      description: a hr field is being updated
+      required:
+      - original_value
+      - accepted_value
+      - field_name
+      - action_type
+      type: object
+      properties:
+        original_value:
+          type: string
+        accepted_value:
+          type: string
+        field_name:
+          type: string
+        action_type:
+          type: string
+    GroupAction:
+      description: |
+        Sort order:
+          * `approve_all` - Approve entire group as not having PII
+          * `disseminate` - Mark as resolved and available for dissemination
+          * `do_not_disseminate` - Mark as resolved and NOT to be disseminated
+      enum:
+      - disseminate
+      - do_not_dessiminate
+      - approve_all
+      type: string
+    APIEndpointParameters:
+      required:
+      - type
+      type: object
+      properties:
+        type:
+          type: string
+        description:
+          type: string
+        required:
+          type: boolean
+    APIOptionsVerb:
+      type: object
+      properties:
+        description:
+          type: string
+        parameters:
+          $ref: '#/components/schemas/APIEndpointParameters'
+        example:
+          type: object
+    APIOptionsResultList:
+      type: object
+      properties:
+        POST:
+          $ref: '#/components/schemas/APIOptionsVerb'
+        GET:
+          $ref: '#/components/schemas/APIOptionsVerb'
+        PUT:
+          $ref: '#/components/schemas/APIOptionsVerb'
+        DELETE:
+          $ref: '#/components/schemas/APIOptionsVerb'
+        OPTIONS:
+          $ref: '#/components/schemas/APIOptionsVerb'
+    HumanReviewItem:
+      required:
+      - field_name
+      - stix_id
+      - field_value
+      - date
+      - object_type
+      - status
+      - action
+      type: object
+      properties:
+        stix_id:
+          type: string
+        field_name:
+          type: string
+        field_value:
+          type: string
+        date:
+          format: date-time
+          type: string
+        object_type:
+          type: string
+        status:
+          type: string
+        action:
+          enum:
+          - Confirm Risk
+          - Edit
+          - Not PII
+          - Redact
+          type: string
+    ActionList:
+      required:
+      - actions
+      properties:
+        actions:
+          type: array
+          items:
+            type: string
