@@ -8,6 +8,8 @@ package org.openapitools.api;
 import org.openapitools.model.APIOptionsResultList;
 import org.openapitools.model.ListOfHumanReviewItems;
 import io.swagger.annotations.*;
+
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +45,7 @@ public interface HumanreviewApi {
     @RequestMapping(value = "/humanreview/pending",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    default ResponseEntity<ListOfHumanReviewItems> humanreviewPendingGet() {
+    default ResponseEntity<ListOfHumanReviewItems> humanreviewPendingGet(@RequestHeader HttpHeaders headers) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {

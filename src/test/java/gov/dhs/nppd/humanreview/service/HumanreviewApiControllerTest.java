@@ -13,6 +13,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
+import gov.dhs.nppd.humanreview.util.CommonUtil;
+
 @ComponentScan(basePackages = { "org.openapitools", "org.openapitools.api", "org.openapitools.configuration",
 		"gov.dhs.nppd.model" ,
 		"gov.dhs.nppd.api",
@@ -25,12 +27,18 @@ public class HumanreviewApiControllerTest {
 	public void shouldGetEmptyList() {
 		ListOfHumanReviewItems emptyList = new ListOfHumanReviewItems();
 		HumanreviewRepository mockHrRepo = Mockito.mock(HumanreviewRepository.class);
+		CommonUtil mockCommonUtil = Mockito.mock(CommonUtil.class);
 		Mockito.when(mockHrRepo.findAll()).thenReturn(emptyList);
-
+		Mockito.when(mockCommonUtil.tokenValidator("Random")).thenReturn(true);
+		
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("token", "Random");
 		hrApiCtrl.setHrRepo(mockHrRepo);
-		ResponseEntity<ListOfHumanReviewItems> resp = hrApiCtrl.humanreviewPendingGet();
+		hrApiCtrl.setCommonUtil(mockCommonUtil);
+		
+		ResponseEntity<ListOfHumanReviewItems> resp = hrApiCtrl.humanreviewPendingGet(headers);
 		ListOfHumanReviewItems listOfHumanReviewItems = resp.getBody();
-		HttpHeaders headers = resp.getHeaders();
+
 
 		assertThat(headers, notNullValue());
 		assertThat(listOfHumanReviewItems, notNullValue());
