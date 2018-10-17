@@ -4,7 +4,7 @@ This is for the DHS HR backend to support the UI
 
 ## Overview
 To start this application run the following command from the project folder.
-mvn clean spring-boot:run
+mvn clean spring-boot:run -DSPRING_PROFILE="dev"
 
 ## Verify Maven dependicies
 To generate a report on the security of maven dependicies run the following command from the project folder.
