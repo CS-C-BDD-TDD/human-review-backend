@@ -1,9 +1,13 @@
 package gov.dhs.nppd.humanreview.service;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.apache.xpath.operations.Bool;
 import org.openapitools.api.UserApi;
 import org.openapitools.model.AuthCredentials;
 import org.openapitools.repository.AuthCredentialsRepository;
@@ -35,10 +39,7 @@ public class UserApiController implements UserApi {
 	public Optional<NativeWebRequest> getRequest() {
 		return Optional.ofNullable(request);
 	}
-
-	@Autowired
-	AuthCredentialsRepository authCredentialsRepository;
-
+	
 	public AuthCredentialsRepository getAuthCredentialsRepository() {
 		return authCredentialsRepository;
 	}
@@ -47,11 +48,16 @@ public class UserApiController implements UserApi {
 		this.authCredentialsRepository = authCredentialsRepository;
 	}
 
+	@Autowired
+	AuthCredentialsRepository authCredentialsRepository;
+
 	@Override
 	public ResponseEntity<String> userPut(
 			@ApiParam(value = "Allow the user to submit their credentials and on success return a token for use in making other REST calls", required = true) @Valid @RequestBody AuthCredentials authCredentials) {
 
 		HttpHeaders headers = new HttpHeaders();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		Date date = new Date();
 		headers.add("Content-type", "text/plain");
 		AuthCredentials loginCheck = authCredentialsRepository.findByUsernameAndPassword(authCredentials.getUsername(),
 				authCredentials.getPassword());
@@ -60,8 +66,16 @@ public class UserApiController implements UserApi {
 			token = "invalid credential";
 		} else {
 			token = "Random-" + Math.random();
+			loginCheck.setToken(token);
+			
+
+			loginCheck.setDate(date);
+			authCredentialsRepository.save(loginCheck);
 		}
+		
 		return ResponseEntity.accepted().headers(headers).body(token);
 	}
+	
+
 
 }

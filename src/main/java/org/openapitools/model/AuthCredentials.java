@@ -1,5 +1,6 @@
 package org.openapitools.model;
 
+import java.util.Date;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -32,6 +33,30 @@ public class AuthCredentials {
 	@Column(name = "password")
 	@JsonProperty("password")
 	private String password = null;
+	
+	@Column(name = "token")
+	@JsonProperty("token")
+	private String token = null;
+	
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	@Column(name = "date")
+	@JsonProperty("date")
+	private Date date = null;
 	
 	public Long getId() {
 		return id;

@@ -2,18 +2,20 @@ package gov.dhs.nppd.humanreview.service;
 
 import java.util.Optional;
 
+import org.eclipse.jetty.http.HttpStatus;
 import org.openapitools.api.HumanreviewApi;
-import org.openapitools.model.HumanReviewItem;
 import org.openapitools.model.ListOfHumanReviewItems;
 import org.openapitools.repository.HumanreviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.NativeWebRequest;
 
+import gov.dhs.nppd.humanreview.util.CommonUtil;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -40,16 +42,34 @@ public class HumanreviewApiController implements HumanreviewApi {
 	//
 	@Autowired
 	private HumanreviewRepository hrRepo;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 
 	@Override
 	@ApiOperation(value = "", nickname = "humanreviewPendingGet", notes = "", response = ListOfHumanReviewItems.class, tags = {})
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ListOfHumanReviewItems.class) })
 	@RequestMapping(value = "/humanreview/pending", produces = { "application/json" }, method = RequestMethod.GET)
-	public ResponseEntity<ListOfHumanReviewItems> humanreviewPendingGet() {
-		ListOfHumanReviewItems listOfHumanReviewItems = hrRepo.findAll();
-		HttpHeaders headers = new HttpHeaders();
-		headers.add("Content-type", "application/json");
-		return ResponseEntity.accepted().headers(headers).body(listOfHumanReviewItems);
+	public ResponseEntity<ListOfHumanReviewItems> humanreviewPendingGet(@RequestHeader HttpHeaders headers) {
+		
+		ListOfHumanReviewItems listOfHumanReviewItems = new ListOfHumanReviewItems();
+		//token is missing
+		if(headers.get("token")  == null || headers.get("token").isEmpty() ) {
+			headers.add("Content-type", "application/json");
+			return ResponseEntity.status(HttpStatus.FORBIDDEN_403).headers(headers).body(listOfHumanReviewItems);
+		}
+		String tokenHeader = headers.get("token").get(0);
+		System.out.println("Token to check: " + tokenHeader);
+		if(commonUtil.tokenValidator(tokenHeader)) {
+			//Found and returning list
+			listOfHumanReviewItems = hrRepo.findAll();
+	
+			headers.add("Content-type", "application/json");
+			return ResponseEntity.accepted().headers(headers).body(listOfHumanReviewItems);
+		}else {//token was not found
+			headers.add("Content-type", "application/json");
+			return ResponseEntity.status(HttpStatus.FORBIDDEN_403).headers(headers).body(listOfHumanReviewItems);
+		}
 	}
 
 	public HumanreviewRepository getHrRepo() {
@@ -60,4 +80,13 @@ public class HumanreviewApiController implements HumanreviewApi {
 		this.hrRepo = hrRepo;
 	}
 
+	public CommonUtil getCommonUtil() {
+		return commonUtil;
+	}
+
+	public void setCommonUtil(CommonUtil commonUtil) {
+		this.commonUtil = commonUtil;
+	}
+
+	
 }
