@@ -25,12 +25,15 @@ public class CommonUtil {
 		LOGGER.debug("Current Token to validate: " + token);
 		LOGGER.debug("Current tokenTimeout " + tokenTimeout);
 		
+		//Checking if token is null or empty
 		if (token == null || token.isEmpty())
 			return false;
 
 		AuthCredentials tokenCheck = authCredentialsRepository.findByToken(token);
 
-		
+		//Checking if the check from the DB is null
+		if(tokenCheck == null)
+			return false;
 		
 		Date afterAddingMins = new Date(tokenCheck.getDate().getTime() + tokenTimeout);
 		Date now = new Date();
