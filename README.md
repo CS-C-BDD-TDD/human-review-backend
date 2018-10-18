@@ -4,16 +4,7 @@ This is for the DHS HR backend to support the UI
 
 ## Overview
 To start this application run the following command from the project folder.
-mvn clean spring-boot:run
-
-To verify go to the following address on a web browser.
-http://localhost:8080/api/v1/humanreview/pending 
-
-The follow will display on the screen.
-[{"stix_id":"2131546","field_name":"Title","field_value":"SSN",
-"date":"2018-12-03T04:15:30-05:00","object_type":"Indicator","status":"New","action":"Redact"},
-{"stix_id":"5816537","field_name":"Description","field_value":"Address",
-"date":"2018-11-06T23:13:25-05:00","object_type":"Indicator","status":"New","action":"Not PII"}]
+mvn clean spring-boot:run -DSPRING_PROFILE="dev"
 
 ## Verify Maven dependicies
 To generate a report on the security of maven dependicies run the following command from the project folder.
@@ -30,7 +21,7 @@ The jdbc url is:jdbc:h2:mem:testdb
 username: sa
 password: <blank>
 
-## login username testing
+## Login username testing
 To verify input the following url into Postman
 http://localhost:8080/api/v1/user
 Select put from the dropdown and select the body tab and the raw button
@@ -44,5 +35,14 @@ Add the folowing to box below
 
 Click on the send button
 Random and a decimal should display.
+Copy the random token value.
  
+## Pending list test
+To verify input the following url into Postman
+http://localhost:8080/api/v1/humanreview/pending 
 
+Select the Headers tab
+Enter token as the Key and paste the random token value copied from the login username test.
+click on send
+
+A list of the stix data display.
