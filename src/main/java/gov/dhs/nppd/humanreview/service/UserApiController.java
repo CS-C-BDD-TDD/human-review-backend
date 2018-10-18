@@ -7,7 +7,6 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
-import org.apache.xpath.operations.Bool;
 import org.openapitools.api.UserApi;
 import org.openapitools.model.AuthCredentials;
 import org.openapitools.repository.AuthCredentialsRepository;
@@ -52,13 +51,13 @@ public class UserApiController implements UserApi {
 	@Autowired
 	AuthCredentialsRepository authCredentialsRepository;
 
-	// By default the @CrossOrigin notation allows for any source for CORS request, might
-	//   be a good idea to restrict this in the future.
+	// By default the @CrossOrigin notation allows for any source for CORS request,
+	// might
+	// be a good idea to restrict this in the future.
 	@CrossOrigin
 	@Override
 	public ResponseEntity<String> userPut(
 			@ApiParam(value = "Allow the user to submit their credentials and on success return a token for use in making other REST calls", required = true) @Valid @RequestBody AuthCredentials authCredentials) {
-
 		HttpHeaders headers = new HttpHeaders();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date date = new Date();
@@ -71,15 +70,10 @@ public class UserApiController implements UserApi {
 		} else {
 			token = "Random-" + Math.random();
 			loginCheck.setToken(token);
-
-
 			loginCheck.setDate(date);
 			authCredentialsRepository.save(loginCheck);
 		}
 
 		return ResponseEntity.accepted().headers(headers).body(token);
 	}
-
-
-
 }

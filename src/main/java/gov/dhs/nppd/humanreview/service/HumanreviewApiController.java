@@ -42,7 +42,7 @@ public class HumanreviewApiController implements HumanreviewApi {
 	//
 	@Autowired
 	private HumanreviewRepository hrRepo;
-	
+
 	@Autowired
 	private CommonUtil commonUtil;
 
@@ -51,22 +51,21 @@ public class HumanreviewApiController implements HumanreviewApi {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ListOfHumanReviewItems.class) })
 	@RequestMapping(value = "/humanreview/pending", produces = { "application/json" }, method = RequestMethod.GET)
 	public ResponseEntity<ListOfHumanReviewItems> humanreviewPendingGet(@RequestHeader HttpHeaders headers) {
-		
+
 		ListOfHumanReviewItems listOfHumanReviewItems = new ListOfHumanReviewItems();
-		//token is missing
-		if(headers.get("token")  == null || headers.get("token").isEmpty() ) {
+		// token is missing
+		if (headers.get("token") == null || headers.get("token").isEmpty()) {
 			headers.add("Content-type", "application/json");
 			return ResponseEntity.status(HttpStatus.FORBIDDEN_403).headers(headers).body(listOfHumanReviewItems);
 		}
 		String tokenHeader = headers.get("token").get(0);
-		System.out.println("Token to check: " + tokenHeader);
-		if(commonUtil.tokenValidator(tokenHeader)) {
-			//Found and returning list
+		if (commonUtil.tokenValidator(tokenHeader)) {
+			// Found and returning list
 			listOfHumanReviewItems = hrRepo.findAll();
-	
+
 			headers.add("Content-type", "application/json");
 			return ResponseEntity.accepted().headers(headers).body(listOfHumanReviewItems);
-		}else {//token was not found
+		} else {// token was not found
 			headers.add("Content-type", "application/json");
 			return ResponseEntity.status(HttpStatus.FORBIDDEN_403).headers(headers).body(listOfHumanReviewItems);
 		}
@@ -88,5 +87,4 @@ public class HumanreviewApiController implements HumanreviewApi {
 		this.commonUtil = commonUtil;
 	}
 
-	
 }
