@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.context.request.NativeWebRequest;
 
 import io.swagger.annotations.ApiParam;
@@ -39,7 +40,7 @@ public class UserApiController implements UserApi {
 	public Optional<NativeWebRequest> getRequest() {
 		return Optional.ofNullable(request);
 	}
-	
+
 	public AuthCredentialsRepository getAuthCredentialsRepository() {
 		return authCredentialsRepository;
 	}
@@ -51,6 +52,9 @@ public class UserApiController implements UserApi {
 	@Autowired
 	AuthCredentialsRepository authCredentialsRepository;
 
+	// By default the @CrossOrigin notation allows for any source for CORS request, might
+	//   be a good idea to restrict this in the future.
+	@CrossOrigin
 	@Override
 	public ResponseEntity<String> userPut(
 			@ApiParam(value = "Allow the user to submit their credentials and on success return a token for use in making other REST calls", required = true) @Valid @RequestBody AuthCredentials authCredentials) {
@@ -67,15 +71,15 @@ public class UserApiController implements UserApi {
 		} else {
 			token = "Random-" + Math.random();
 			loginCheck.setToken(token);
-			
+
 
 			loginCheck.setDate(date);
 			authCredentialsRepository.save(loginCheck);
 		}
-		
+
 		return ResponseEntity.accepted().headers(headers).body(token);
 	}
-	
+
 
 
 }
