@@ -15,11 +15,12 @@ public class CommonUtil {
 	AuthCredentialsRepository authCredentialsRepository;
 
 	//@Value("${gov.dhs.nppd.tokenTimeout}")
-	private long tokenTimeout = 1800000;
+	private long tokenTimeout= 1800000;
 
 	public boolean tokenValidator(String token) {
 		System.out.println("Current Token to validate: " + token);
-
+		System.out.println("Current tokenTimeout " + tokenTimeout);
+		
 		if (token == null || token.isEmpty())
 			return false;
 
@@ -33,7 +34,7 @@ public class CommonUtil {
 		
 		System.out.println("****************************");
 		System.out.println("Current Time: " + now);
-		System.out.println("Token Login Time: " + tokenCheck.getDate()); 
+		System.out.println("Token Issue Time: " + tokenCheck.getDate()); 
 		System.out.println("Token Expire Time: " + afterAddingMins );
 		System.out.println("****************************");
 		
