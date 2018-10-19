@@ -4,19 +4,24 @@ import java.util.Optional;
 
 import org.eclipse.jetty.http.HttpStatus;
 import org.openapitools.api.HumanreviewApi;
+import org.openapitools.model.AuthCredentials;
+import org.openapitools.model.HumanReviewItem;
 import org.openapitools.model.ListOfHumanReviewItems;
 import org.openapitools.repository.HumanreviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.NativeWebRequest;
 
 import gov.dhs.nppd.humanreview.util.CommonUtil;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
@@ -69,6 +74,30 @@ public class HumanreviewApiController implements HumanreviewApi {
 			headers.add("Content-type", "application/json");
 			return ResponseEntity.status(HttpStatus.FORBIDDEN_403).headers(headers).body(listOfHumanReviewItems);
 		}
+	}
+
+	@ApiOperation(value = "", nickname = "humanreviewStixIdFieldPut", notes = "update to support individual review", tags = {})
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "OK") })
+	@RequestMapping(value = "/humanreview/{stix_id}/{field}", consumes = {
+			"application/x-www-form-urlencoded" }, method = RequestMethod.PUT)
+	public ResponseEntity<Void> humanreviewStixIdFieldPut(
+			@ApiParam(value = "The unique identifier of the STIX document", required = true) @PathVariable("stix_id") String stixId,
+			@ApiParam(value = "The field to be updated", required = true) @PathVariable("field") String field,
+			@ApiParam(value = "", required = true, defaultValue = "null") @RequestParam(value = "original_value", required = true) String originalValue,
+			@ApiParam(value = "", required = true, defaultValue = "null") @RequestParam(value = "accepted_value", required = true) String acceptedValue,
+			@ApiParam(value = "", required = true, defaultValue = "null") @RequestParam(value = "field_name", required = true) String fieldName,
+			@ApiParam(value = "", required = true, defaultValue = "null") @RequestParam(value = "action_type", required = true) String actionType) {
+		
+		HumanReviewItem hrItem = hrRepo.findByStixIdAndFieldName(stixId, fieldName);
+		if (hrItem == null) {
+			return new ResponseEntity<>(org.springframework.http.HttpStatus.BAD_REQUEST);
+		} else {
+			hrItem.setFieldValue(acceptedValue);
+			hrItem.setStatus("Updated");
+			hrRepo.save(hrItem);
+			return new ResponseEntity<Void>( org.springframework.http.HttpStatus.ACCEPTED );
+			
+		}	
 	}
 
 	public HumanreviewRepository getHrRepo() {
