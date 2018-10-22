@@ -40,7 +40,6 @@ public class HumanreviewApiController implements HumanreviewApi {
 	@org.springframework.beans.factory.annotation.Autowired
 	public HumanreviewApiController(NativeWebRequest request, HumanreviewRepository hrRepo) {
 		this.request = request;
-		hrRepo = hrRepo;
 	}
 
 	@Override
