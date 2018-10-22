@@ -42,10 +42,14 @@ public class HumanReviewItem {
 	@JsonProperty("field_value")
 	private String fieldValue = null;
 
-	@Column(name = "date")
-	@JsonProperty("date")
-	private OffsetDateTime date = null;
+	@Column(name = "original_date")
+	@JsonProperty("original_date")
+	private OffsetDateTime originalDate = null;
 
+	@Column(name = "modified_date")
+	@JsonProperty("modified_date")
+	private OffsetDateTime modifiedDate = null;
+	
 	@Column(name = "object_type")
 	@JsonProperty("object_type")
 	private String objectType = null;
@@ -53,6 +57,14 @@ public class HumanReviewItem {
 	@Column(name = "status")
 	@JsonProperty("status")
 	private String status = null;
+	
+	@Column(name = "original_json")
+	@JsonProperty("original_json")
+	private String originalJson = null;
+	
+	@Column(name = "modified_json")
+	@JsonProperty("modified_json")
+	private String modifiedJson = null;
 
 	/**
 	 * Gets or Sets action
@@ -66,6 +78,8 @@ public class HumanReviewItem {
 	}
 
 	public enum ActionEnum {
+		BLANK(""),
+		
 		CONFIRM_RISK("Confirm Risk"),
 
 		EDIT("Edit"),
@@ -164,8 +178,8 @@ public class HumanReviewItem {
 		this.fieldValue = fieldValue;
 	}
 
-	public HumanReviewItem date(OffsetDateTime date) {
-		this.date = date;
+	public HumanReviewItem originalDate(OffsetDateTime originalDate) {
+		this.originalDate = originalDate;
 		return this;
 	}
 
@@ -179,12 +193,12 @@ public class HumanReviewItem {
 
 	@Valid
 
-	public OffsetDateTime getDate() {
-		return date;
+	public OffsetDateTime getOriginalDate() {
+		return originalDate;
 	}
 
-	public void setDate(OffsetDateTime date) {
-		this.date = date;
+	public void setOriginalDate(OffsetDateTime originalDate) {
+		this.originalDate = originalDate;
 	}
 
 	public HumanReviewItem objectType(String objectType) {
@@ -249,6 +263,45 @@ public class HumanReviewItem {
 	public void setAction(ActionEnum action) {
 		this.action = action;
 	}
+	
+	public HumanReviewItem modifiedDate(OffsetDateTime modifiedDate) {
+		this.modifiedDate = modifiedDate;
+		return this;
+	}
+
+	public OffsetDateTime getModifiedDate() {
+		return modifiedDate;
+	}
+
+	public void setModifiedDate(OffsetDateTime modifiedDate) {
+		this.modifiedDate = modifiedDate;
+	}
+	
+	public HumanReviewItem originalJson(String originalJson) {
+		this.originalJson = originalJson;
+		return this;
+	}
+	
+	public String getOriginalJson() {
+		return originalJson;
+	}
+
+	public void setOriginalJson(String originalJson) {
+		this.originalJson = originalJson;
+	}
+
+	public HumanReviewItem modifiedJson(String modifiedJson) {
+		this.modifiedJson = modifiedJson;
+		return this;
+	}
+	
+	public String getModifiedJson() {
+		return modifiedJson;
+	}
+
+	public void setModifiedJson(String modifiedJson) {
+		this.modifiedJson = modifiedJson;
+	}
 
 	@Override
 	public boolean equals(java.lang.Object o) {
@@ -262,15 +315,19 @@ public class HumanReviewItem {
 		return Objects.equals(this.stixId, humanReviewItem.stixId)
 				&& Objects.equals(this.fieldName, humanReviewItem.fieldName)
 				&& Objects.equals(this.fieldValue, humanReviewItem.fieldValue)
-				&& Objects.equals(this.date, humanReviewItem.date)
+				&& Objects.equals(this.originalDate, humanReviewItem.originalDate)
+				&& Objects.equals(this.modifiedDate, humanReviewItem.modifiedDate)
 				&& Objects.equals(this.objectType, humanReviewItem.objectType)
 				&& Objects.equals(this.status, humanReviewItem.status)
-				&& Objects.equals(this.action, humanReviewItem.action);
+				&& Objects.equals(this.action, humanReviewItem.action)
+				&& Objects.equals(this.originalJson, humanReviewItem.originalJson)
+				&& Objects.equals(this.modifiedJson, humanReviewItem.modifiedJson);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(stixId, fieldName, fieldValue, date, objectType, status, action);
+		return Objects.hash(stixId, fieldName, fieldValue, originalDate, modifiedDate, objectType, 
+				status, action, originalJson, modifiedJson);
 	}
 
 	@Override
@@ -281,10 +338,13 @@ public class HumanReviewItem {
 		sb.append("    stixId: ").append(toIndentedString(stixId)).append("\n");
 		sb.append("    fieldName: ").append(toIndentedString(fieldName)).append("\n");
 		sb.append("    fieldValue: ").append(toIndentedString(fieldValue)).append("\n");
-		sb.append("    date: ").append(toIndentedString(date)).append("\n");
+		sb.append("    originalDate: ").append(toIndentedString(originalDate)).append("\n");
+		sb.append("    modifiedDate: ").append(toIndentedString(modifiedDate)).append("\n");
 		sb.append("    objectType: ").append(toIndentedString(objectType)).append("\n");
 		sb.append("    status: ").append(toIndentedString(status)).append("\n");
 		sb.append("    action: ").append(toIndentedString(action)).append("\n");
+		sb.append("    originalJson: ").append(toIndentedString(originalJson)).append("\n");
+		sb.append("    modifiedJson: ").append(toIndentedString(modifiedJson)).append("\n");
 		sb.append("}");
 		return sb.toString();
 	}
