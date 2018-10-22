@@ -29,6 +29,7 @@ public class HumanreviewApiController implements HumanreviewApi {
 	private final NativeWebRequest request;
 	
 	private static final String PASSWORD = "someInsecurePassword";
+	private static final String USERNAME = "admin";
 
 	@org.springframework.beans.factory.annotation.Autowired
 	public HumanreviewApiController(NativeWebRequest request, HumanreviewRepository hrRepo) {
