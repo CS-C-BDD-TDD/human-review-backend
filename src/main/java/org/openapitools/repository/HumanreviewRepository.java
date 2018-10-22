@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 
 public interface HumanreviewRepository extends CrudRepository<HumanReviewItem, String>{
 	ListOfHumanReviewItems findAll();
+	HumanReviewItem findByStixIdAndFieldName(String stixId, String fieldName);
 }

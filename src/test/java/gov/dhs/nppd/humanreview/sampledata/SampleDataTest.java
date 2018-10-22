@@ -25,9 +25,10 @@ public class SampleDataTest {
 	public final String FIELD_VALUES[] = { "Confidence (08082016)", "PII presents",
 			"Single Indicator: NCCIC:Indicator-f83b16c8-f32a-41d3-8d02-93ad0d37016f", "Package with single indicator\n"
 					+ " NCCIC:Indicator-f83b16c8-f32a-41d3-8d02-93ad0d37016f at\n" + " 2016-08-05T10:59:23Z" };
-	public final String INSERT_STMT = "insert into Human_Review_Item (id, stix_id, action, date, field_name, field_value, object_type, status) "
-			// id, stixid, actionenum, date-time, fieldname, fieldvalue, objecttype, status
-			+ "values(%d, '%s', %d, '%s', '%s', '%s', '%s',  '%s');";
+	public final String INSERT_STMT = "insert into Human_Review_Item (id, stix_id, action, original_date, modified_date, field_name, "
+			+ "field_value, object_type, status, original_json, modified_json) "
+			// id, stixid, actionenum, date-time, date-time, fieldname, fieldvalue, objecttype, status, originaljson, modifiedjson
+			+ "values(%d, '%s', %d, '%s', '%s', '%s', '%s', '%s',  '%s', '%s', '%s');";
 
 	@Test
 	public void shouldGenerateSampleData() {
@@ -39,18 +40,21 @@ public class SampleDataTest {
 			int numberFields = getNumberFields();
 			String stixId = getStixId();
 			int actionEnum = getActionEnum();
-			String dateTime = getDateTime();
+			String oldTime = getDateTime();
+			String newTime = getDateTime();
 			List<String> fieldNames = new LinkedList<String>(Arrays.asList(FIELD_NAMES));
 			List<String> fieldValues = new LinkedList<String>(Arrays.asList(FIELD_VALUES));
 			String objectType = getObjectType();
 			String status = "New";
+			String originaljson = "";
+			String modifiedjson = "";
 
 			for (int j = 0; j < numberFields; j++) {
 				String fieldName = getFieldName(fieldNames);
 				String fieldValue = getFieldValue(fieldValues);
 
-				String insert = String.format(INSERT_STMT, id++, stixId, actionEnum, dateTime, fieldName, fieldValue,
-						objectType, status);
+				String insert = String.format(INSERT_STMT, id++, stixId, actionEnum, oldTime, newTime, fieldName, fieldValue,
+						objectType, status, originaljson, modifiedjson);
 				System.out.println(insert);
 			}
 
