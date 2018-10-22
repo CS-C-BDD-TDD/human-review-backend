@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import org.eclipse.jetty.http.HttpStatus;
 import org.openapitools.api.HumanreviewApi;
-import org.openapitools.model.AuthCredentials;
 import org.openapitools.model.HumanReviewItem;
 import org.openapitools.model.ListOfHumanReviewItems;
 import org.openapitools.repository.HumanreviewRepository;
@@ -87,7 +86,7 @@ public class HumanreviewApiController implements HumanreviewApi {
 			@ApiParam(value = "", required = true, defaultValue = "null") @RequestParam(value = "accepted_value", required = true) String acceptedValue,
 			@ApiParam(value = "", required = true, defaultValue = "null") @RequestParam(value = "field_name", required = true) String fieldName,
 			@ApiParam(value = "", required = true, defaultValue = "null") @RequestParam(value = "action_type", required = true) String actionType) {
-		
+
 		HumanReviewItem hrItem = hrRepo.findByStixIdAndFieldName(stixId, fieldName);
 		if (hrItem == null) {
 			return new ResponseEntity<>(org.springframework.http.HttpStatus.BAD_REQUEST);
@@ -95,9 +94,9 @@ public class HumanreviewApiController implements HumanreviewApi {
 			hrItem.setFieldValue(acceptedValue);
 			hrItem.setStatus("Updated");
 			hrRepo.save(hrItem);
-			return new ResponseEntity<Void>( org.springframework.http.HttpStatus.ACCEPTED );
-			
-		}	
+			return new ResponseEntity<Void>(org.springframework.http.HttpStatus.ACCEPTED);
+
+		}
 	}
 
 	public HumanreviewRepository getHrRepo() {
@@ -114,6 +113,10 @@ public class HumanreviewApiController implements HumanreviewApi {
 
 	public void setCommonUtil(CommonUtil commonUtil) {
 		this.commonUtil = commonUtil;
+	}
+
+	public HumanReviewItem getHumanReviewItemByStixIdAndFieldName(String stixId, String fieldName) {
+		return hrRepo.findByStixIdAndFieldName(stixId, fieldName);
 	}
 
 }
