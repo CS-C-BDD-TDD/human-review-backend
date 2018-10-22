@@ -146,4 +146,8 @@ public class HumanreviewApiController implements HumanreviewApi {
 		this.commonUtil = commonUtil;
 	}
 
+	public HumanReviewItem getHumanReviewItemByStixIdAndFieldName(String stixId, String fieldName) {
+		return hrRepo.findByStixIdAndFieldName(stixId, fieldName);
+	}
+
 }
