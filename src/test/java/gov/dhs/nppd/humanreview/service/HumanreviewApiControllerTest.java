@@ -79,7 +79,7 @@ public class HumanreviewApiControllerTest {
 	}
 
 	@Test
-	public void shouldUpdateFieldByStixId() {
+	public void shouldUpdateFieldByStixIdWithInvalidAction() {
 		// given stix id & field id
 
 		HumanReviewItem expectedHumanReviewItem = new HumanReviewItem();
@@ -92,13 +92,36 @@ public class HumanreviewApiControllerTest {
 
 		// when I update the field
 		hrApiCtrl.humanreviewStixIdFieldPut(stixId, fieldName, "original-value", expectedFieldValue, fieldName,
-				"some-action");
+				"Invalid");
 
-		// then I should get a successful update of the record
-		HumanReviewItem actualHumaReviewItem = hrApiCtrl.getHumanReviewItemByStixIdAndFieldName(stixId, fieldName);
+		Mockito.verify(mockHrRepo, Mockito.times(0)).save(expectedHumanReviewItem);
+	}
 
-		Mockito.verify(mockHrRepo, Mockito.times(1)).save(expectedHumanReviewItem);
-		assertThat(actualHumaReviewItem, equalTo(expectedHumanReviewItem));
+	@Test
+	public void shouldUpdateFieldByStixIdWithValidAction() {
+		// given stix id & field id
+
+		HumanReviewItem expectedHumanReviewItem = new HumanReviewItem();
+		expectedHumanReviewItem.setStixId(stixId);
+		expectedHumanReviewItem.setFieldName(fieldName);
+		expectedHumanReviewItem.setFieldValue(expectedFieldValue);
+
+		Mockito.when(mockHrRepo.findByStixIdAndFieldName(stixId, fieldName)).thenReturn(expectedHumanReviewItem);
+		hrApiCtrl.setHrRepo(mockHrRepo);
+
+		String[] actionList = { "Confirm Risk", "Edit", "Not PII", "Redact" };
+
+		for (String action : actionList) {
+			// when I update the field
+			hrApiCtrl.humanreviewStixIdFieldPut(stixId, fieldName, "original-value", expectedFieldValue, fieldName,
+					action);
+
+			// then I should get a successful update of the record
+			HumanReviewItem actualHumaReviewItem = hrApiCtrl.getHumanReviewItemByStixIdAndFieldName(stixId, fieldName);
+
+			assertThat(actualHumaReviewItem, equalTo(expectedHumanReviewItem));
+		}
+		Mockito.verify(mockHrRepo, Mockito.times(4)).save(expectedHumanReviewItem);
 	}
 
 	@Test
