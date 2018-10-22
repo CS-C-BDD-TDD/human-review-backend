@@ -33,9 +33,10 @@ import io.swagger.annotations.ApiResponses;
 @RequestMapping("${openapi.humanReview.base-path:/api/v1}")
 public class HumanreviewApiController implements HumanreviewApi {
 
+	private static final String TOKEN_STRING = "token";
 	private final NativeWebRequest request;
 	private static final Logger LOGGER = LogManager.getLogger(HumanreviewApiController.class);
-	
+
 	@org.springframework.beans.factory.annotation.Autowired
 	public HumanreviewApiController(NativeWebRequest request, HumanreviewRepository hrRepo) {
 		this.request = request;
@@ -61,12 +62,15 @@ public class HumanreviewApiController implements HumanreviewApi {
 	public ResponseEntity<ListOfHumanReviewItems> humanreviewPendingGet(@RequestHeader HttpHeaders headers) {
 
 		ListOfHumanReviewItems listOfHumanReviewItems = new ListOfHumanReviewItems();
-		// token is missing
-		if (headers.get("token") == null || headers.get("token").isEmpty()) {
+
+		LOGGER.debug("token: " + headers.get(TOKEN_STRING));
+
+		if (headers.get(TOKEN_STRING) == null || headers.get(TOKEN_STRING).isEmpty()) {
 			headers.add("Content-type", "application/json");
 			return ResponseEntity.status(HttpStatus.FORBIDDEN_403).headers(headers).body(listOfHumanReviewItems);
 		}
-		String tokenHeader = headers.get("token").get(0);
+
+		String tokenHeader = headers.get(TOKEN_STRING).get(0);
 		if (commonUtil.tokenValidator(tokenHeader)) {
 			// Found and returning list
 			listOfHumanReviewItems = hrRepo.findAll();

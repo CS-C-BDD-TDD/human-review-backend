@@ -139,6 +139,36 @@ public class HumanreviewApiControllerTest {
 	}
 
 	@Test
+	public void shouldGetForbiddenCodeGivenNullToken() {
+		// Given or Arrange
+		Mockito.when(mockHrRepo.findByStixIdAndFieldName(stixId, fieldName)).thenReturn(null);
+		headers.remove("token");
+		hrApiCtrl.setHrRepo(mockHrRepo);
+
+		// When or my Act
+		ResponseEntity<ListOfHumanReviewItems> resp = hrApiCtrl.humanreviewPendingGet(headers);
+
+		// Then or Assert
+		assertThat(resp.getStatusCodeValue(), equalTo(org.springframework.http.HttpStatus.FORBIDDEN.value()));
+
+	}
+
+	@Test
+	public void shouldGetForbiddenCodeGivenEmptyToken() {
+		// Given or Arrange
+		Mockito.when(mockHrRepo.findByStixIdAndFieldName(stixId, fieldName)).thenReturn(null);
+		headers.set("token", "");
+		hrApiCtrl.setHrRepo(mockHrRepo);
+
+		// When or my Act
+		ResponseEntity<ListOfHumanReviewItems> resp = hrApiCtrl.humanreviewPendingGet(headers);
+
+		// Then or Assert
+		assertThat(resp.getStatusCodeValue(), equalTo(org.springframework.http.HttpStatus.FORBIDDEN.value()));
+
+	}
+
+	@Test
 	public void shouldMakeIt100Percent() {
 		hrApiCtrl.getHrRepo();
 		hrApiCtrl.getRequest();
