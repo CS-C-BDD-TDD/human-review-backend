@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.eclipse.jetty.http.HttpStatus;
 import org.openapitools.api.UserApi;
 import org.openapitools.model.AuthCredentials;
 import org.openapitools.repository.AuthCredentialsRepository;
@@ -14,9 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.context.request.NativeWebRequest;
 
 import io.swagger.annotations.ApiParam;
@@ -32,7 +33,6 @@ public class UserApiController implements UserApi {
 	@org.springframework.beans.factory.annotation.Autowired
 	public UserApiController(NativeWebRequest request, AuthCredentialsRepository authCredentialsRepository) {
 		this.request = request;
-		authCredentialsRepository = authCredentialsRepository;
 	}
 
 	@Override
@@ -67,13 +67,15 @@ public class UserApiController implements UserApi {
 		String token;
 		if (loginCheck == null) {
 			token = "invalid credential";
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED_401).headers(headers).body(token);
 		} else {
 			token = "Random-" + Math.random();
 			loginCheck.setToken(token);
 			loginCheck.setDate(date);
 			authCredentialsRepository.save(loginCheck);
+			return ResponseEntity.status(HttpStatus.OK_200).headers(headers).body(token);
 		}
 
-		return ResponseEntity.accepted().headers(headers).body(token);
+		
 	}
 }
