@@ -45,7 +45,9 @@ public class CommonUtil {
 		LOGGER.debug("Token Expire Time: " + afterAddingMins );
 		LOGGER.debug("****************************");
 		
-		if (tokenCheck != null && !tokenCheck.getDate().after(now) && !afterAddingMins.before(now)) {
+		LOGGER.debug("tokenCheck.getDate().after(now): " + tokenCheck.getDate().after(now));
+		LOGGER.debug("afterAddingMins.before(now): " + afterAddingMins.before(now));
+		if ( !tokenCheck.getDate().after(now) && !afterAddingMins.before(now)) {
 			return true;
 		} else {
 			return false;
