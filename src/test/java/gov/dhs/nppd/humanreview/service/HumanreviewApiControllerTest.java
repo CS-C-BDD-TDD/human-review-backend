@@ -1,6 +1,8 @@
 package gov.dhs.nppd.humanreview.service;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
@@ -28,11 +30,20 @@ public class HumanreviewApiControllerTest {
 	private String stixId;
 	private String expectedFieldValue;
 	private String fieldName;
+	private ListOfHumanReviewItems hrItemList;
+	private HttpHeaders headers;
 
 	@Before
 	public void setup() {
 		mockHrRepo = Mockito.mock(HumanreviewRepository.class);
 		mockCommonUtil = Mockito.mock(CommonUtil.class);
+		hrItemList = new ListOfHumanReviewItems();
+		Mockito.when(mockHrRepo.findAll()).thenReturn(hrItemList);
+		Mockito.when(mockCommonUtil.tokenValidator("Random")).thenReturn(true);
+		headers = new HttpHeaders();
+		headers.add("token", "Random");
+		hrApiCtrl.setHrRepo(mockHrRepo);
+		hrApiCtrl.setCommonUtil(mockCommonUtil);
 		stixId = "stix-id-1";
 		fieldName = "field-name-a";
 		expectedFieldValue = "accepted-value";
@@ -40,21 +51,31 @@ public class HumanreviewApiControllerTest {
 
 	@Test
 	public void shouldGetEmptyList() {
-		ListOfHumanReviewItems emptyList = new ListOfHumanReviewItems();
-		Mockito.when(mockHrRepo.findAll()).thenReturn(emptyList);
-		Mockito.when(mockCommonUtil.tokenValidator("Random")).thenReturn(true);
-
-		HttpHeaders headers = new HttpHeaders();
-		headers.add("token", "Random");
-		hrApiCtrl.setHrRepo(mockHrRepo);
-		hrApiCtrl.setCommonUtil(mockCommonUtil);
+		// intentionally left the list hrItemListe empty!
 
 		ResponseEntity<ListOfHumanReviewItems> resp = hrApiCtrl.humanreviewPendingGet(headers);
-		ListOfHumanReviewItems listOfHumanReviewItems = resp.getBody();
 
+		ListOfHumanReviewItems listOfHumanReviewItems = resp.getBody();
 		assertThat(headers, notNullValue());
 		assertThat(listOfHumanReviewItems, notNullValue());
 		assertThat(listOfHumanReviewItems, empty());
+	}
+
+	@Test
+	public void shouldGetNonEmptyList() {
+		HumanReviewItem hrItem = new HumanReviewItem();
+		hrItem.setStixId("my-stix-id-1");
+		HumanReviewItem hrItemNot = new HumanReviewItem();
+		hrItemNot.setStixId("my-stix-id-Not");
+
+		hrItemList.add(hrItem);
+
+		ResponseEntity<ListOfHumanReviewItems> resp = hrApiCtrl.humanreviewPendingGet(headers);
+
+		ListOfHumanReviewItems listOfHumanReviewItems = resp.getBody();
+		assertThat(listOfHumanReviewItems, hasItems(hrItem));
+		assertThat(listOfHumanReviewItems, not(hasItems(hrItemNot)));
+
 	}
 
 	@Test
