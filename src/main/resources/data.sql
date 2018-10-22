@@ -4,6 +4,7 @@ insert into Auth_Credentials(id, username, password, token, date) values(2, 'Use
 
 insert into Auth_Credentials(id, username, password, token, date) values(3, 'User3', 'Pass3', '', '2018-12-03T10:15:30+01:00');
 
+insert into Human_Review_Item (id, stix_id, action, date, field_name, field_value, object_type, status) values(100, 'Anthony', 0, '2018-10-16T16:07:51.569380-04:00', 'Description', 'PII presents', 'Package',  'New');
 insert into Human_Review_Item (id, stix_id, action, date, field_name, field_value, object_type, status) values(1, '6d0bd861-946b-4ac1-ad80-08cf6590291b', 0, '2018-10-16T16:07:51.569380-04:00', 'Description', 'PII presents', 'Package',  'New');
 insert into Human_Review_Item (id, stix_id, action, date, field_name, field_value, object_type, status) values(2, '6d0bd861-946b-4ac1-ad80-08cf6590291b', 0, '2018-10-16T16:07:51.569380-04:00', 'Short_Description', 'Package with single indicator
  NCCIC:Indicator-f83b16c8-f32a-41d3-8d02-93ad0d37016f at

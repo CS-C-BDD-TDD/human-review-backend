@@ -2,10 +2,12 @@ package gov.dhs.nppd.humanreview.service;
 
 import java.util.Optional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.http.HttpStatus;
 import org.openapitools.api.HumanreviewApi;
-import org.openapitools.model.AuthCredentials;
 import org.openapitools.model.HumanReviewItem;
+import org.openapitools.model.HumanReviewItem.ActionEnum;
 import org.openapitools.model.ListOfHumanReviewItems;
 import org.openapitools.repository.HumanreviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +34,8 @@ import io.swagger.annotations.ApiResponses;
 public class HumanreviewApiController implements HumanreviewApi {
 
 	private final NativeWebRequest request;
-
+	private static final Logger LOGGER = LogManager.getLogger(HumanreviewApiController.class);
+	
 	@org.springframework.beans.factory.annotation.Autowired
 	public HumanreviewApiController(NativeWebRequest request, HumanreviewRepository hrRepo) {
 		this.request = request;
@@ -87,17 +90,44 @@ public class HumanreviewApiController implements HumanreviewApi {
 			@ApiParam(value = "", required = true, defaultValue = "null") @RequestParam(value = "accepted_value", required = true) String acceptedValue,
 			@ApiParam(value = "", required = true, defaultValue = "null") @RequestParam(value = "field_name", required = true) String fieldName,
 			@ApiParam(value = "", required = true, defaultValue = "null") @RequestParam(value = "action_type", required = true) String actionType) {
-		
+
 		HumanReviewItem hrItem = hrRepo.findByStixIdAndFieldName(stixId, fieldName);
+		String redactValue = "#####";
+		ActionEnum actionEnum = ActionEnum.CONFIRM_RISK;
+		LOGGER.debug("id = " + stixId);
+		LOGGER.debug("f = " + field);
+		LOGGER.debug("fn = " + fieldName);
 		if (hrItem == null) {
 			return new ResponseEntity<>(org.springframework.http.HttpStatus.BAD_REQUEST);
 		} else {
-			hrItem.setFieldValue(acceptedValue);
-			hrItem.setStatus("Updated");
-			hrRepo.save(hrItem);
-			return new ResponseEntity<Void>( org.springframework.http.HttpStatus.ACCEPTED );
-			
-		}	
+			switch (actionType) {
+			case "Confirm Risk":
+				hrItem.setAction(actionEnum.CONFIRM_RISK);
+				hrItem.setStatus("Confirmed");
+				hrRepo.save(hrItem);
+				return new ResponseEntity<Void>(org.springframework.http.HttpStatus.ACCEPTED);
+			case "Edit":
+				hrItem.setAction(actionEnum.EDIT);
+				hrItem.setFieldValue(acceptedValue);
+				hrItem.setStatus("Edited");
+				hrRepo.save(hrItem);
+				return new ResponseEntity<Void>(org.springframework.http.HttpStatus.ACCEPTED);
+			case "Not PII":
+				hrItem.setAction(actionEnum.NOT_PII);
+				hrItem.setStatus("Not PII");
+				hrRepo.save(hrItem);
+				return new ResponseEntity<Void>(org.springframework.http.HttpStatus.ACCEPTED);
+			case "Redact":
+				hrItem.setFieldValue(redactValue);
+				hrItem.setAction(actionEnum.REDACT);
+				hrItem.setStatus("Redacted");
+				hrRepo.save(hrItem);
+				return new ResponseEntity<Void>(org.springframework.http.HttpStatus.ACCEPTED);
+			default:
+				return new ResponseEntity<>(org.springframework.http.HttpStatus.BAD_REQUEST);
+			}
+
+		}
 	}
 
 	public HumanreviewRepository getHrRepo() {
