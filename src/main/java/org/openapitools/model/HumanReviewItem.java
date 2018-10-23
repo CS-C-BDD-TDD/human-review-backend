@@ -27,7 +27,7 @@ import io.swagger.annotations.ApiModelProperty;
 @Table(name = "Human_Review_Item")
 public class HumanReviewItem {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@Column(name = "stix_id")
