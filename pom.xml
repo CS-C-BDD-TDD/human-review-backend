@@ -261,9 +261,9 @@
 			<artifactId>dependency-check-maven</artifactId>
 			<version>3.3.2</version>
 			<configuration>
-                             <failBuildOnCVSS>8</failBuildOnCVSS>
-                            <!-- <suppressionFile>suppressedDependencyCVE.xml</suppressionFile> -->
-                        </configuration>
+				<failBuildOnCVSS>8</failBuildOnCVSS>
+				<!-- <suppressionFile>suppressedDependencyCVE.xml</suppressionFile> -->
+			</configuration>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api -->
 		<dependency>
