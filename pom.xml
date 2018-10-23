@@ -138,13 +138,13 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- OWAP dependency check -->
+			<!-- OWAP dependency check
 			<plugin>
 				<groupId>org.owasp</groupId>
 				<artifactId>dependency-check-maven</artifactId>
 				<version>3.3.2</version>
 				<configuration>
-                                     <failBuildOnCVSS>8</failBuildOnCVSS>
+                                     <failBuildOnCVSS>15</failBuildOnCVSS>
                                      <suppressionFile>suppressedDependencyCVE.xml</suppressionFile>
                                 </configuration>
 				<executions>
@@ -154,7 +154,7 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin>  -->
 		</plugins>
 	</build>
 	<dependencies>
