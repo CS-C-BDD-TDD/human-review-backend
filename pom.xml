@@ -138,7 +138,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<OWAP dependency check
 			<plugin>
 				<groupId>org.owasp</groupId>
 				<artifactId>dependency-check-maven</artifactId>
