@@ -91,7 +91,7 @@ public class HumanreviewApiControllerTest {
 		hrApiCtrl.setHrRepo(mockHrRepo);
 
 		// when I update the field
-		hrApiCtrl.humanreviewStixIdFieldPut(stixId, fieldName, "original-value", expectedFieldValue, fieldName,
+		hrApiCtrl.humanreviewStixIdFieldPut(headers, stixId, fieldName, "original-value", expectedFieldValue, fieldName,
 				"Invalid");
 
 		Mockito.verify(mockHrRepo, Mockito.times(0)).save(expectedHumanReviewItem);
@@ -113,7 +113,7 @@ public class HumanreviewApiControllerTest {
 
 		for (String action : actionList) {
 			// when I update the field
-			hrApiCtrl.humanreviewStixIdFieldPut(stixId, fieldName, "original-value", expectedFieldValue, fieldName,
+			hrApiCtrl.humanreviewStixIdFieldPut(headers, stixId, fieldName, "original-value", expectedFieldValue, fieldName,
 					action);
 
 			// then I should get a successful update of the record
@@ -131,7 +131,7 @@ public class HumanreviewApiControllerTest {
 		hrApiCtrl.setHrRepo(mockHrRepo);
 
 		// When or my Act
-		ResponseEntity<Void> result = hrApiCtrl.humanreviewStixIdFieldPut(stixId, fieldName, "original-value", "",
+		ResponseEntity<Void> result = hrApiCtrl.humanreviewStixIdFieldPut(headers, stixId, fieldName, "original-value", "",
 				fieldName, "some-action");
 
 		// Then or Assert

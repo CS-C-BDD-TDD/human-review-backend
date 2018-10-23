@@ -19,7 +19,13 @@ CREATE TABLE Human_Review_Item (
 	field_value VARCHAR, 
 	object_type VARCHAR, 
 	status VARCHAR,
+	PRIMARY KEY (id)
+);
+
+CREATE TABLE Json_Data (
+
+	stix_id VARCHAR, 
 	original_json VARCHAR,
 	modified_json VARCHAR,
-	PRIMARY KEY (id)
+	PRIMARY KEY (stix_id)
 );
