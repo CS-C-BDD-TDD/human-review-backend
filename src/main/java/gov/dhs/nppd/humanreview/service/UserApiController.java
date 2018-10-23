@@ -7,6 +7,8 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.http.HttpStatus;
 import org.openapitools.api.UserApi;
 import org.openapitools.model.AuthCredentials;
@@ -29,6 +31,7 @@ import io.swagger.annotations.ApiParam;
 public class UserApiController implements UserApi {
 
 	private final NativeWebRequest request;
+	private static final Logger LOGGER = LogManager.getLogger(UserApiController.class);
 
 	@org.springframework.beans.factory.annotation.Autowired
 	public UserApiController(NativeWebRequest request, AuthCredentialsRepository authCredentialsRepository) {
@@ -62,6 +65,7 @@ public class UserApiController implements UserApi {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date date = new Date();
 		headers.add("Content-type", "text/plain");
+		LOGGER.info("Checking user name and password for user:"  + authCredentials.getUsername());
 		AuthCredentials loginCheck = authCredentialsRepository.findByUsernameAndPassword(authCredentials.getUsername(),
 				authCredentials.getPassword());
 		String token;

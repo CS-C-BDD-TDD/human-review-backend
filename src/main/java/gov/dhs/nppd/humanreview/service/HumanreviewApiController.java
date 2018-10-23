@@ -63,7 +63,7 @@ public class HumanreviewApiController implements HumanreviewApi {
 		ListOfHumanReviewItems listOfHumanReviewItems = new ListOfHumanReviewItems();
 
 		LOGGER.debug("token: " + headers.get(TOKEN_STRING));
-
+		LOGGER.info("Checking for taken from user. Token: "  + headers.get(TOKEN_STRING));
 		if (headers.get(TOKEN_STRING) == null || headers.get(TOKEN_STRING).isEmpty()) {
 			headers.add("Content-type", "application/json");
 			return ResponseEntity.status(HttpStatus.FORBIDDEN_403).headers(headers).body(listOfHumanReviewItems);
@@ -100,6 +100,7 @@ public class HumanreviewApiController implements HumanreviewApi {
 		LOGGER.debug("id = " + stixId);
 		LOGGER.debug("f = " + field);
 		LOGGER.debug("fn = " + fieldName);
+		
 		
 		if (headers.get(TOKEN_STRING) == null || headers.get(TOKEN_STRING).isEmpty()) {
 			headers.add("Content-type", "application/json");
