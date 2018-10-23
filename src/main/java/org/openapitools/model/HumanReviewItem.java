@@ -57,14 +57,6 @@ public class HumanReviewItem {
 	@Column(name = "status")
 	@JsonProperty("status")
 	private String status = null;
-	
-	@Column(name = "original_json")
-	@JsonProperty("original_json")
-	private String originalJson = null;
-	
-	@Column(name = "modified_json")
-	@JsonProperty("modified_json")
-	private String modifiedJson = null;
 
 	/**
 	 * Gets or Sets action
@@ -277,31 +269,7 @@ public class HumanReviewItem {
 		this.modifiedDate = modifiedDate;
 	}
 	
-	public HumanReviewItem originalJson(String originalJson) {
-		this.originalJson = originalJson;
-		return this;
-	}
 	
-	public String getOriginalJson() {
-		return originalJson;
-	}
-
-	public void setOriginalJson(String originalJson) {
-		this.originalJson = originalJson;
-	}
-
-	public HumanReviewItem modifiedJson(String modifiedJson) {
-		this.modifiedJson = modifiedJson;
-		return this;
-	}
-	
-	public String getModifiedJson() {
-		return modifiedJson;
-	}
-
-	public void setModifiedJson(String modifiedJson) {
-		this.modifiedJson = modifiedJson;
-	}
 
 	@Override
 	public boolean equals(java.lang.Object o) {
@@ -319,15 +287,13 @@ public class HumanReviewItem {
 				&& Objects.equals(this.modifiedDate, humanReviewItem.modifiedDate)
 				&& Objects.equals(this.objectType, humanReviewItem.objectType)
 				&& Objects.equals(this.status, humanReviewItem.status)
-				&& Objects.equals(this.action, humanReviewItem.action)
-				&& Objects.equals(this.originalJson, humanReviewItem.originalJson)
-				&& Objects.equals(this.modifiedJson, humanReviewItem.modifiedJson);
+				&& Objects.equals(this.action, humanReviewItem.action);
 	}
 
 	@Override
 	public int hashCode() {
 		return Objects.hash(stixId, fieldName, fieldValue, originalDate, modifiedDate, objectType, 
-				status, action, originalJson, modifiedJson);
+				status, action);
 	}
 
 	@Override
@@ -343,8 +309,6 @@ public class HumanReviewItem {
 		sb.append("    objectType: ").append(toIndentedString(objectType)).append("\n");
 		sb.append("    status: ").append(toIndentedString(status)).append("\n");
 		sb.append("    action: ").append(toIndentedString(action)).append("\n");
-		sb.append("    originalJson: ").append(toIndentedString(originalJson)).append("\n");
-		sb.append("    modifiedJson: ").append(toIndentedString(modifiedJson)).append("\n");
 		sb.append("}");
 		return sb.toString();
 	}

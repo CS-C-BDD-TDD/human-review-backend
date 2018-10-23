@@ -86,7 +86,7 @@ public class HumanreviewApiController implements HumanreviewApi {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "OK") })
 	@RequestMapping(value = "/humanreview/{stix_id}/{field}", consumes = {
 			"application/x-www-form-urlencoded" }, method = RequestMethod.PUT)
-	public ResponseEntity<Void> humanreviewStixIdFieldPut(
+	public ResponseEntity<Void> humanreviewStixIdFieldPut(@RequestHeader HttpHeaders headers,
 			@ApiParam(value = "The unique identifier of the STIX document", required = true) @PathVariable("stix_id") String stixId,
 			@ApiParam(value = "The field to be updated", required = true) @PathVariable("field") String field,
 			@ApiParam(value = "", required = true, defaultValue = "null") @RequestParam(value = "original_value", required = true) String originalValue,
@@ -100,36 +100,48 @@ public class HumanreviewApiController implements HumanreviewApi {
 		LOGGER.debug("id = " + stixId);
 		LOGGER.debug("f = " + field);
 		LOGGER.debug("fn = " + fieldName);
-		if (hrItem == null) {
-			return new ResponseEntity<>(org.springframework.http.HttpStatus.BAD_REQUEST);
-		} else {
-			switch (actionType) {
-			case "Confirm Risk":
-				hrItem.setAction(actionEnum.CONFIRM_RISK);
-				hrItem.setStatus("Confirmed");
-				hrRepo.save(hrItem);
-				return new ResponseEntity<Void>(org.springframework.http.HttpStatus.ACCEPTED);
-			case "Edit":
-				hrItem.setAction(actionEnum.EDIT);
-				hrItem.setFieldValue(acceptedValue);
-				hrItem.setStatus("Edited");
-				hrRepo.save(hrItem);
-				return new ResponseEntity<Void>(org.springframework.http.HttpStatus.ACCEPTED);
-			case "Not PII":
-				hrItem.setAction(actionEnum.NOT_PII);
-				hrItem.setStatus("Not PII");
-				hrRepo.save(hrItem);
-				return new ResponseEntity<Void>(org.springframework.http.HttpStatus.ACCEPTED);
-			case "Redact":
-				hrItem.setFieldValue(redactValue);
-				hrItem.setAction(actionEnum.REDACT);
-				hrItem.setStatus("Redacted");
-				hrRepo.save(hrItem);
-				return new ResponseEntity<Void>(org.springframework.http.HttpStatus.ACCEPTED);
-			default:
+		
+		if (headers.get(TOKEN_STRING) == null || headers.get(TOKEN_STRING).isEmpty()) {
+			headers.add("Content-type", "application/json");
+		    return new ResponseEntity<>(org.springframework.http.HttpStatus.BAD_REQUEST);
+		}
+		
+		String tokenHeader = headers.get(TOKEN_STRING).get(0);
+		if (commonUtil.tokenValidator(tokenHeader)) {
+			if (hrItem == null) {
 				return new ResponseEntity<>(org.springframework.http.HttpStatus.BAD_REQUEST);
+			} else {
+				switch (actionType) {
+				case "Confirm Risk":
+					hrItem.setAction(actionEnum.CONFIRM_RISK);
+					hrItem.setStatus("Confirmed");
+					hrRepo.save(hrItem);
+					return new ResponseEntity<Void>(org.springframework.http.HttpStatus.ACCEPTED);
+				case "Edit":
+					hrItem.setAction(actionEnum.EDIT);
+					hrItem.setFieldValue(acceptedValue);
+					hrItem.setStatus("Edited");
+					hrRepo.save(hrItem);
+					return new ResponseEntity<Void>(org.springframework.http.HttpStatus.ACCEPTED);
+				case "Not PII":
+					hrItem.setAction(actionEnum.NOT_PII);
+					hrItem.setStatus("Not PII");
+					hrRepo.save(hrItem);
+					return new ResponseEntity<Void>(org.springframework.http.HttpStatus.ACCEPTED);
+				case "Redact":
+					hrItem.setFieldValue(redactValue);
+					hrItem.setAction(actionEnum.REDACT);
+					hrItem.setStatus("Redacted");
+					hrRepo.save(hrItem);
+					return new ResponseEntity<Void>(org.springframework.http.HttpStatus.ACCEPTED);
+				default:
+					return new ResponseEntity<>(org.springframework.http.HttpStatus.BAD_REQUEST);
+				}
+	
 			}
-
+		} else {// token was not found
+			headers.add("Content-type", "application/json");
+			return new ResponseEntity<>(org.springframework.http.HttpStatus.BAD_REQUEST);
 		}
 	}
 
