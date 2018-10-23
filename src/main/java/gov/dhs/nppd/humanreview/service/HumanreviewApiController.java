@@ -97,9 +97,9 @@ public class HumanreviewApiController implements HumanreviewApi {
 		HumanReviewItem hrItem = hrRepo.findByStixIdAndFieldName(stixId, fieldName);
 		String redactValue = "#####";
 		ActionEnum actionEnum = ActionEnum.CONFIRM_RISK;
-		LOGGER.debug("id = " + stixId);
-		LOGGER.debug("f = " + field);
-		LOGGER.debug("fn = " + fieldName);
+		LOGGER.info("id = " + stixId);
+		LOGGER.info("f = " + field);
+		LOGGER.info("fn = " + fieldName);
 		
 		if (headers.get(TOKEN_STRING) == null || headers.get(TOKEN_STRING).isEmpty()) {
 			headers.add("Content-type", "application/json");
