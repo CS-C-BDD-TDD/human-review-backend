@@ -143,6 +143,10 @@
 				<groupId>org.owasp</groupId>
 				<artifactId>dependency-check-maven</artifactId>
 				<version>3.3.2</version>
+				<configuration>
+                                     <failBuildOnCVSS>4</failBuildOnCVSS>
+                                     <suppressionFile>suppressedDependencyCVE.xml</suppressionFile>
+                                </configuration>
 				<executions>
 					<execution>
 						<goals>
