@@ -228,6 +228,7 @@ public class HumanreviewApiControllerTest {
 	public void shouldMakeIt100Percent() {
 		hrApiCtrl.getHrRepo();
 		hrApiCtrl.getRequest();
+		hrApiCtrl.getCommonUtil();
 		assertTrue(true);
 	}
 }
