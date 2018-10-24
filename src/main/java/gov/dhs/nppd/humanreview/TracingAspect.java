@@ -26,6 +26,11 @@ public class TracingAspect {
 
 	@After("execution(* gov.dhs.nppd.humanreview..*.*(..))")
 	public void after(JoinPoint joinPoint) {
-		logger.info(">>>> Leaving for {}", joinPoint);
+		StringBuilder sb = new StringBuilder();
+		for (Object arg : joinPoint.getArgs()) {
+			sb.append(arg).append(" --- ");
+		}
+		logger.info(">>>> args {}", sb.toString());
+		logger.info(">>>> Exiting for {}", joinPoint);
 	}
 }
