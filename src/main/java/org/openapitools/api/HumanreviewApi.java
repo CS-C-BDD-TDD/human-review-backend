@@ -5,10 +5,13 @@
  */
 package org.openapitools.api;
 
-import org.openapitools.model.APIOptionsResultList;
-import org.openapitools.model.ListOfHumanReviewItems;
-import io.swagger.annotations.*;
+import java.util.Optional;
 
+import javax.validation.Valid;
+
+import org.openapitools.model.APIOptionsResultList;
+import org.openapitools.model.HumanReviewItem;
+import org.openapitools.model.ListOfHumanReviewItems;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,15 +23,13 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.context.request.NativeWebRequest;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
-import javax.validation.constraints.*;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 @javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2018-10-11T09:52:13.189-04:00[America/New_York]")
 
 @Validated
@@ -101,5 +102,15 @@ public interface HumanreviewApi {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
     }
+    
+    @ApiOperation(value = "", nickname = "humanreviewPost", notes = "", response = String.class, tags = {})
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class) })
+	@RequestMapping(value = "/humanreview/{stix_id}", produces = { "text/plain" }, consumes = {
+			"application/json" }, method = RequestMethod.POST)
+	default ResponseEntity<String> humanreviewStixIdPost(
+			@ApiParam(value = "Allow the user to create a HR item", required = true) @Valid @RequestBody HumanReviewItem hrItem) {
+		return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+	}
 
 }

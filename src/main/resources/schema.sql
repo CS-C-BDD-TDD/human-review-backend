@@ -10,7 +10,7 @@ CREATE TABLE Auth_Credentials
 
 CREATE TABLE Human_Review_Item (
 
-	id INT, 
+	id INT primary key auto_increment, 
 	stix_id VARCHAR, 
 	action INT, 
 	original_date TIMESTAMP, 
