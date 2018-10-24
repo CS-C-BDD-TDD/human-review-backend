@@ -57,6 +57,17 @@ public class HumanreviewApiController implements HumanreviewApi {
 	@Autowired
 	private CommonUtil commonUtil;
 
+	/**
+	 * Get HR item pending list
+	 * 
+	 * URL: /humanreview/pending
+	 * 
+	 * @param HTTP headers with content-type of application/json
+	 * @param HTTP headers with token = authentication token.
+	 * 
+	 * @return when success: a list of HR items pending with 200 when fail: return
+	 *         403
+	 */
 	@Override
 	@ApiOperation(value = "", nickname = "humanreviewPendingGet", notes = "", response = ListOfHumanReviewItems.class, tags = {})
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ListOfHumanReviewItems.class) })
@@ -66,7 +77,7 @@ public class HumanreviewApiController implements HumanreviewApi {
 		ListOfHumanReviewItems listOfHumanReviewItems = new ListOfHumanReviewItems();
 
 		LOGGER.debug("token: " + headers.get(TOKEN_STRING));
-		LOGGER.info("Checking for taken from user. Token: "  + headers.get(TOKEN_STRING));
+		LOGGER.info("Checking for taken from user. Token: " + headers.get(TOKEN_STRING));
 		if (headers.get(TOKEN_STRING) == null || headers.get(TOKEN_STRING).isEmpty()) {
 			headers.add("Content-type", "application/json");
 			return ResponseEntity.status(HttpStatus.FORBIDDEN_403).headers(headers).body(listOfHumanReviewItems);
@@ -88,11 +99,11 @@ public class HumanreviewApiController implements HumanreviewApi {
 	/**
 	 * Updating an existing HR item.
 	 * 
-	 * @param Stix Id
+	 * @param Stix      Id
 	 * @param fieldname
-	 * @param orginial value
-	 * @param accepted value
-	 * @param action type (Confirm Risk, not PII, Edit, Redact"
+	 * @param orginial  value
+	 * @param accepted  value
+	 * @param action    type (Confirm Risk, not PII, Edit, Redact"
 	 * 
 	 * @return Success with 200; failure with BAD_REQUEST (40X)
 	 * 
@@ -115,13 +126,12 @@ public class HumanreviewApiController implements HumanreviewApi {
 		LOGGER.info("id = " + stixId);
 		LOGGER.info("f = " + field);
 		LOGGER.info("fn = " + fieldName);
-		
-		
+
 		if (headers.get(TOKEN_STRING) == null || headers.get(TOKEN_STRING).isEmpty()) {
 			headers.add("Content-type", "application/json");
-		    return new ResponseEntity<>(org.springframework.http.HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(org.springframework.http.HttpStatus.BAD_REQUEST);
 		}
-		
+
 		String tokenHeader = headers.get(TOKEN_STRING).get(0);
 		if (commonUtil.tokenValidator(tokenHeader)) {
 			if (hrItem == null) {
@@ -153,19 +163,20 @@ public class HumanreviewApiController implements HumanreviewApi {
 				default:
 					return new ResponseEntity<>(org.springframework.http.HttpStatus.BAD_REQUEST);
 				}
-	
+
 			}
 		} else {// token was not found
 			headers.add("Content-type", "application/json");
 			return new ResponseEntity<>(org.springframework.http.HttpStatus.BAD_REQUEST);
 		}
 	}
-	
+
 	/**
 	 * Create a HR item.
 	 * 
 	 * @param Human Review Item.
-	 * @return String indicates a successful create with a message that includes the stix id.
+	 * @return String indicates a successful create with a message that includes the
+	 *         stix id.
 	 * @return Success of 200.
 	 * 
 	 */
@@ -179,8 +190,9 @@ public class HumanreviewApiController implements HumanreviewApi {
 		headers.add("Content-type", "text/plain");
 
 		hrRepo.save(hrItem);
-		
-		return ResponseEntity.status(HttpStatus.OK_200).headers(headers).body(" New record created " + hrItem.getStixId());
+
+		return ResponseEntity.status(HttpStatus.OK_200).headers(headers)
+				.body(" New record created " + hrItem.getStixId());
 
 	}
 

@@ -16,38 +16,45 @@ public class CommonUtil {
 	@Autowired
 	AuthCredentialsRepository authCredentialsRepository;
 
-	//@Value("${gov.dhs.nppd.tokenTimeout}")
-	private long tokenTimeout= 1800000;
+	// @Value("${gov.dhs.nppd.tokenTimeout}")
+	private long tokenTimeout = 1800000;
 
 	private static final Logger LOGGER = LogManager.getLogger(CommonUtil.class);
-	
-	
+
+	/**
+	 * Validate a token. token expiration is defined as in gov.dhs.nppd.tokenTimeout
+	 * property. Default is 30 minutes
+	 * 
+	 * @param token
+	 * @return true if token is valid; false otherwise.
+	 * 
+	 */
 	public boolean tokenValidator(String token) {
 		LOGGER.debug("Current Token to validate: " + token);
 		LOGGER.debug("Current tokenTimeout " + tokenTimeout);
-		
-		//Checking if token is null or empty
+
+		// Checking if token is null or empty
 		if (token == null || token.isEmpty())
 			return false;
 
 		AuthCredentials tokenCheck = authCredentialsRepository.findByToken(token);
 
-		//Checking if the check from the DB is null
-		if(tokenCheck == null)
+		// Checking if the check from the DB is null
+		if (tokenCheck == null)
 			return false;
-		
+
 		Date afterAddingMins = new Date(tokenCheck.getDate().getTime() + tokenTimeout);
 		Date now = new Date();
 
 		LOGGER.debug("****************************");
 		LOGGER.debug("Current Time: " + now);
-		LOGGER.debug("Token Issue Time: " + tokenCheck.getDate()); 
-		LOGGER.debug("Token Expire Time: " + afterAddingMins );
+		LOGGER.debug("Token Issue Time: " + tokenCheck.getDate());
+		LOGGER.debug("Token Expire Time: " + afterAddingMins);
 		LOGGER.debug("****************************");
-		
+
 		LOGGER.debug("tokenCheck.getDate().after(now): " + tokenCheck.getDate().after(now));
 		LOGGER.debug("afterAddingMins.before(now): " + afterAddingMins.before(now));
-		if ( !tokenCheck.getDate().after(now) && !afterAddingMins.before(now)) {
+		if (!tokenCheck.getDate().after(now) && !afterAddingMins.before(now)) {
 			return true;
 		} else {
 			return false;

@@ -57,6 +57,13 @@ public class UserApiController implements UserApi {
 	// By default the @CrossOrigin notation allows for any source for CORS request,
 	// might
 	// be a good idea to restrict this in the future.
+
+	/**
+	 * Getting an authentication token given user id & password.
+	 * 
+	 * @param AuthCredential object contains user id & password.
+	 * @return success: a token in body & 200; fail: invalid credential & 401
+	 */
 	@CrossOrigin
 	@Override
 	public ResponseEntity<String> userPut(
@@ -65,7 +72,7 @@ public class UserApiController implements UserApi {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date date = new Date();
 		headers.add("Content-type", "text/plain");
-		LOGGER.info("Checking user name and password for user:"  + authCredentials.getUsername());
+		LOGGER.info("Checking user name and password for user:" + authCredentials.getUsername());
 		AuthCredentials loginCheck = authCredentialsRepository.findByUsernameAndPassword(authCredentials.getUsername(),
 				authCredentials.getPassword());
 		String token;
@@ -80,6 +87,5 @@ public class UserApiController implements UserApi {
 			return ResponseEntity.status(HttpStatus.OK_200).headers(headers).body(token);
 		}
 
-		
 	}
 }
