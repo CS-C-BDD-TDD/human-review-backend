@@ -21,7 +21,7 @@ public class TracingAspect {
 			sb.append(arg).append(" --- ");
 		}
 		logger.info(">>>> Entering for {}", joinPoint);
-		logger.info(">>>> args {}", sb.toString());
+		logger.info(">>>> args {}", sb);
 	}
 
 	@After("execution(* gov.dhs.nppd.humanreview..*.*(..))")
@@ -30,7 +30,7 @@ public class TracingAspect {
 		for (Object arg : joinPoint.getArgs()) {
 			sb.append(arg).append(" --- ");
 		}
-		logger.info(">>>> args {}", sb.toString());
+		logger.info(">>>> args {}", sb);
 		logger.info(">>>> Exiting for {}", joinPoint);
 	}
 }

@@ -1,6 +1,8 @@
 package gov.dhs.nppd.humanreview.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Date;
 
@@ -53,7 +55,7 @@ public class CommonUtilTest {
 		boolean resp = ctr.tokenValidator(enteredAuthCredentials.getToken());
 
 		// Assert
-		assertEquals(resp, true);
+		assertThat(resp, equalTo(true));
 	}
 
 	@Test
@@ -65,7 +67,7 @@ public class CommonUtilTest {
 		boolean resp = ctr.tokenValidator(enteredAuthCredentials.getToken());
 
 		// Assert
-		assertEquals(resp, false);
+		assertThat(resp, equalTo(false));
 	}
 
 	@Test
@@ -77,7 +79,7 @@ public class CommonUtilTest {
 		boolean resp = ctr.tokenValidator(enteredAuthCredentials.getToken());
 
 		// Assert
-		assertEquals(resp, false);
+		assertThat(resp, equalTo(false));
 	}
 
 	@Test
@@ -89,20 +91,18 @@ public class CommonUtilTest {
 		boolean resp = ctr.tokenValidator(null);
 
 		// Assert
-		assertEquals(resp, false);
+		assertThat(resp, equalTo(false));
 	}
-	
 
 	@Test
 	public void shouldNotAuthenticateWhenNoTokenReturned() {
-		Mockito.when(mockAuthCredentialsRepository.findByToken(enteredAuthCredentials.getToken()))
-				.thenReturn(null);
+		Mockito.when(mockAuthCredentialsRepository.findByToken(enteredAuthCredentials.getToken())).thenReturn(null);
 		ctr.setAuthCredentialsRepository(mockAuthCredentialsRepository);
 		// Act
 		boolean resp = ctr.tokenValidator(enteredAuthCredentials.getToken());
 
 		// Assert
-		assertEquals(resp, false);
+		assertThat(resp, equalTo(false));
 	}
 
 	@Test
@@ -114,6 +114,6 @@ public class CommonUtilTest {
 		boolean resp = ctr.tokenValidator("");
 
 		// Assert
-		assertEquals(resp, false);
+		assertThat(resp, equalTo(false));
 	}
 }

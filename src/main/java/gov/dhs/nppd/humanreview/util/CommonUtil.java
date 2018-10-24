@@ -2,13 +2,12 @@ package gov.dhs.nppd.humanreview.util;
 
 import java.util.Date;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openapitools.model.AuthCredentials;
 import org.openapitools.repository.AuthCredentialsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
 
 @Component
 public class CommonUtil {
@@ -54,11 +53,8 @@ public class CommonUtil {
 
 		LOGGER.debug("tokenCheck.getDate().after(now): " + tokenCheck.getDate().after(now));
 		LOGGER.debug("afterAddingMins.before(now): " + afterAddingMins.before(now));
-		if (!tokenCheck.getDate().after(now) && !afterAddingMins.before(now)) {
-			return true;
-		} else {
-			return false;
-		}
+
+		return !tokenCheck.getDate().after(now) && !afterAddingMins.before(now);
 	}
 
 	public AuthCredentialsRepository getAuthCredentialsRepository() {
