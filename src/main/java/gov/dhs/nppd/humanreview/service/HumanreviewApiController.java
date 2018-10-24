@@ -1,5 +1,6 @@
 package gov.dhs.nppd.humanreview.service;
 
+import java.time.OffsetDateTime;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -188,7 +189,12 @@ public class HumanreviewApiController implements HumanreviewApi {
 			@ApiParam(value = "Allow the user to create a HR item", required = true) @Valid @RequestBody HumanReviewItem hrItem) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Content-type", "text/plain");
-
+		OffsetDateTime date = OffsetDateTime.now();
+		LOGGER.info("Before adding date = " + hrItem);
+		hrItem.setModifiedDate(date);
+		hrItem.setOriginalDate(date);
+		LOGGER.info("After adding date = " + hrItem);
+		
 		hrRepo.save(hrItem);
 
 		return ResponseEntity.status(HttpStatus.OK_200).headers(headers)

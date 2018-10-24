@@ -180,8 +180,7 @@ public class HumanReviewItem {
 	 * 
 	 * @return date
 	 **/
-	@ApiModelProperty(required = true, value = "")
-	@NotNull
+	@ApiModelProperty(required = false, value = "")
 
 	@Valid
 
