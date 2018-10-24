@@ -85,6 +85,18 @@ public class HumanreviewApiController implements HumanreviewApi {
 		}
 	}
 
+	/**
+	 * Updating an existing HR item.
+	 * 
+	 * @param Stix Id
+	 * @param fieldname
+	 * @param orginial value
+	 * @param accepted value
+	 * @param action type (Confirm Risk, not PII, Edit, Redact"
+	 * 
+	 * @return Success with 200; failure with BAD_REQUEST (40X)
+	 * 
+	 */
 	@ApiOperation(value = "", nickname = "humanreviewStixIdFieldPut", notes = "update to support individual review", tags = {})
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "OK") })
 	@RequestMapping(value = "/humanreview/{stix_id}/{field}", consumes = {
@@ -149,6 +161,14 @@ public class HumanreviewApiController implements HumanreviewApi {
 		}
 	}
 	
+	/**
+	 * Create a HR item.
+	 * 
+	 * @param Human Review Item.
+	 * @return String indicates a successful create with a message that includes the stix id.
+	 * @return Success of 200.
+	 * 
+	 */
 	@ApiOperation(value = "", nickname = "humanreviewPost", notes = "", response = String.class, tags = {})
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class) })
 	@RequestMapping(value = "/humanreview/{stix_id}", produces = { "text/plain" }, consumes = {
