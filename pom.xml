@@ -17,6 +17,7 @@
 		<serenity.maven.version>1.9.30</serenity.maven.version>
 		<serenity.cli.version>1.11.0</serenity.cli.version>
 		<serenity.cucumber.version>1.6.13</serenity.cucumber.version>
+		<sonar.exclusions>**/*openapi*/**/*</sonar.exclusions>
 	</properties>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -143,9 +144,9 @@
 				<artifactId>dependency-check-maven</artifactId>
 				<version>3.3.2</version>
 				<configuration>
-                                     <failBuildOnCVSS>11</failBuildOnCVSS>
-                                     <!--<suppressionFile>suppressedDependencyCVE.xml</suppressionFile>-->
-                                </configuration>
+					<failBuildOnCVSS>11</failBuildOnCVSS>
+					<!--<suppressionFile>suppressedDependencyCVE.xml</suppressionFile> -->
+				</configuration>
 				<executions>
 					<execution>
 						<goals>
@@ -181,13 +182,13 @@
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-		
+
 		<!--Mysql connector -->
 		<dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-        </dependency>
-        
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
+
 		<!--SpringFox dependencies -->
 		<dependency>
 			<groupId>io.springfox</groupId>
