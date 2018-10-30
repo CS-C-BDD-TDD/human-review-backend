@@ -298,8 +298,7 @@ public class HumanReviewItem {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("class HumanReviewItem {\n");
-
+		sb.append("{\n");
 		sb.append("    stixId: ").append(toIndentedString(stixId)).append("\n");
 		sb.append("    fieldName: ").append(toIndentedString(fieldName)).append("\n");
 		sb.append("    fieldValue: ").append(toIndentedString(fieldValue)).append("\n");

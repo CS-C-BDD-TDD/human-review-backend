@@ -12,8 +12,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.openapitools.model.HumanReviewItem;
+import org.openapitools.model.JsonData;
 import org.openapitools.model.ListOfHumanReviewItems;
 import org.openapitools.repository.HumanreviewRepository;
+import org.openapitools.repository.JsonDataRepository;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +28,7 @@ public class HumanreviewApiControllerTest {
 
 	private HumanreviewApiController hrApiCtrl = new HumanreviewApiController(null, null);
 	private HumanreviewRepository mockHrRepo;
+	private JsonDataRepository mockJsonRepo;
 	private CommonUtil mockCommonUtil;
 	private String stixId;
 	private String expectedFieldValue;
@@ -37,6 +40,7 @@ public class HumanreviewApiControllerTest {
 	public void setup() {
 		mockHrRepo = Mockito.mock(HumanreviewRepository.class);
 		mockCommonUtil = Mockito.mock(CommonUtil.class);
+		mockJsonRepo = Mockito.mock(JsonDataRepository.class);
 		hrItemList = new ListOfHumanReviewItems();
 		Mockito.when(mockHrRepo.findAll()).thenReturn(hrItemList);
 		Mockito.when(mockCommonUtil.tokenValidator("Random")).thenReturn(true);
@@ -44,6 +48,7 @@ public class HumanreviewApiControllerTest {
 		headers.add("token", "Random");
 		hrApiCtrl.setHrRepo(mockHrRepo);
 		hrApiCtrl.setCommonUtil(mockCommonUtil);
+		hrApiCtrl.setJsonDataRepo(mockJsonRepo);
 		stixId = "stix-id-1";
 		fieldName = "field-name-a";
 		expectedFieldValue = "accepted-value";
@@ -210,6 +215,80 @@ public class HumanreviewApiControllerTest {
 		// Then or Assert
 		assertThat(resp.getStatusCodeValue(), equalTo(org.springframework.http.HttpStatus.FORBIDDEN.value()));
 
+	}
+
+	@Test
+	public void shouldCreateModifiedJsonByStixIdWithValidGroupAction() {
+		// Given or Arrange
+		HumanReviewItem expectedHumanReviewItem = new HumanReviewItem();
+		expectedHumanReviewItem.setStatus("New");
+		expectedHumanReviewItem.setStixId(stixId);
+		expectedHumanReviewItem.setFieldName(fieldName);
+		expectedHumanReviewItem.setFieldValue(expectedFieldValue);
+		hrItemList.add(expectedHumanReviewItem);
+
+		JsonData expectedJsonData = new JsonData();
+		expectedJsonData.setStixId(stixId);
+
+		Mockito.when(mockHrRepo.findByStixId(stixId)).thenReturn(hrItemList);
+		Mockito.when(mockJsonRepo.findByStixId(stixId)).thenReturn(expectedJsonData);
+		hrApiCtrl.setJsonDataRepo(mockJsonRepo);
+
+		String[] groupActionList = { "Accept All", "Disseminate", "Do Not Disseminate" };
+
+		for (String groupAction : groupActionList) {
+		// when I update the field
+			hrApiCtrl.humanreviewStixIdPut(stixId, groupAction);
+		}
+		// Then or Assert
+		Mockito.verify(mockJsonRepo, Mockito.times(2)).save(expectedJsonData);
+	}
+
+	@Test
+	public void shouldGetBadRequestWhenNotReadyToDisseminate() {
+		// Given or Arrange
+		HumanReviewItem expectedHumanReviewItem = new HumanReviewItem();
+		expectedHumanReviewItem.setStatus("New");
+		expectedHumanReviewItem.setStixId(stixId);
+		expectedHumanReviewItem.setFieldName(fieldName);
+		expectedHumanReviewItem.setFieldValue(expectedFieldValue);
+		hrItemList.add(expectedHumanReviewItem);
+
+		JsonData expectedJsonData = new JsonData();
+		expectedJsonData.setStixId(stixId);
+
+		Mockito.when(mockHrRepo.findByStixId(stixId)).thenReturn(hrItemList);
+		Mockito.when(mockJsonRepo.findByStixId(stixId)).thenReturn(expectedJsonData);
+		hrApiCtrl.setJsonDataRepo(mockJsonRepo);
+
+		// When or my Act
+		ResponseEntity<Void> result = hrApiCtrl.humanreviewStixIdPut(stixId, "Disseminate");
+
+		// Then or Assert
+		assertThat(result.getStatusCodeValue(), equalTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()));
+	}
+	
+	@Test
+	public void shouldGetBadRequestWhenGroupActionNotExist() {
+		// Given or Arrange
+		HumanReviewItem expectedHumanReviewItem = new HumanReviewItem();
+		expectedHumanReviewItem.setStixId(stixId);
+		expectedHumanReviewItem.setFieldName(fieldName);
+		expectedHumanReviewItem.setFieldValue(expectedFieldValue);
+		hrItemList.add(expectedHumanReviewItem);
+
+		JsonData expectedJsonData = new JsonData();
+		expectedJsonData.setStixId(stixId);
+
+		Mockito.when(mockHrRepo.findByStixId(stixId)).thenReturn(hrItemList);
+		Mockito.when(mockJsonRepo.findByStixId(stixId)).thenReturn(expectedJsonData);
+		hrApiCtrl.setJsonDataRepo(mockJsonRepo);
+
+		// When or my Act
+		ResponseEntity<Void> result = hrApiCtrl.humanreviewStixIdPut(stixId, "some-action");
+
+		// Then or Assert
+		assertThat(result.getStatusCodeValue(), equalTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()));
 	}
 
 	@Test
