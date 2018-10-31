@@ -133,8 +133,29 @@ insert into Human_Review_Item (id, stix_id, action, original_date, modified_date
  2016-08-05T10:59:23Z', 'TTP',  'New');
 insert into Human_Review_Item (id, stix_id, action, original_date, modified_date, field_name, field_value, object_type, status) values(90, '31e2236c-de18-4c28-bfec-2b0791de57b7', 0, '2018-10-23T10:34:57.653-04:00', '2018-10-23T10:34:57.653-04:00', 'Header Description', 'Confidence (08082016)', 'TTP',  'New');
 
-insert into Json_Data(stix_id, original_json, modified_json) values('4f9c00af-37bb-402a-b2e9-e6aaaa1cda91', '', '');
+insert into Json_Data(stix_id, original_json, modified_json) values('4f9c00af-37bb-402a-b2e9-e6aaaa1cda91', '{
+        "stix_id": "4f9c00af-37bb-402a-b2e9-e6aaaa1cda91",
+        "field_name": "Short_Description",
+        "field_value": "PII presents",
+        "object_type": "Package",
+        "status": "New",
+        "action": ""
+    }', '');
 
-insert into Json_Data(stix_id, original_json, modified_json) values('5a9d5526-957b-4125-b0c6-b3ef0edb86a1', '', '');
+insert into Json_Data(stix_id, original_json, modified_json) values('5a9d5526-957b-4125-b0c6-b3ef0edb86a1', '{
+        "stix_id": "5a9d5526-957b-4125-b0c6-b3ef0edb86a1",
+        "field_name": "Header Title",
+        "field_value": "Single Indicator: NCCIC:Indicator-f83b16c8-f32a-41d3-8d02-93ad0d37016f",
+        "object_type": "Observable",
+        "status": "New",
+        "action": ""
+    }', '');
 
-insert into Json_Data(stix_id, original_json, modified_json) values('77836c8f-f6f5-43ff-a56f-cad0b833b237', '', '');
+insert into Json_Data(stix_id, original_json, modified_json) values('77836c8f-f6f5-43ff-a56f-cad0b833b237', '{
+        "stix_id": "77836c8f-f6f5-43ff-a56f-cad0b833b237",
+        "field_name": "Description",
+        "field_value": "Confidence (08082016)",
+        "object_type": "Indicator",
+        "status": "New",
+        "action": ""
+    }', '');

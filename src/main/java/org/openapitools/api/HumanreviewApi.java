@@ -98,7 +98,8 @@ public interface HumanreviewApi {
     @RequestMapping(value = "/humanreview/{stix_id}",
         consumes = { "application/x-www-form-urlencoded" },
         method = RequestMethod.PUT)
-    default ResponseEntity<Void> humanreviewStixIdPut(@ApiParam(value = "The ID of the STIX document",required=true) @PathVariable("stix_id") String stixId) {
+    default ResponseEntity<Void> humanreviewStixIdPut(@ApiParam(value = "The ID of the STIX document",required=true) @PathVariable("stix_id") String stixId, @ApiParam(value = "", 
+			required = true, defaultValue = "null") @RequestParam(value = "group_action", required = true) String groupAction) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
     }

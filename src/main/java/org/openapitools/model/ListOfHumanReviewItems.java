@@ -33,7 +33,7 @@ public class ListOfHumanReviewItems extends ArrayList<HumanReviewItem>  {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class ListOfHumanReviewItems {\n");
+    sb.append("{\n");
     sb.append("    ").append(toIndentedString(super.toString())).append("\n");
     sb.append("}");
     return sb.toString();
