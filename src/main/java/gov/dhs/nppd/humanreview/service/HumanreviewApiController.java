@@ -59,7 +59,7 @@ public class HumanreviewApiController implements HumanreviewApi {
 
 	@Autowired
 	private CommonUtil commonUtil;
-	
+
 	@Autowired
 	private JsonDataRepository jsonDataRepo;
 
@@ -95,7 +95,7 @@ public class HumanreviewApiController implements HumanreviewApi {
 			listOfHumanReviewItems = hrRepo.findAll();
 
 			headers.add("Content-type", "application/json");
-			return ResponseEntity.accepted().headers(headers).body(listOfHumanReviewItems);
+			return ResponseEntity.ok().headers(headers).body(listOfHumanReviewItems);
 		} else {// token was not found
 			headers.add("Content-type", "application/json");
 			return ResponseEntity.status(HttpStatus.FORBIDDEN_403).headers(headers).body(listOfHumanReviewItems);
@@ -148,26 +148,26 @@ public class HumanreviewApiController implements HumanreviewApi {
 					hrItem.setAction(actionEnum.CONFIRM_RISK);
 					hrItem.setStatus("Confirmed");
 					hrRepo.save(hrItem);
-					return new ResponseEntity<Void>(org.springframework.http.HttpStatus.ACCEPTED);
+					return new ResponseEntity<Void>(org.springframework.http.HttpStatus.OK);
 				case "Edit":
 					hrItem.setAction(actionEnum.EDIT);
 					hrItem.setModifiedDate(OffsetDateTime.now());
 					hrItem.setFieldValue(acceptedValue);
 					hrItem.setStatus("Edited");
 					hrRepo.save(hrItem);
-					return new ResponseEntity<Void>(org.springframework.http.HttpStatus.ACCEPTED);
+					return new ResponseEntity<Void>(org.springframework.http.HttpStatus.OK);
 				case "Not PII":
 					hrItem.setAction(actionEnum.NOT_PII);
 					hrItem.setStatus("Not PII");
 					hrRepo.save(hrItem);
-					return new ResponseEntity<Void>(org.springframework.http.HttpStatus.ACCEPTED);
+					return new ResponseEntity<Void>(org.springframework.http.HttpStatus.OK);
 				case "Redact":
 					hrItem.setFieldValue(redactValue);
 					hrItem.setModifiedDate(OffsetDateTime.now());
 					hrItem.setAction(actionEnum.REDACT);
 					hrItem.setStatus("Redacted");
 					hrRepo.save(hrItem);
-					return new ResponseEntity<Void>(org.springframework.http.HttpStatus.ACCEPTED);
+					return new ResponseEntity<Void>(org.springframework.http.HttpStatus.OK);
 				default:
 					return new ResponseEntity<>(org.springframework.http.HttpStatus.BAD_REQUEST);
 				}
@@ -178,58 +178,74 @@ public class HumanreviewApiController implements HumanreviewApi {
 			return new ResponseEntity<>(org.springframework.http.HttpStatus.BAD_REQUEST);
 		}
 	}
-	
-	
+
 	/**
-	* Updating an existing HR item.
-	* 
-	* @param Stix      Id
-	* 
-	* @return Success with 200; failure with BAD_REQUEST (40X)
-	* 
-	*/
+	 * Updating an existing HR item.
+	 * 
+	 * @param Stix Id
+	 * 
+	 * @return Success with 200; failure with BAD_REQUEST (40X)
+	 * 
+	 */
 	@ApiOperation(value = "", nickname = "humanreviewStixIdPut", notes = "", tags = {})
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "OK") })
 	@RequestMapping(value = "/humanreview/{stix_id}", consumes = {
 			"application/x-www-form-urlencoded" }, method = RequestMethod.PUT)
 	public ResponseEntity<Void> humanreviewStixIdPut(
-			@ApiParam(value = "The ID of the STIX document", required = true) @PathVariable("stix_id") String stixId, @ApiParam(value = "", 
-			required = true, defaultValue = "null") @RequestParam(value = "group_action", required = true) String groupAction) {
+			@ApiParam(value = "The ID of the STIX document", required = true) @RequestHeader HttpHeaders headers,
+			@PathVariable("stix_id") String stixId,
+			@ApiParam(value = "", required = true, defaultValue = "null") @RequestParam(value = "group_action", required = true) String groupAction) {
 		LOGGER.info("Entering group put with id = " + stixId);
 		ListOfHumanReviewItems aList = hrRepo.findByStixId(stixId);
-		JsonData jsonData= jsonDataRepo.findByStixId(stixId);
-		switch (groupAction) {
-		case "Accept All":
-			for (int i =0; i<aList.size(); i++) {
-				if(aList.get(i).getStatus().equals("New")) {
-					aList.get(i).setStatus("Accepted");
-				}
-				LOGGER.info("Loop iteration = " + i + aList.toString());
-			}
-			jsonData.setModifiedJson(aList.toString());
-			jsonDataRepo.save(jsonData);
-			return new ResponseEntity<Void>(org.springframework.http.HttpStatus.ACCEPTED);
-		case "Disseminate":
-			boolean readyToDisseminate = true;
-			for (int i =0; i<aList.size(); i++) {
-				if(aList.get(i).getStatus().equals("New")) {
-					readyToDisseminate = false;
-				}
-			}
-			if(readyToDisseminate == true) {
-				jsonData.setModifiedJson(aList.toString());
-				jsonDataRepo.save(jsonData);
-				return new ResponseEntity<Void>(org.springframework.http.HttpStatus.ACCEPTED);
-			}else {
-				return new ResponseEntity<>(org.springframework.http.HttpStatus.BAD_REQUEST);
-			}
-		case "Do Not Disseminate":
-			return new ResponseEntity<Void>(org.springframework.http.HttpStatus.ACCEPTED);
+		JsonData jsonData = jsonDataRepo.findByStixId(stixId);
 
-		default:
+		if (headers.get(TOKEN_STRING) == null || headers.get(TOKEN_STRING).isEmpty()) {
+			headers.add("Content-type", "application/json");
 			return new ResponseEntity<>(org.springframework.http.HttpStatus.BAD_REQUEST);
 		}
-		
+
+		String tokenHeader = headers.get(TOKEN_STRING).get(0);
+		if (commonUtil.tokenValidator(tokenHeader)) {
+			if (groupAction == null) {
+				return new ResponseEntity<>(org.springframework.http.HttpStatus.BAD_REQUEST);
+			} else {
+				switch (groupAction) {
+				case "Accept All":
+					for (int i = 0; i < aList.size(); i++) {
+						if (aList.get(i).getStatus().equals("New")) {
+							aList.get(i).setStatus("Accepted");
+						}
+						LOGGER.info("Loop iteration = " + i + aList.toString());
+					}
+					jsonData.setModifiedJson(aList.toString());
+					jsonDataRepo.save(jsonData);
+					return new ResponseEntity<Void>(org.springframework.http.HttpStatus.OK);
+				case "Disseminate":
+					boolean readyToDisseminate = true;
+					for (int i = 0; i < aList.size(); i++) {
+						if (aList.get(i).getStatus().equals("New")) {
+							readyToDisseminate = false;
+						}
+					}
+					if (readyToDisseminate == true) {
+						jsonData.setModifiedJson(aList.toString());
+						jsonDataRepo.save(jsonData);
+						return new ResponseEntity<Void>(org.springframework.http.HttpStatus.OK);
+					} else {
+						return new ResponseEntity<>(org.springframework.http.HttpStatus.BAD_REQUEST);
+					}
+				case "Do Not Disseminate":
+					return new ResponseEntity<Void>(org.springframework.http.HttpStatus.OK);
+
+				default:
+					return new ResponseEntity<>(org.springframework.http.HttpStatus.BAD_REQUEST);
+				}
+			}
+		} else {// token was not found
+			headers.add("Content-type", "application/json");
+			return new ResponseEntity<>(org.springframework.http.HttpStatus.BAD_REQUEST);
+		}
+
 	}
 
 	/**
@@ -245,20 +261,33 @@ public class HumanreviewApiController implements HumanreviewApi {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class) })
 	@RequestMapping(value = "/humanreview/{stix_id}", produces = { "text/plain" }, consumes = {
 			"application/json" }, method = RequestMethod.POST)
-	public ResponseEntity<String> humanreviewStixIdPost(
+	public ResponseEntity<String> humanreviewStixIdPost(@RequestHeader HttpHeaders headers,
 			@ApiParam(value = "Allow the user to create a HR item", required = true) @Valid @RequestBody HumanReviewItem hrItem) {
-		HttpHeaders headers = new HttpHeaders();
-		headers.add("Content-type", "text/plain");
-		LOGGER.info("Before adding date = " + hrItem);
-		hrItem.setModifiedDate(OffsetDateTime.now());
-		hrItem.setOriginalDate(OffsetDateTime.now());
-		LOGGER.info("After adding date = " + hrItem);
 		
-		hrRepo.save(hrItem);
+		if (headers.get(TOKEN_STRING) == null || headers.get(TOKEN_STRING).isEmpty()) {
+			headers.add("Content-type", "application/json");
+			return new ResponseEntity<>(org.springframework.http.HttpStatus.BAD_REQUEST);
+		}
 
-		return ResponseEntity.status(HttpStatus.OK_200).headers(headers)
+		String tokenHeader = headers.get(TOKEN_STRING).get(0);
+		if (commonUtil.tokenValidator(tokenHeader)) {
+			if (hrItem == null) {
+				return new ResponseEntity<>(org.springframework.http.HttpStatus.BAD_REQUEST);
+			} else {
+				LOGGER.info("Before adding date = " + hrItem);
+				hrItem.setModifiedDate(OffsetDateTime.now());
+				hrItem.setOriginalDate(OffsetDateTime.now());
+				LOGGER.info("After adding date = " + hrItem);
+		
+				hrRepo.save(hrItem);
+
+				return ResponseEntity.status(HttpStatus.OK_200).headers(headers)
 				.body(" New record created " + hrItem.getStixId());
-
+			}
+		} else {// token was not found
+			headers.add("Content-type", "application/json");
+			return new ResponseEntity<>(org.springframework.http.HttpStatus.BAD_REQUEST);
+		}
 	}
 
 	public HumanreviewRepository getHrRepo() {
@@ -288,7 +317,7 @@ public class HumanreviewApiController implements HumanreviewApi {
 	public HumanReviewItem getHumanReviewItemByStixIdAndFieldName(String stixId, String fieldName) {
 		return hrRepo.findByStixIdAndFieldName(stixId, fieldName);
 	}
-	
+
 	public JsonData getJsonDataByStixId(String stixId) {
 		return jsonDataRepo.findByStixId(stixId);
 	}
