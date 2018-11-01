@@ -13,14 +13,9 @@ public class Listener {
 
 	@JmsListener(destination = "inbound.stix")
 	@SendTo("outbound.stix")
-	public String receiveMessage(final Message jsonMessage) throws JMSException {
-		String messageData = null;
-		System.out.println("Received message " + jsonMessage);
-		if(jsonMessage instanceof TextMessage) {
-			TextMessage textMessage = (TextMessage)jsonMessage;
-			messageData = textMessage.getText();
-		}
-		return messageData;
+	public String receiveMessage(final String jsonMessage) throws JMSException {
+		
+		System.out.println("********Received message " + jsonMessage);
+		return jsonMessage;
 	}
-
 }
