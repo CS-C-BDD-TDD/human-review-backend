@@ -238,7 +238,7 @@ public class HumanreviewApiControllerTest {
 
 		for (String groupAction : groupActionList) {
 		// when I update the field
-			hrApiCtrl.humanreviewStixIdPut(stixId, groupAction);
+			hrApiCtrl.humanreviewStixIdPut(headers, stixId, groupAction);
 		}
 		// Then or Assert
 		Mockito.verify(mockJsonRepo, Mockito.times(2)).save(expectedJsonData);
@@ -262,7 +262,7 @@ public class HumanreviewApiControllerTest {
 		hrApiCtrl.setJsonDataRepo(mockJsonRepo);
 
 		// When or my Act
-		ResponseEntity<Void> result = hrApiCtrl.humanreviewStixIdPut(stixId, "Disseminate");
+		ResponseEntity<Void> result = hrApiCtrl.humanreviewStixIdPut(headers, stixId, "Disseminate");
 
 		// Then or Assert
 		assertThat(result.getStatusCodeValue(), equalTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()));
@@ -285,7 +285,7 @@ public class HumanreviewApiControllerTest {
 		hrApiCtrl.setJsonDataRepo(mockJsonRepo);
 
 		// When or my Act
-		ResponseEntity<Void> result = hrApiCtrl.humanreviewStixIdPut(stixId, "some-action");
+		ResponseEntity<Void> result = hrApiCtrl.humanreviewStixIdPut(headers, stixId, "some-action");
 
 		// Then or Assert
 		assertThat(result.getStatusCodeValue(), equalTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()));
@@ -298,7 +298,7 @@ public class HumanreviewApiControllerTest {
 		Mockito.when(mockHrRepo.save(hrItem)).thenReturn(null);
 		hrApiCtrl.setHrRepo(mockHrRepo);
 
-		hrApiCtrl.humanreviewStixIdPost(hrItem);
+		hrApiCtrl.humanreviewStixIdPost(headers, hrItem);
 
 		Mockito.verify(mockHrRepo, Mockito.times(1)).save(hrItem);
 	}
