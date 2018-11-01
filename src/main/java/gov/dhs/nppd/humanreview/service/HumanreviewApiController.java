@@ -1,7 +1,6 @@
 package gov.dhs.nppd.humanreview.service;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.Optional;
 
 import javax.validation.Valid;
