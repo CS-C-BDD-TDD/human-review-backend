@@ -3,8 +3,6 @@
 package org.openapitools;
 
 import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.TextMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -64,7 +62,7 @@ public class OpenAPI2SpringBoot implements CommandLineRunner {
 
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**").allowedOrigins("*").allowedMethods("*").allowedHeaders("Content-Type");
+				registry.addMapping("/**").allowedOrigins("*").allowedMethods("*").allowedHeaders("*");
 			}
 
 		};

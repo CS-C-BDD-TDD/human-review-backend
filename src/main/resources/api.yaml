@@ -1,12 +1,11 @@
----
 openapi: 3.0.0
 info:
   title: Human Review
   description: And API for manipulating Thread Indicator documents in STIX format
   contact:
-    name: Deven Phillips
-    url: https://github.com/InfoSec812
-    email: deven.phillips@redhat.com
+    name: Kiet T. Tran
+    url: http://www.dhs.gov
+    email: kiet.tran@associates.hq.dhs.gov
   version: 1.0.0
 servers:
 - url: https://humanreview-labs-dev.apps.domino.rht-labs.com/api/v1
@@ -24,8 +23,7 @@ paths:
                 $ref: '#/components/schemas/ListOfHumanReviewItems'
     options:
       summary: Return endpoint API documents
-      description: When requested, this endpoint/verb combination returns documentation
-        explainin how this API endpoint works
+      description: When requested, this endpoint/verb combination returns documentation explainin how this API endpoint works
       responses:
         200:
           description: OK
@@ -59,6 +57,31 @@ paths:
       responses:
         200:
           description: OK
+    post:
+      description: update to support individual review
+      parameters:
+      - name: stix_id
+        in: path
+        description: The unique identifier of the STIX document
+        required: true
+        schema:
+          type: string
+      - name: field
+        in: path
+        description: The field to be updated
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Field update POST request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HumanReviewItem'
+        required: true
+      responses:
+        200:
+          description: OK
   /humanreview/{stix_id}:
     put:
       parameters:
@@ -78,11 +101,27 @@ paths:
       responses:
         200:
           description: OK
+    post:
+      parameters:
+      - name: stix_id
+        in: path
+        description: The ID of the STIX document
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Create Human Review Items
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListOfHumanReviewItems'
+        required: true
+      responses:
+        200:
+          description: OK
   /actionLists:
     summary: Path used to manage the list of ActionLists.
-    description: The REST endpoint/path used to list and create zero or more `ActionList`
-      entities.  This path contains a `GET` and `POST` operation to perform the list
-      and create tasks, respectively.
+    description: The REST endpoint/path used to list and create zero or more `ActionList` entities.  This path contains a `GET` and `POST` operation to perform the list and create tasks, respectively.
     get:
       summary: List All ActionLists
       description: Gets a list of all `ActionList` entities.
@@ -112,9 +151,7 @@ paths:
           description: Successful response.
   /actionLists/{actionListId}:
     summary: Path used to manage a single ActionList.
-    description: The REST endpoint/path used to get, update, and delete single instances
-      of an `ActionList`.  This path contains `GET`, `PUT`, and `DELETE` operations
-      used to perform the get, update, and delete tasks, respectively.
+    description: The REST endpoint/path used to get, update, and delete single instances of an `ActionList`.  This path contains `GET`, `PUT`, and `DELETE` operations used to perform the get, update, and delete tasks, respectively.
     get:
       summary: Get a ActionList
       description: Gets the details of a single instance of a `ActionList`.
@@ -157,8 +194,7 @@ paths:
   /user:
     put:
       requestBody:
-        description: Allow the user to submit their credentials and on success return
-          a token for use in making other REST calls
+        description: Allow the user to submit their credentials and on success return a token for use in making other REST calls
         content:
           application/json:
             schema:
