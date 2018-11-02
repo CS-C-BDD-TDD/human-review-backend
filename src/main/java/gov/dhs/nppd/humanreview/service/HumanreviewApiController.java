@@ -259,7 +259,7 @@ public class HumanreviewApiController implements HumanreviewApi {
 	 */
 	@ApiOperation(value = "", nickname = "humanreviewPost", notes = "", response = String.class, tags = {})
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class) })
-	@RequestMapping(value = "/humanreview/{stix_id}", produces = { "text/plain" }, consumes = {
+	@RequestMapping(value = "/humanreview/{stix_id}", consumes = {
 			"application/json" }, method = RequestMethod.POST)
 	public ResponseEntity<String> humanreviewStixIdPost(@RequestHeader HttpHeaders headers,
 			@ApiParam(value = "Allow the user to create a HR item", required = true) @Valid @RequestBody HumanReviewItem hrItem) {
