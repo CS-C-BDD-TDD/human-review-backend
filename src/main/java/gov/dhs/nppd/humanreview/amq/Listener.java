@@ -8,7 +8,6 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Component;
 
-@EnableJms
 @Component
 public class Listener {
 	private static final Logger LOGGER = LogManager.getLogger(Listener.class);
