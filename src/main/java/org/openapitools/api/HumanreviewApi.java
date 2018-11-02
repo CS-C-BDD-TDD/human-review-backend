@@ -98,7 +98,7 @@ public interface HumanreviewApi {
     @RequestMapping(value = "/humanreview/{stix_id}",
         consumes = { "application/x-www-form-urlencoded" },
         method = RequestMethod.PUT)
-    default ResponseEntity<Void> humanreviewStixIdPut(@ApiParam(value = "The ID of the STIX document",required=true) @PathVariable("stix_id") String stixId, @ApiParam(value = "", 
+    default ResponseEntity<Void> humanreviewStixIdPut(@RequestHeader HttpHeaders headers, @ApiParam(value = "The ID of the STIX document",required=true) @PathVariable("stix_id") String stixId, @ApiParam(value = "", 
 			required = true, defaultValue = "null") @RequestParam(value = "group_action", required = true) String groupAction) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
@@ -108,7 +108,7 @@ public interface HumanreviewApi {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class) })
 	@RequestMapping(value = "/humanreview/{stix_id}", produces = { "text/plain" }, consumes = {
 			"application/json" }, method = RequestMethod.POST)
-	default ResponseEntity<String> humanreviewStixIdPost(
+	default ResponseEntity<String> humanreviewStixIdPost(@RequestHeader HttpHeaders headers, 
 			@ApiParam(value = "Allow the user to create a HR item", required = true) @Valid @RequestBody HumanReviewItem hrItem) {
 		return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
