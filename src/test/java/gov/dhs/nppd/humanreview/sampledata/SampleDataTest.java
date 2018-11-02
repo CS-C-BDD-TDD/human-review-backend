@@ -27,8 +27,11 @@ public class SampleDataTest {
 					+ " NCCIC:Indicator-f83b16c8-f32a-41d3-8d02-93ad0d37016f at\n" + " 2016-08-05T10:59:23Z" };
 	public final String INSERT_STMT = "insert into Human_Review_Item (id, stix_id, action, original_date, modified_date, field_name, "
 			+ "field_value, object_type, status) "
-			// id, stixid, actionenum, date-time, date-time, fieldname, fieldvalue, objecttype, status, originaljson, modifiedjson
+			// id, stixid, actionenum, date-time, date-time, fieldname, fieldvalue,
+			// objecttype, status, originaljson, modifiedjson
 			+ "values(%d, '%s', %d, '%s', '%s', '%s', '%s', '%s',  '%s');";
+
+	public final String INSERT_STMT_JSON_DATA = "insert into Json_Data(stix_id, original_json, modified_json) values('%s', '%s', '%s');";
 
 	@Test
 	public void shouldGenerateSampleData() {
@@ -51,13 +54,22 @@ public class SampleDataTest {
 				String fieldName = getFieldName(fieldNames);
 				String fieldValue = getFieldValue(fieldValues);
 
-				String insert = String.format(INSERT_STMT, id++, stixId, actionEnum, oldTime, newTime, fieldName, fieldValue,
-						objectType, status);
+				String insert = String.format(INSERT_STMT, id++, stixId, actionEnum, oldTime, newTime, fieldName,
+						fieldValue, objectType, status);
 				System.out.println(insert);
 			}
 
+			String insertJsonData = String.format(INSERT_STMT_JSON_DATA, stixId, getJsonData(stixId), "");
+			System.out.println(insertJsonData);
 		}
 		assertTrue(true);
+	}
+
+	private Object getJsonData(String stixId) {
+		return String
+				.format("{\n" + "        \"stix_id\": \"%s\",\n" + "        \"field_name\": \"Short_Description\",\n"
+						+ "        \"field_value\": \"PII presents\",\n" + "        \"object_type\": \"Package\",\n"
+						+ "        \"status\": \"New\",\n" + "        \"action\": \"\"\n" + "    }", stixId);
 	}
 
 	private String getObjectType() {
@@ -85,6 +97,6 @@ public class SampleDataTest {
 	}
 
 	private int getNumberFields() {
-		return (int) (FIELD_NAMES.length * Math.random());
+		return ((int) (FIELD_NAMES.length * Math.random()));
 	}
 }
