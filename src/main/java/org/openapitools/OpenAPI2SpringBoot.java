@@ -5,6 +5,7 @@ package org.openapitools;
 import javax.jms.JMSException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.boot.SpringApplication;
@@ -21,6 +22,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import gov.dhs.nppd.humanreview.amq.Sender;
 
+
 @SpringBootApplication
 @ComponentScan(basePackages = { "org.openapitools", "org.openapitools.api", "org.openapitools.configuration",
 		"gov.dhs.nppd.humanreview" })
@@ -28,10 +30,12 @@ import gov.dhs.nppd.humanreview.amq.Sender;
 @EnableAspectJAutoProxy
 @EnableJms
 public class OpenAPI2SpringBoot implements CommandLineRunner {
-
+	
 	@Autowired
-    private Sender sender;
-
+	Sender sender;
+	
+	@Value("${SPRING_PROFILE}")
+	String currentProfile;
 	
 	@Override
 	public void run(String... arg0) throws Exception {
@@ -42,8 +46,10 @@ public class OpenAPI2SpringBoot implements CommandLineRunner {
 	}
 
 	public static void main(String[] args) throws Exception {
-		new SpringApplication(OpenAPI2SpringBoot.class).run(args);
-		
+		SpringApplication.run(OpenAPI2SpringBoot.class, args);
+		//JmsTemplate jmsTemplate = context.getBean(JmsTemplate.class);
+		//for (int i = 0; i < 5; i++)
+		//	jmsTemplate.convertAndSend("inbound.stix","----- Sending message " + i + " of 4 to JMS Queue");
 	}
 
 	class ExitException extends RuntimeException implements ExitCodeGenerator {
@@ -70,9 +76,11 @@ public class OpenAPI2SpringBoot implements CommandLineRunner {
 
 	@EventListener(ApplicationReadyEvent.class)
 	public void doSomethingAfterStartup() throws JMSException {
-		 	for (int i = 0; i < 5; i++){
-		 		sender.sendMessage("Sending message " + i + " of 4 to JMS Queue");
-		   }
-	}
+		if(currentProfile.equals("dev")) {
+			for (int i = 0; i < 5; i++)
+			 	sender.sendMessage("Sending message " + i + " of 4 to JMS Queue");
+		}
+		 	
+	} 
 }
 
