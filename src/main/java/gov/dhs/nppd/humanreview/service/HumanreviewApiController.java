@@ -7,7 +7,7 @@ import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.eclipse.jetty.http.HttpStatus;
+
 import org.openapitools.api.HumanreviewApi;
 import org.openapitools.model.HumanReviewItem;
 import org.openapitools.model.HumanReviewItem.ActionEnum;
@@ -17,6 +17,7 @@ import org.openapitools.repository.HumanreviewRepository;
 import org.openapitools.repository.JsonDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -86,7 +87,7 @@ public class HumanreviewApiController implements HumanreviewApi {
 		LOGGER.info("Checking for taken from user. Token: " + headers.get(TOKEN_STRING));
 		if (headers.get(TOKEN_STRING) == null || headers.get(TOKEN_STRING).isEmpty()) {
 			headers.add("Content-type", "application/json");
-			return ResponseEntity.status(HttpStatus.FORBIDDEN_403).headers(headers).body(listOfHumanReviewItems);
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).headers(headers).body(listOfHumanReviewItems);
 		}
 
 		String tokenHeader = headers.get(TOKEN_STRING).get(0);
@@ -98,7 +99,7 @@ public class HumanreviewApiController implements HumanreviewApi {
 			return ResponseEntity.ok().headers(headers).body(listOfHumanReviewItems);
 		} else {// token was not found
 			headers.add("Content-type", "application/json");
-			return ResponseEntity.status(HttpStatus.FORBIDDEN_403).headers(headers).body(listOfHumanReviewItems);
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).headers(headers).body(listOfHumanReviewItems);
 		}
 	}
 
@@ -281,7 +282,7 @@ public class HumanreviewApiController implements HumanreviewApi {
 		
 				hrRepo.save(hrItem);
 
-				return ResponseEntity.status(HttpStatus.OK_200).headers(headers)
+				return ResponseEntity.status(HttpStatus.OK)
 				.body(" New record created " + hrItem.getStixId());
 			}
 		} else {// token was not found

@@ -18,6 +18,8 @@
 		<serenity.cli.version>1.11.0</serenity.cli.version>
 		<serenity.cucumber.version>1.6.13</serenity.cucumber.version>
 		<sonar.exclusions>**/*openapi*/**/*</sonar.exclusions>
+		<tomcat.embeded>8.5.34</tomcat.embeded>
+		
 	</properties>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -144,11 +146,12 @@
 				<artifactId>dependency-check-maven</artifactId>
 				<version>3.3.2</version>
 				<configuration>
-					<failBuildOnCVSS>11</failBuildOnCVSS>
+					<failBuildOnCVSS>7</failBuildOnCVSS>
 					<!--<suppressionFile>suppressedDependencyCVE.xml</suppressionFile> -->
 				</configuration>
 				<executions>
 					<execution>
+						<phase>verify</phase>
 						<goals>
 							<goal>check</goal>
 						</goals>
@@ -226,38 +229,6 @@
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/net.serenity-bdd/serenity-core -->
-		<dependency>
-			<groupId>net.serenity-bdd</groupId>
-			<artifactId>serenity-core</artifactId>
-			<version>${serenity.version}</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/net.serenity-bdd/serenity-model -->
-		<dependency>
-			<groupId>net.serenity-bdd</groupId>
-			<artifactId>serenity-model</artifactId>
-			<version>${serenity.version}</version>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/net.serenity-bdd/serenity-cucumber -->
-		<dependency>
-			<groupId>net.serenity-bdd</groupId>
-			<artifactId>serenity-cucumber</artifactId>
-			<version>${serenity.cucumber.version}</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/net.serenity-bdd/serenity-reports -->
-		<dependency>
-			<groupId>net.serenity-bdd</groupId>
-			<artifactId>serenity-reports</artifactId>
-			<version>${serenity.version}</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/net.serenity-bdd/serenity-cli -->
-		<dependency>
-			<groupId>net.serenity-bdd</groupId>
-			<artifactId>serenity-cli</artifactId>
-			<version>${serenity.cli.version}</version>
-			<type>pom</type>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-simple -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -278,6 +249,20 @@
 			<artifactId>jaxb-api</artifactId>
 			<version>2.3.0</version>
 		</dependency>
-
 	</dependencies>
+	<dependencyManagement>
+		<dependencies>
+		<dependency>
+    		<groupId>org.apache.tomcat.embed</groupId>
+   			<artifactId>tomcat-embed-core</artifactId>
+   			<version>${tomcat.embeded}</version>
+		</dependency>
+		<dependency>
+   			<groupId>org.apache.tomcat.embed</groupId>
+    		<artifactId>tomcat-embed-websocket</artifactId>
+    		<version>${tomcat.embeded}</version>
+		</dependency>
+		</dependencies>
+	</dependencyManagement>
+	
 </project>
