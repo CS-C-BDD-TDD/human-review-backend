@@ -14,7 +14,7 @@ public class Listener {
 	@JmsListener(destination = "inbound.stix")
 	@SendTo("outbound.stix")
 	public String receiveMessage(@Payload String jsonMessage) {
-		LOGGER.info("********Received message " + jsonMessage);
+		LOGGER.info("********Received: " + jsonMessage);
 		return jsonMessage;
 	}
 }
