@@ -9,7 +9,7 @@ import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.eclipse.jetty.http.HttpStatus;
+import org.springframework.http.*;
 import org.openapitools.api.UserApi;
 import org.openapitools.model.AuthCredentials;
 import org.openapitools.repository.AuthCredentialsRepository;
@@ -78,13 +78,13 @@ public class UserApiController implements UserApi {
 		String token;
 		if (loginCheck == null) {
 			token = "invalid credential";
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED_401).headers(headers).body(token);
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).headers(headers).body(token);
 		} else {
 			token = "Random-" + Math.random();
 			loginCheck.setToken(token);
 			loginCheck.setDate(date);
 			authCredentialsRepository.save(loginCheck);
-			return ResponseEntity.status(HttpStatus.OK_200).headers(headers).body(token);
+			return ResponseEntity.status(HttpStatus.OK).headers(headers).body(token);
 		}
 
 	}
