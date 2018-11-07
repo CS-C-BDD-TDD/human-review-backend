@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
 import javax.persistence.Table;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -41,6 +43,10 @@ public class HumanReviewItem {
 	@Column(name = "field_value")
 	@JsonProperty("field_value")
 	private String fieldValue = null;
+	
+	@Column(name = "field_location")
+	@JsonProperty("field_location")
+	private String fieldLocation = null;
 
 	@Column(name = "original_date")
 	@JsonProperty("original_date")
@@ -139,7 +145,7 @@ public class HumanReviewItem {
 	 * @return fieldName
 	 **/
 	@ApiModelProperty(required = true, value = "")
-	@NotNull
+
 
 	public String getFieldName() {
 		return fieldName;
@@ -160,7 +166,7 @@ public class HumanReviewItem {
 	 * @return fieldValue
 	 **/
 	@ApiModelProperty(required = true, value = "")
-	@NotNull
+	
 
 	public String getFieldValue() {
 		return fieldValue;
@@ -168,6 +174,19 @@ public class HumanReviewItem {
 
 	public void setFieldValue(String fieldValue) {
 		this.fieldValue = fieldValue;
+	}
+
+	public HumanReviewItem fieldLocation(String fieldLocation) {
+		this.fieldLocation = fieldLocation;
+		return this;
+	}
+	
+	public String getFieldLocation() {
+		return fieldLocation;
+	}
+
+	public void setFieldLocation(String fieldLocation) {
+		this.fieldLocation = fieldLocation;
 	}
 
 	public HumanReviewItem originalDate(OffsetDateTime originalDate) {
@@ -203,7 +222,7 @@ public class HumanReviewItem {
 	 * @return objectType
 	 **/
 	@ApiModelProperty(required = true, value = "")
-	@NotNull
+
 
 	public String getObjectType() {
 		return objectType;
@@ -224,7 +243,7 @@ public class HumanReviewItem {
 	 * @return status
 	 **/
 	@ApiModelProperty(required = true, value = "")
-	@NotNull
+
 
 	public String getStatus() {
 		return status;
@@ -245,7 +264,7 @@ public class HumanReviewItem {
 	 * @return action
 	 **/
 	@ApiModelProperty(required = true, value = "")
-	@NotNull
+	
 
 	public ActionEnum getAction() {
 		return action;

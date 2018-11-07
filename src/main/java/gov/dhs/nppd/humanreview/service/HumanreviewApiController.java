@@ -1,8 +1,10 @@
 package gov.dhs.nppd.humanreview.service;
 
+import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.util.Optional;
 
+import javax.persistence.EntityManager;
 import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
@@ -19,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -27,7 +30,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.NativeWebRequest;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import gov.dhs.nppd.humanreview.util.CommonUtil;
+import gov.dhs.nppd.humanreview.util.JsonDocProcessor;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -62,6 +72,9 @@ public class HumanreviewApiController implements HumanreviewApi {
 
 	@Autowired
 	private JsonDataRepository jsonDataRepo;
+
+	@Autowired
+	protected EntityManager em;
 
 	/**
 	 * Get HR item pending list
@@ -187,6 +200,7 @@ public class HumanreviewApiController implements HumanreviewApi {
 	 * @return Success with 200; failure with BAD_REQUEST (40X)
 	 * 
 	 */
+	@Transactional
 	@ApiOperation(value = "", nickname = "humanreviewStixIdPut", notes = "", tags = {})
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "OK") })
 	@RequestMapping(value = "/humanreview/{stix_id}", consumes = {
@@ -215,8 +229,14 @@ public class HumanreviewApiController implements HumanreviewApi {
 						if (aList.get(i).getStatus().equals("New")) {
 							aList.get(i).setStatus("Accepted");
 						}
+						if (aList.get(i).getStatus().equals("Edited")) {
+							em.joinTransaction();
+							LOGGER.info("Loop iteration = " + i + jsonData.getStixId());
+							em.createNamedQuery("editPIIinTitle").setParameter(1, jsonData.getStixId()).executeUpdate();
+						}
 						LOGGER.info("Loop iteration = " + i + aList.toString());
 					}
+
 					jsonData.setModifiedJson(aList.toString());
 					jsonDataRepo.save(jsonData);
 					return new ResponseEntity<Void>(org.springframework.http.HttpStatus.OK);
@@ -259,11 +279,13 @@ public class HumanreviewApiController implements HumanreviewApi {
 	 */
 	@ApiOperation(value = "", nickname = "humanreviewPost", notes = "", response = String.class, tags = {})
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class) })
-	@RequestMapping(value = "/humanreview/{stix_id}", consumes = {
-			"application/json" }, method = RequestMethod.POST)
+	@RequestMapping(value = "/humanreview/{stix_id}", consumes = { "application/json" }, method = RequestMethod.POST)
 	public ResponseEntity<String> humanreviewStixIdPost(@RequestHeader HttpHeaders headers,
-			@ApiParam(value = "Allow the user to create a HR item", required = true) @Valid @RequestBody HumanReviewItem hrItem) {
-		
+			@ApiParam(value = "Allow the user to create a HR item", required = true) @Valid @RequestBody String jsonString) {
+		JsonData jsonData = new JsonData();
+		jsonData.setOriginalJson(jsonString);
+		LOGGER.info("Entering post call! ");
+		HumanReviewItem hrItem = new HumanReviewItem();
 		if (headers.get(TOKEN_STRING) == null || headers.get(TOKEN_STRING).isEmpty()) {
 			headers.add("Content-type", "application/json");
 			return new ResponseEntity<>(org.springframework.http.HttpStatus.BAD_REQUEST);
@@ -271,19 +293,56 @@ public class HumanreviewApiController implements HumanreviewApi {
 
 		String tokenHeader = headers.get(TOKEN_STRING).get(0);
 		if (commonUtil.tokenValidator(tokenHeader)) {
-			if (hrItem == null) {
-				return new ResponseEntity<>(org.springframework.http.HttpStatus.BAD_REQUEST);
-			} else {
-				LOGGER.info("Before adding date = " + hrItem);
-				hrItem.setModifiedDate(OffsetDateTime.now());
-				hrItem.setOriginalDate(OffsetDateTime.now());
-				LOGGER.info("After adding date = " + hrItem);
-		
-				hrRepo.save(hrItem);
+			JsonParser parser = new JsonParser();
+			LOGGER.info("Got parser = " + parser);
 
-				return ResponseEntity.status(HttpStatus.OK_200).headers(headers)
-				.body(" New record created " + hrItem.getStixId());
+			JsonDocProcessor jsonDocProc = new JsonDocProcessor();
+			try {
+				jsonDocProc.loadJsonDoc(jsonString);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+			//String name = jsonDocProc.getName();
+			//JsonElement jsonTree = parser.parse(jsonString);
+			LOGGER.info("Got name = " + jsonDocProc.toString());
+
+//			if (jsonDocProc.isAlive()) {
+//				Gson gson = new Gson();
+//				JsonObject jsonObject = gson.fromJson(jsonString, JsonObject.class);
+//				LOGGER.info("Got jsonObject = " + jsonObject);
+//
+//				JsonElement stixID = jsonObject.get("cybox_object_id");
+//				JsonArray ind_course_of_actions = jsonObject.getAsJsonArray("ind_course_of_actions");
+//				LOGGER.info("ind_course_of_actions 1 = " + ind_course_of_actions);
+//				//JsonArray jsonArray = jsonObject.getAsJsonArray();
+//				String[] hrItems = ind_course_of_actions.toString().split(",");
+//				for (String hritem : hrItems) {
+//					if (hritem.contains("!!!###HUMAN REVIEW###!!!")) {
+//						String[] items = hritem.toString().split(":");
+//						for (String item : items) {
+//							if (!hritem.contains("!!!###HUMAN REVIEW###!!!")) {
+//								hrItem.setFieldName(item);
+//							}
+//							LOGGER.info("Got hr item = " + hrItems);
+//							
+//							LOGGER.info("Before adding date = " + hrItem);
+//							hrItem.setFieldValue(item.replace("!!!###HUMAN REVIEW###!!!", ""));
+//							hrItem.setStixId(stixID.getAsString());
+//							hrItem.setModifiedDate(OffsetDateTime.now());
+//							hrItem.setOriginalDate(OffsetDateTime.now());
+//							hrItem.setAction(ActionEnum.BLANK);
+//							LOGGER.info("After adding date = " + hrItem);
+//						}
+//
+//					}
+//				}
+//
+//			}
+//			hrRepo.save(hrItem);
+
+			return ResponseEntity.status(HttpStatus.OK_200).headers(headers)
+					.body(" New record created " + hrItem.getStixId());
 		} else {// token was not found
 			headers.add("Content-type", "application/json");
 			return new ResponseEntity<>(org.springframework.http.HttpStatus.BAD_REQUEST);

@@ -3,8 +3,12 @@ package org.openapitools.model;
 import java.util.Objects;
 
 import javax.persistence.Column;
+import javax.persistence.ColumnResult;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -19,6 +23,26 @@ import io.swagger.annotations.ApiModelProperty;
 
 @Entity
 @Table(name = "Json_Data")
+
+@SqlResultSetMapping(name="updateResult", columns = { @ColumnResult(name = "count")})
+
+@NamedNativeQueries({
+    @NamedNativeQuery(
+            name    =   "redactPIIinTitle",
+            query   =   "UPDATE json_data \n" +
+                    "SET original_json = JSON_REPLACE(original_json, '$.specifications.title', 'PII REDACTED') \n" +
+                    "WHERE id=?;"
+            ,resultSetMapping = "updateResult"
+    ),
+    @NamedNativeQuery(
+            name    =   "editPIIinTitle",
+            query   =   "UPDATE Json_Data \n" +
+                    "SET original_json = JSON_REPLACE(original_json, '$.ind_course_of_actions.title', 'Just a test') \n" +
+                    "WHERE stix_id=?;"
+            ,resultSetMapping = "updateResult"
+    )
+})
+
 public class JsonData {
 	//@Id
 	//@GeneratedValue(strategy = GenerationType.AUTO)
