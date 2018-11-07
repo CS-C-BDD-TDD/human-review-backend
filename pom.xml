@@ -19,7 +19,7 @@
 		<serenity.cucumber.version>1.6.13</serenity.cucumber.version>
 		<sonar.exclusions>**/*openapi*/**/*</sonar.exclusions>
 		<tomcat.embeded>8.5.34</tomcat.embeded>
-		
+
 	</properties>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -42,8 +42,8 @@
 					<artifactId>sonar-maven-plugin</artifactId>
 					<version>3.2</version>
 				</plugin>
-				<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-scm-publish-plugin</artifactId> 
-					<configuration> <ignorePathsToDelete> <ignorePathToDelete>archive**</ignorePathToDelete> 
+				<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-scm-publish-plugin</artifactId>
+					<configuration> <ignorePathsToDelete> <ignorePathToDelete>archive**</ignorePathToDelete>
 					</ignorePathsToDelete> </configuration> </plugin> -->
 
 			</plugins>
@@ -72,8 +72,8 @@
 					</excludes>
 				</configuration>
 			</plugin>
-			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-jar-plugin</artifactId> 
-				<version>3.0.2</version> <executions> <execution> <goals> <goal>test-jar</goal> 
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-jar-plugin</artifactId>
+				<version>3.0.2</version> <executions> <execution> <goals> <goal>test-jar</goal>
 				</goals> </execution> </executions> </plugin> -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -147,7 +147,7 @@
 				<version>3.3.2</version>
 				<configuration>
 					<failBuildOnCVSS>7</failBuildOnCVSS>
-					<!--<suppressionFile>suppressedDependencyCVE.xml</suppressionFile> -->
+					<suppressionFile>suppressedDependencyCVE.xml</suppressionFile> 
 				</configuration>
 				<executions>
 					<execution>
@@ -190,7 +190,7 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
         </dependency>
-		
+
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
@@ -264,5 +264,5 @@
 		</dependency>
 		</dependencies>
 	</dependencyManagement>
-	
+
 </project>
