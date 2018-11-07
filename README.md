@@ -46,3 +46,17 @@ Enter token as the Key and paste the random token value copied from the login us
 click on send
 
 A list of the stix data display.
+
+## Creating a local AQM Brokers
+Go to [http://activemq.apache.org/installation.html](http://activemq.apache.org/installation.html) and download ActiveMQ
+
+Run `activemq start`  from the /bin directory 
+
+
+Verify ActiveMq is up by visiting 
+
+[http://localhost:8161/admin/](http://localhost:8161/admin/ "Local AQM Server")
+
+using admin:admin 
+
+Create the `inbound.stix` and `outbound.stix` queues under the Queues tab.  Click on the Send button to create a message to send using ActiveMQ.

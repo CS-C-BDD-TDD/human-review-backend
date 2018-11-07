@@ -26,7 +26,7 @@ pipeline {
                          def pom = readMavenPom file: 'pom.xml'
                          version = pom.version
                       }
-                      sh "mvn install -DskipTests=true"
+                      sh "mvn install"
                       publishHTML(target: [
                           reportDir             : 'target',
                           reportFiles           : 'dependency-check-report.html',
@@ -34,7 +34,7 @@ pipeline {
                           keepAll               : true,
                           alwaysLinkToLastBuild : true,
                           allowMissing          : true
-                      ])
+                      ])   
                   }
               }
               stage('Ensure SonarQube Webhook is configured') {
@@ -66,15 +66,6 @@ pipeline {
                         error "Pipeline aborted due to quality gate failure: ${qualitygate.status}"
                     }
                 }
-            }
-        }
-        stage('Unit Test'){
-            steps {
-                script {
-                   def pom = readMavenPom file: 'pom.xml'
-                   version = pom.version
-                }
-                sh "mvn test"
             }
         }
         stage('Create Image Builder') {
