@@ -11,7 +11,7 @@ openshift.withCluster() {
 
 pipeline {
     agent {
-        label 'maven'
+        label 'jenkins-slave-mvn'
     }
     environment {
         PROJECT_NAME = 'human-review-backend'
@@ -25,16 +25,36 @@ pipeline {
                       script {
                          def pom = readMavenPom file: 'pom.xml'
                          version = pom.version
+                         withSonarQubeEnv('sonar') {
+                           try {
+                             sh 'mvn install sonar:sonar'
+                           } catch (error) {
+                             publishHTML(target: [
+                               reportDir             : 'target',
+                               reportFiles           : 'dependency-check-report.html',
+                               reportName            : 'OWASP Dependency Check Report',
+                               keepAll               : true,
+                               alwaysLinkToLastBuild : true,
+                               allowMissing          : true
+                             ])
+                             throw error
+                           }
+
+
+                         }
+                         def qualitygate = waitForQualityGate()
+                         if (qualitygate.status != "OK") {
+                             error "Pipeline aborted due to quality gate failure: ${qualitygate.status}"
+                         }
                       }
-                      sh "mvn install"
                       publishHTML(target: [
                           reportDir             : 'target',
                           reportFiles           : 'dependency-check-report.html',
                           reportName            : 'OWASP Dependency Check Report',
                           keepAll               : true,
                           alwaysLinkToLastBuild : true,
-                          allowMissing          : true
-                      ])   
+                          allowMissing          : false
+                      ])
                   }
               }
               stage('Ensure SonarQube Webhook is configured') {
@@ -54,19 +74,6 @@ pipeline {
                   }
               }
           }
-        }
-        stage('Wait for SonarQube Quality Gate') {
-            steps {
-                script {
-                    withSonarQubeEnv('sonar') {
-                        sh 'mvn clean package sonar:sonar'
-                    }
-                    def qualitygate = waitForQualityGate()
-                    if (qualitygate.status != "OK") {
-                        error "Pipeline aborted due to quality gate failure: ${qualitygate.status}"
-                    }
-                }
-            }
         }
         stage('Create Image Builder') {
            when {
@@ -110,6 +117,9 @@ pipeline {
                             openshift.tag("human-review-backend:latest", "${testProject}/human-review-backend:latest")
                         }
                     }
+                    emailext  to: 'kfrankli@redhat.com',
+                    subject: "ACTION REQUIRED: Promoted ${currentBuild.fullDisplayName} to TEST",
+                    body: """Successfully built and promoted ${currentBuild.fullDisplayName} to TEST: INPUT Required ${env.BUILD_URL}input/  If the page is empty, someone else has already approved or aborted the promotion"""
                 }
             }
         }
@@ -128,5 +138,32 @@ pipeline {
               }
           }
         }
+    }
+    post {
+      failure {
+        emailext to: 'kfrankli@redhat.com',
+        subject: "Failed Pipeline: ${currentBuild.fullDisplayName}",
+        attachLog: true,
+        attachmentsPattern: 'target/dependency-check-report.html',
+        body: """BUILD FAILED ${env.BUILD_URL}
+
+Please see attached:
+    Build Log (build.log)
+    OWASP Dependency Scanner Report (dependency-check-report.html)
+
+SonarQube reports reside at:
+    https://sonarqube-labs-ci-cd.apps.domino.rht-labs.com/dashboard?id=gov.dhs.nppd%3Ahuman-review-backend"""
+      }
+      success {
+        emailext to: 'kfrankli@redhat.com',
+        subject: "Successful Pipeline Build Reports: ${currentBuild.fullDisplayName}",
+        attachmentsPattern: 'target/dependency-check-report.html',
+        body: """Build worked ${env.BUILD_URL}
+Please see attached:
+    OWASP Dependency Scanner Report (dependency-check-report.html)
+
+SonarQube reports reside at:
+    https://sonarqube-labs-ci-cd.apps.domino.rht-labs.com/dashboard?id=gov.dhs.nppd%3Ahuman-review-backend"""
+      }
     }
 }
