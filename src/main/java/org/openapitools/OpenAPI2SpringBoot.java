@@ -73,14 +73,5 @@ public class OpenAPI2SpringBoot implements CommandLineRunner {
 
 		};
 	}
-
-	@EventListener(ApplicationReadyEvent.class)
-	public void doSomethingAfterStartup() throws JMSException {
-		if(currentProfile.equals("dev")) {
-			for (int i = 0; i < 5; i++)
-			 	sender.sendMessage(i + " of 4 to JMS Queue");
-		}
-		 	
-	} 
 }
 
