@@ -1,6 +1,12 @@
 <?xml version="1.0"?>
- 
+
 <!DOCTYPE suppressions PUBLIC
- 
+
 <suppressions>
+  <notes>
+    <![CDATA[This suppresses CVE-2015-5183 and CVE-2015-5184 for the activemq-client JAR file. This is a false positive for the client as the CVE applies to the activemq broker rather than the client JAR.]]>
+  </notes>
+  <filePath regex="true">.*activemq-client-[0-9]*\.[0-9]*\.[0-9]*\.jar/filePath>
+  <cve>CVE-2015-5183</cve>
+  <cve>CVE-2015-5184</cve>
 </suppressions>
