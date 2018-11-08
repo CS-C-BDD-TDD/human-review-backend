@@ -121,12 +121,12 @@ pipeline {
                     buildUrl = buildUrl.replaceAll(/\n*/, '')
 
                     emailext  to: 'john.johnson@hq.dhs.gov,snayak@bcmcgroup.com,ncho@bcmcgroup.com,kfrankli@redhat.com',
-                    subject: "ACTION REQUIRED: Promoted ${currentBuild.fullDisplayName} to TEST",
-                    body: """Successfully built and promoted ${currentBuild.fullDisplayName} to TEST
+                    subject: "ACTION REQUIRED: Promote ${currentBuild.fullDisplayName} from TEST to DEMO?",
+                    body: """Successfully built and deployed ${currentBuild.fullDisplayName} to TEST, should this be promoted to DEMO?
 INPUT Required:
 ${buildUrl}input/
 
-If the page is empty, someone else has already approved or aborted the promotion"""
+If the above link does not contain "promote" and "abort" buttons, someone else has already approved or aborted the promotion"""
                 }
             }
         }
