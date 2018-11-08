@@ -28,6 +28,7 @@ public class JsonDocProcessor extends Thread {
 	private static final Logger LOGGER = LoggerFactory.getLogger(JsonDocProcessor.class);
 	private HashMap<String, Object> elements = null;
 	private List<String> incomingDocs = new ArrayList<>();
+	private static final String JSON_PROCESSING_ERROR = "Error Processing json doc: {}";
 	
 	@Autowired
 	private HumanreviewRepository hrRepo;
@@ -47,16 +48,12 @@ public class JsonDocProcessor extends Thread {
 		}
 		if (doc != null) {
 			LOGGER.info("processing incoming json doc ...");
-			try {
-				loadJsonDoc(doc);
-			} catch (IOException e) {
-				LOGGER.error("Error Processing json doc: {}", e.toString());
-			}
+			loadJsonDoc(doc);
 		}
 		LOGGER.info("Json Doc processor ends ...");
 	}
 
-	public void loadJsonDoc(String jsonDoc) throws IOException {
+	public void loadJsonDoc(String jsonDoc){
 		JsonParser parser = new JsonParser();
 
 		JsonObject jsonTree = parser.parse(jsonDoc).getAsJsonObject();
@@ -80,7 +77,7 @@ public class JsonDocProcessor extends Thread {
 			LOGGER.info(">>> {}: {}", hrItemPath, elements.get(hrItemPath));
 			LOGGER.info("<<< {}: {}", hrItemPath, JsonPath.read(jsonDoc, hrItemPath));
 			
-			LOGGER.info("Got hrItemPath = " + hrItemPath);
+			LOGGER.info("Got hrItemPath = {}",hrItemPath);
 			LOGGER.info("Got elements.get = {}", elements.get(hrItemPath));
 			HumanReviewItem hrItem = new HumanReviewItem();
 			JsonData jsonData = new JsonData();
@@ -111,7 +108,7 @@ public class JsonDocProcessor extends Thread {
 
 	private void getElements(JsonObject jsonTree, String elName) {
 
-		jsonTree.entrySet().stream().forEach((entry) -> {
+		jsonTree.entrySet().stream().forEach(entry -> {
 			String curElName;
 			if (elName.isEmpty()) {
 				curElName = entry.getKey();
@@ -120,7 +117,6 @@ public class JsonDocProcessor extends Thread {
 			}
 
 			LOGGER.info("{}:{}:{}", curElName,entry.getValue(),entry.getValue().getClass().getName());
-			//LOGGER.info(curElName + ":" + entry.getValue() + ":" + entry.getValue().getClass().getName());
 			if (entry.getValue() instanceof JsonNull || entry.getValue() instanceof JsonPrimitive) {
 				elements.put(curElName, entry.getValue());
 			}
@@ -134,14 +130,14 @@ public class JsonDocProcessor extends Thread {
 						}
 					}
 				} catch (Exception e) {
-					LOGGER.error("Error Processing json doc: {}", e.toString());
+					LOGGER.error(JSON_PROCESSING_ERROR, e);
 				}
 				try {
 					if (jsonTree.get(entry.getKey()).getAsJsonObject() instanceof JsonObject) {
 						getElements(jsonTree.get(entry.getKey()).getAsJsonObject(), curElName);
 					}
 				} catch (Exception e) {
-					LOGGER.error("Error Processing json doc: {}", e.toString());
+					LOGGER.error(JSON_PROCESSING_ERROR, e);
 				}
 			}
 		});
