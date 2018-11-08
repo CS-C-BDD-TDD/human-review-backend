@@ -117,9 +117,16 @@ pipeline {
                             openshift.tag("human-review-backend:latest", "${testProject}/human-review-backend:latest")
                         }
                     }
-                    emailext  to: 'kfrankli@redhat.com',
+                    def buildUrl = env.BUILD_URL
+                    buildUrl = buildUrl.replaceAll(/\n*/, '')
+
+                    emailext  to: 'john.johnson@hq.dhs.gov,snayak@bcmcgroup.com,ncho@bcmcgroup.com,kfrankli@redhat.com',
                     subject: "ACTION REQUIRED: Promoted ${currentBuild.fullDisplayName} to TEST",
-                    body: """Successfully built and promoted ${currentBuild.fullDisplayName} to TEST: INPUT Required ${env.BUILD_URL}input/  If the page is empty, someone else has already approved or aborted the promotion"""
+                    body: """Successfully built and promoted ${currentBuild.fullDisplayName} to TEST
+INPUT Required:
+${buildUrl}input/
+
+If the page is empty, someone else has already approved or aborted the promotion"""
                 }
             }
         }
@@ -141,29 +148,38 @@ pipeline {
     }
     post {
       failure {
-        emailext to: 'kfrankli@redhat.com',
-        subject: "Failed Pipeline: ${currentBuild.fullDisplayName}",
-        attachLog: true,
-        attachmentsPattern: 'target/dependency-check-report.html',
-        body: """BUILD FAILED ${env.BUILD_URL}
+        script {
+          def buildUrl = env.BUILD_URL
+          buildUrl = buildUrl.replaceAll(/\n*/, '')
+          emailext to: 'john.johnson@hq.dhs.gov,snayak@bcmcgroup.com,ncho@bcmcgroup.com,kfrankli@redhat.com',
+          subject: "Failed Pipeline: ${currentBuild.fullDisplayName}",
+          attachLog: true,
+          attachmentsPattern: 'target/dependency-check-report.html',
+          body: """BUILD FAILED ${buildUrl}
 
 Please see attached:
-    Build Log (build.log)
-    OWASP Dependency Scanner Report (dependency-check-report.html)
+      Build Log (build.log)
+      OWASP Dependency Scanner Report (dependency-check-report.html)
 
 SonarQube reports reside at:
-    https://sonarqube-labs-ci-cd.apps.domino.rht-labs.com/dashboard?id=gov.dhs.nppd%3Ahuman-review-backend"""
+      https://sonarqube-labs-ci-cd.apps.domino.rht-labs.com/dashboard?id=gov.dhs.nppd%3Ahuman-review-backend"""
+        }
       }
       success {
-        emailext to: 'kfrankli@redhat.com',
-        subject: "Successful Pipeline Build Reports: ${currentBuild.fullDisplayName}",
-        attachmentsPattern: 'target/dependency-check-report.html',
-        body: """Build worked ${env.BUILD_URL}
+        script {
+          def buildUrl = env.BUILD_URL
+          buildUrl = buildUrl.replaceAll(/\n*/, '')
+          emailext to: 'john.johnson@hq.dhs.gov,snayak@bcmcgroup.com,ncho@bcmcgroup.com,kfrankli@redhat.com',
+          subject: "Successful Pipeline Build Reports: ${currentBuild.fullDisplayName}",
+          attachmentsPattern: 'target/dependency-check-report.html',
+          body: """Build worked ${buildUrl}
+
 Please see attached:
-    OWASP Dependency Scanner Report (dependency-check-report.html)
+      OWASP Dependency Scanner Report (dependency-check-report.html)
 
 SonarQube reports reside at:
-    https://sonarqube-labs-ci-cd.apps.domino.rht-labs.com/dashboard?id=gov.dhs.nppd%3Ahuman-review-backend"""
+      https://sonarqube-labs-ci-cd.apps.domino.rht-labs.com/dashboard?id=gov.dhs.nppd%3Ahuman-review-backend"""
+        }
       }
     }
 }
