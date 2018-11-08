@@ -56,7 +56,7 @@ pipeline {
                           allowMissing          : false
                       ])
                        publishHTML(target: [
-                          reportDir             : 'target',
+                          reportDir             : 'target/site/jacoco',
                           reportFiles           : 'index.html',
                           reportName            : 'Jacoco Code Coverage Report',
                           keepAll               : true,
