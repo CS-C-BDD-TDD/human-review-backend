@@ -4,7 +4,7 @@ package gov.dhs.nppd.humanreview.util;
 import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 
 import org.openapitools.model.HumanReviewItem;
@@ -25,8 +25,8 @@ import com.jayway.jsonpath.JsonPath;
 
 @Component
 public class JsonDocProcessor extends Thread {
-	private Logger logger = LoggerFactory.getLogger(JsonDocProcessor.class);
-	private Hashtable<String, Object> elements = null;
+	private Logger LOGGER = LoggerFactory.getLogger(JsonDocProcessor.class);
+	private HashMap<String, Object> elements = null;
 	private List<String> incomingDocs = new ArrayList<String>();
 	
 	@Autowired
@@ -36,7 +36,7 @@ public class JsonDocProcessor extends Thread {
 	private JsonDataRepository jsonDataRepo;
 
 	public void run() {
-		logger.info("Json Doc processor starts ...");
+		LOGGER.info("Json Doc processor starts ...");
 		boolean running = true;
 
 		while (running) {
@@ -47,28 +47,28 @@ public class JsonDocProcessor extends Thread {
 				}
 			}
 			if (doc != null) {
-				logger.info("processing incoming json doc ...");
+				LOGGER.info("processing incoming json doc ...");
 				try {
 					loadJsonDoc(doc);
 				} catch (IOException e) {
-					logger.error("Error Processing json doc: " + e.toString());
+					LOGGER.error("Error Processing json doc: " + e.toString());
 				}
 			}
 		}
 
-		logger.info("Json Doc processor ends ...");
+		LOGGER.info("Json Doc processor ends ...");
 	}
 
 	public void loadJsonDoc(String jsonDoc) throws IOException {
 		JsonParser parser = new JsonParser();
 
 		JsonObject jsonTree = parser.parse(jsonDoc).getAsJsonObject();
-		elements = new Hashtable<String, Object>();
+		elements = new HashMap<String, Object>();
 		List<String> hrItemPaths = new ArrayList<String>();
 
 		getElements(jsonTree, "$");
-		logger.info(String.format("*** Found %d elmenents (primitives & null)", elements.size()));
-		logger.info(">>> searching human review");
+		LOGGER.info(String.format("*** Found %d elmenents (primitives & null)", elements.size()));
+		LOGGER.info(">>> searching human review");
 
 		elements.keySet().stream().forEach(path -> {
 			String value = elements.get(path).toString();
@@ -77,14 +77,14 @@ public class JsonDocProcessor extends Thread {
 			}
 		});
 
-		logger.info(String.format("*** Found %d HR items", hrItemPaths.size()));
+		LOGGER.info(String.format("*** Found %d HR items", hrItemPaths.size()));
 
 		hrItemPaths.stream().forEach(hrItemPath -> {
-			logger.info(String.format(">>> %s: %s", hrItemPath, elements.get(hrItemPath)));
-			logger.info(String.format("<<< %s: '%s'", hrItemPath, JsonPath.read(jsonDoc, hrItemPath)));
+			LOGGER.info(String.format(">>> %s: %s", hrItemPath, elements.get(hrItemPath)));
+			LOGGER.info(String.format("<<< %s: '%s'", hrItemPath, JsonPath.read(jsonDoc, hrItemPath)));
 			
-			logger.info("Got hrItemPath = " + hrItemPath);
-			logger.info("Got elements.get = " + elements.get(hrItemPath));
+			LOGGER.info("Got hrItemPath = " + hrItemPath);
+			LOGGER.info("Got elements.get = " + elements.get(hrItemPath));
 			HumanReviewItem hrItem = new HumanReviewItem();
 			JsonData jsonData = new JsonData();
 			String stixId = jsonTree.get("guid").toString().replaceAll("^\"|\"$", "");
@@ -103,7 +103,7 @@ public class JsonDocProcessor extends Thread {
 			hrItem.setModifiedDate(OffsetDateTime.now());
 			hrItem.setOriginalDate(OffsetDateTime.now());
 			hrItem.setObjectType(hrItemPath.substring(beginIndex+1,endIndexForFieldObject));
-			logger.info("Got hritem = " + hrItem);
+			LOGGER.info("Got hritem = " + hrItem);
 			hrRepo.save(hrItem);
 			jsonDataRepo.save(jsonData);
 
@@ -122,7 +122,7 @@ public class JsonDocProcessor extends Thread {
 				curElName = elName + "." + entry.getKey();
 			}
 
-			logger.info(curElName + ":" + entry.getValue() + ":" + entry.getValue().getClass().getName());
+			LOGGER.info(curElName + ":" + entry.getValue() + ":" + entry.getValue().getClass().getName());
 			if (entry.getValue() instanceof JsonNull || entry.getValue() instanceof JsonPrimitive) {
 				elements.put(curElName, entry.getValue());
 			}
@@ -136,12 +136,14 @@ public class JsonDocProcessor extends Thread {
 						}
 					}
 				} catch (Exception e) {
+					LOGGER.warn("Jsons Parse Exception: "  + e);
 				}
 				try {
 					if (jsonTree.get(entry.getKey()).getAsJsonObject() instanceof JsonObject) {
 						getElements(jsonTree.get(entry.getKey()).getAsJsonObject(), curElName);
 					}
 				} catch (Exception e) {
+					LOGGER.warn("Jsons Parse Exception: "  + e);
 				}
 			}
 		});
