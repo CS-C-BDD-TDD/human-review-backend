@@ -1,16 +1,20 @@
 package gov.dhs.nppd.humanreview.service;
 
+import static org.openapitools.model.HumanReviewItem.ActionEnum.CONFIRM_RISK;
+import static org.openapitools.model.HumanReviewItem.ActionEnum.EDIT;
+import static org.openapitools.model.HumanReviewItem.ActionEnum.NOT_PII;
+import static org.openapitools.model.HumanReviewItem.ActionEnum.REDACT;
+
 import java.time.OffsetDateTime;
 import java.util.Optional;
 
+import javax.persistence.EntityManager;
 import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import org.openapitools.api.HumanreviewApi;
 import org.openapitools.model.HumanReviewItem;
-import org.openapitools.model.HumanReviewItem.ActionEnum;
 import org.openapitools.model.JsonData;
 import org.openapitools.model.ListOfHumanReviewItems;
 import org.openapitools.repository.HumanreviewRepository;
@@ -20,6 +24,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -28,7 +33,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.NativeWebRequest;
 
+import gov.dhs.nppd.humanreview.amq.Sender;
 import gov.dhs.nppd.humanreview.util.CommonUtil;
+import gov.dhs.nppd.humanreview.util.JsonDocProcessor;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -63,6 +70,15 @@ public class HumanreviewApiController implements HumanreviewApi {
 
 	@Autowired
 	private JsonDataRepository jsonDataRepo;
+
+	@Autowired
+	JsonDocProcessor jsonDocProc;
+
+	@Autowired
+	Sender sender;
+
+	@Autowired
+	protected EntityManager em;
 
 	/**
 	 * Get HR item pending list
@@ -129,7 +145,6 @@ public class HumanreviewApiController implements HumanreviewApi {
 
 		HumanReviewItem hrItem = hrRepo.findByStixIdAndFieldName(stixId, fieldName);
 		String redactValue = "#####";
-		ActionEnum actionEnum = ActionEnum.CONFIRM_RISK;
 		LOGGER.info("id = " + stixId);
 		LOGGER.info("field = " + field);
 		LOGGER.info("fieldname = " + fieldName);
@@ -146,26 +161,30 @@ public class HumanreviewApiController implements HumanreviewApi {
 			} else {
 				switch (actionType) {
 				case "Confirm Risk":
-					hrItem.setAction(actionEnum.CONFIRM_RISK);
+					hrItem.setAction(CONFIRM_RISK);
 					hrItem.setStatus("Confirmed");
 					hrRepo.save(hrItem);
+					hrItem.setModifiedDate(OffsetDateTime.now());
+					hrItem.setFieldValue(acceptedValue);
 					return new ResponseEntity<Void>(org.springframework.http.HttpStatus.OK);
 				case "Edit":
-					hrItem.setAction(actionEnum.EDIT);
+					hrItem.setAction(EDIT);
 					hrItem.setModifiedDate(OffsetDateTime.now());
 					hrItem.setFieldValue(acceptedValue);
 					hrItem.setStatus("Edited");
 					hrRepo.save(hrItem);
 					return new ResponseEntity<Void>(org.springframework.http.HttpStatus.OK);
 				case "Not PII":
-					hrItem.setAction(actionEnum.NOT_PII);
+					hrItem.setAction(NOT_PII);
 					hrItem.setStatus("Not PII");
+					hrItem.setModifiedDate(OffsetDateTime.now());
+					hrItem.setFieldValue(acceptedValue);
 					hrRepo.save(hrItem);
 					return new ResponseEntity<Void>(org.springframework.http.HttpStatus.OK);
 				case "Redact":
 					hrItem.setFieldValue(redactValue);
 					hrItem.setModifiedDate(OffsetDateTime.now());
-					hrItem.setAction(actionEnum.REDACT);
+					hrItem.setAction(REDACT);
 					hrItem.setStatus("Redacted");
 					hrRepo.save(hrItem);
 					return new ResponseEntity<Void>(org.springframework.http.HttpStatus.OK);
@@ -188,6 +207,7 @@ public class HumanreviewApiController implements HumanreviewApi {
 	 * @return Success with 200; failure with BAD_REQUEST (40X)
 	 * 
 	 */
+	@Transactional
 	@ApiOperation(value = "", nickname = "humanreviewStixIdPut", notes = "", tags = {})
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "OK") })
 	@RequestMapping(value = "/humanreview/{stix_id}", consumes = {
@@ -216,11 +236,24 @@ public class HumanreviewApiController implements HumanreviewApi {
 						if (aList.get(i).getStatus().equals("New")) {
 							aList.get(i).setStatus("Accepted");
 						}
+//						if (aList.get(i).getStatus().equals("Edited")) {
+//							em.joinTransaction();
+//							LOGGER.info("Loop iteration = " + i + jsonData.getStixId());
+//							em.createNamedQuery("editPIIinTitle")
+//									.setParameter(aList.get(i).getFieldLocation(), aList.get(i).getFieldValue())
+//									.executeUpdate();
+//						}
 						LOGGER.info("Loop iteration = " + i + aList.toString());
 					}
-					jsonData.setModifiedJson(aList.toString());
+
+					String jsonString = jsonData.getOriginalJson();
+					LOGGER.info("jsonData = " + jsonData);
+					LOGGER.info("Loop iteration = " + jsonString);
+					jsonData.setModifiedJson(jsonString);
 					jsonDataRepo.save(jsonData);
+					sender.sendMessage(jsonString);
 					return new ResponseEntity<Void>(org.springframework.http.HttpStatus.OK);
+					
 				case "Disseminate":
 					boolean readyToDisseminate = true;
 					for (int i = 0; i < aList.size(); i++) {
@@ -229,8 +262,10 @@ public class HumanreviewApiController implements HumanreviewApi {
 						}
 					}
 					if (readyToDisseminate == true) {
-						jsonData.setModifiedJson(aList.toString());
+						String modJson = jsonData.getOriginalJson();
+						jsonData.setModifiedJson(modJson);
 						jsonDataRepo.save(jsonData);
+						sender.sendMessage(modJson);
 						return new ResponseEntity<Void>(org.springframework.http.HttpStatus.OK);
 					} else {
 						return new ResponseEntity<>(org.springframework.http.HttpStatus.BAD_REQUEST);
@@ -260,11 +295,10 @@ public class HumanreviewApiController implements HumanreviewApi {
 	 */
 	@ApiOperation(value = "", nickname = "humanreviewPost", notes = "", response = String.class, tags = {})
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class) })
-	@RequestMapping(value = "/humanreview/{stix_id}", consumes = {
-			"application/json" }, method = RequestMethod.POST)
+	@RequestMapping(value = "/humanreview/{stix_id}", consumes = { "application/json" }, method = RequestMethod.POST)
 	public ResponseEntity<String> humanreviewStixIdPost(@RequestHeader HttpHeaders headers,
 			@ApiParam(value = "Allow the user to create a HR item", required = true) @Valid @RequestBody HumanReviewItem hrItem) {
-		
+
 		if (headers.get(TOKEN_STRING) == null || headers.get(TOKEN_STRING).isEmpty()) {
 			headers.add("Content-type", "application/json");
 			return new ResponseEntity<>(org.springframework.http.HttpStatus.BAD_REQUEST);
@@ -279,11 +313,10 @@ public class HumanreviewApiController implements HumanreviewApi {
 				hrItem.setModifiedDate(OffsetDateTime.now());
 				hrItem.setOriginalDate(OffsetDateTime.now());
 				LOGGER.info("After adding date = " + hrItem);
-		
+
 				hrRepo.save(hrItem);
 
-				return ResponseEntity.status(HttpStatus.OK)
-				.body(" New record created " + hrItem.getStixId());
+				return ResponseEntity.status(HttpStatus.OK).body(" New record created " + hrItem.getStixId());
 			}
 		} else {// token was not found
 			headers.add("Content-type", "application/json");
@@ -313,6 +346,10 @@ public class HumanreviewApiController implements HumanreviewApi {
 
 	public void setCommonUtil(CommonUtil commonUtil) {
 		this.commonUtil = commonUtil;
+	}
+
+	public void setSender(Sender sender) {
+		this.sender = sender;
 	}
 
 	public HumanReviewItem getHumanReviewItemByStixIdAndFieldName(String stixId, String fieldName) {

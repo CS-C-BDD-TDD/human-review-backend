@@ -16,7 +16,8 @@ CREATE TABLE Human_Review_Item (
 	original_date TIMESTAMP, 
 	modified_date TIMESTAMP,
 	field_name VARCHAR, 
-	field_value VARCHAR, 
+	field_value VARCHAR,
+	field_location VARCHAR,
 	object_type VARCHAR, 
 	status VARCHAR,
 	PRIMARY KEY (id)
@@ -25,7 +26,7 @@ CREATE TABLE Human_Review_Item (
 CREATE TABLE Json_Data (
 
 	stix_id VARCHAR, 
-	original_json VARCHAR,
-	modified_json VARCHAR,
+	original_json CLOB,
+	modified_json CLOB,
 	PRIMARY KEY (stix_id)
 );

@@ -20,6 +20,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
+import gov.dhs.nppd.humanreview.amq.Sender;
 import gov.dhs.nppd.humanreview.util.CommonUtil;
 
 @ComponentScan(basePackages = { "org.openapitools", "org.openapitools.api", "org.openapitools.configuration",
@@ -30,6 +31,7 @@ public class HumanreviewApiControllerTest {
 	private HumanreviewRepository mockHrRepo;
 	private JsonDataRepository mockJsonRepo;
 	private CommonUtil mockCommonUtil;
+	private Sender mockSender;
 	private String stixId;
 	private String expectedFieldValue;
 	private String fieldName;
@@ -40,14 +42,17 @@ public class HumanreviewApiControllerTest {
 	public void setup() {
 		mockHrRepo = Mockito.mock(HumanreviewRepository.class);
 		mockCommonUtil = Mockito.mock(CommonUtil.class);
+		mockSender = Mockito.mock(Sender.class);
 		mockJsonRepo = Mockito.mock(JsonDataRepository.class);
 		hrItemList = new ListOfHumanReviewItems();
 		Mockito.when(mockHrRepo.findAll()).thenReturn(hrItemList);
 		Mockito.when(mockCommonUtil.tokenValidator("Random")).thenReturn(true);
+		Mockito.when(mockSender.sendMessage("Random")).thenReturn("Random");
 		headers = new HttpHeaders();
 		headers.add("token", "Random");
 		hrApiCtrl.setHrRepo(mockHrRepo);
 		hrApiCtrl.setCommonUtil(mockCommonUtil);
+		hrApiCtrl.setSender(mockSender);
 		hrApiCtrl.setJsonDataRepo(mockJsonRepo);
 		stixId = "stix-id-1";
 		fieldName = "field-name-a";
