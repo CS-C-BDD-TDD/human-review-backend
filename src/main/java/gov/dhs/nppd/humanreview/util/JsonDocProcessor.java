@@ -22,7 +22,7 @@ import com.google.gson.JsonPrimitive;
 import com.jayway.jsonpath.JsonPath;
 
 @Component
-public class JsonDocProcessor extends Thread {
+public class JsonDocProcessor {
 	private static final Logger LOGGER = LoggerFactory.getLogger(JsonDocProcessor.class);
 	private HashMap<String, Object> elements = null;
 	private List<String> incomingDocs = new ArrayList<>();
