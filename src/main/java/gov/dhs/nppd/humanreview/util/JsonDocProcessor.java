@@ -1,7 +1,5 @@
 package gov.dhs.nppd.humanreview.util;
 
-
-import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
