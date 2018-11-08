@@ -37,7 +37,7 @@ import io.swagger.annotations.ApiModelProperty;
     @NamedNativeQuery(
             name    =   "editPIIinTitle",
             query   =   "UPDATE Json_Data \n" +
-                    "SET original_json = JSON_REPLACE(original_json, '$.ind_course_of_actions.title', 'Just a test') \n" +
+                    "SET modified_json = JSON_REPLACE(modified_json, ?, ?) \n" +
                     "WHERE stix_id=?;"
             ,resultSetMapping = "updateResult"
     )

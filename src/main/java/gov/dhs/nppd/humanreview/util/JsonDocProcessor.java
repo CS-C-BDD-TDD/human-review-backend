@@ -2,15 +2,19 @@ package gov.dhs.nppd.humanreview.util;
 
 
 import java.io.IOException;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
 import org.openapitools.model.HumanReviewItem;
+import org.openapitools.model.JsonData;
 import org.openapitools.repository.HumanreviewRepository;
+import org.openapitools.repository.JsonDataRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonNull;
@@ -19,6 +23,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.jayway.jsonpath.JsonPath;
 
+@Component
 public class JsonDocProcessor extends Thread {
 	private Logger logger = LoggerFactory.getLogger(JsonDocProcessor.class);
 	private Hashtable<String, Object> elements = null;
@@ -26,6 +31,9 @@ public class JsonDocProcessor extends Thread {
 	
 	@Autowired
 	private HumanreviewRepository hrRepo;
+	
+	@Autowired
+	private JsonDataRepository jsonDataRepo;
 
 	public void run() {
 		logger.info("Json Doc processor starts ...");
@@ -52,12 +60,6 @@ public class JsonDocProcessor extends Thread {
 		logger.info("Json Doc processor ends ...");
 	}
 
-	public void queueDoc(String doc) {
-		synchronized (incomingDocs) {
-			incomingDocs.add(doc);
-		}
-	}
-
 	public void loadJsonDoc(String jsonDoc) throws IOException {
 		JsonParser parser = new JsonParser();
 
@@ -76,10 +78,6 @@ public class JsonDocProcessor extends Thread {
 			}
 		});
 
-//		RestClient restClient = new RestClient("http://localhost:8080");
-//		String token = restClient.getAuthToken("User1", "Pass1");
-//		logger.info("Got da token: " + token);
-
 		logger.info(String.format("*** Found %d HR items", hrItemPaths.size()));
 
 		hrItemPaths.stream().forEach(hrItemPath -> {
@@ -89,29 +87,31 @@ public class JsonDocProcessor extends Thread {
 			logger.info("Got hrItemPath = " + hrItemPath);
 			logger.info("Got elements.get = " + elements.get(hrItemPath));
 			HumanReviewItem hrItem = new HumanReviewItem();
+			JsonData jsonData = new JsonData();
+			String stixId = jsonTree.get("guid").toString().replaceAll("^\"|\"$", "");
+			jsonData.setStixId(stixId);
+			jsonData.setOriginalJson(jsonDoc);
+			
 			int beginIndex = hrItemPath.indexOf(".");
-			int endIindex = hrItemPath.lastIndexOf(".");
-			hrItem.setFieldName(hrItemPath.substring(endIindex+1));
-			hrItem.setFieldValue(elements.get(hrItemPath).toString());
-			hrItem.setFieldLocation(hrItemPath.substring(beginIndex+1,endIindex+1));
+			int endIndex = hrItemPath.lastIndexOf(".");
+			int endIndexForFieldObject = hrItemPath.indexOf("[");
+			hrItem.setStixId(stixId);
+			hrItem.setFieldName(hrItemPath.substring(endIndex+1));
+			hrItem.setFieldValue(elements.get(hrItemPath).toString().replace("!!!###HUMAN REVIEW###!!!", ""));
+			hrItem.setFieldLocation(hrItemPath);
 			hrItem.setAction(HumanReviewItem.ActionEnum.BLANK);
+			hrItem.setStatus("New");
+			hrItem.setModifiedDate(OffsetDateTime.now());
+			hrItem.setOriginalDate(OffsetDateTime.now());
+			hrItem.setObjectType(hrItemPath.substring(beginIndex+1,endIndexForFieldObject));
 			logger.info("Got hritem = " + hrItem);
 			hrRepo.save(hrItem);
-			 
-//			try {
-//				restClient.createHrItem(hrItem, token);
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
+			jsonDataRepo.save(jsonData);
+
 		});
 
 	}
 
-//	private String getHrBackendToken(String username, String password) throws IOException {
-//		RestClient restClient = new RestClient("http://localhost:8080");
-//		return restClient.getAuthToken(username, password);
-//	}
 
 	private void getElements(JsonObject jsonTree, String elName) {
 

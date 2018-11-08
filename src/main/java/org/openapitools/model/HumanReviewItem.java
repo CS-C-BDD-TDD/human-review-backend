@@ -301,6 +301,7 @@ public class HumanReviewItem {
 		return Objects.equals(this.stixId, humanReviewItem.stixId)
 				&& Objects.equals(this.fieldName, humanReviewItem.fieldName)
 				&& Objects.equals(this.fieldValue, humanReviewItem.fieldValue)
+				&& Objects.equals(this.fieldLocation, humanReviewItem.fieldLocation)
 				&& Objects.equals(this.originalDate, humanReviewItem.originalDate)
 				&& Objects.equals(this.modifiedDate, humanReviewItem.modifiedDate)
 				&& Objects.equals(this.objectType, humanReviewItem.objectType)
@@ -321,6 +322,7 @@ public class HumanReviewItem {
 		sb.append("    stixId: ").append(toIndentedString(stixId)).append("\n");
 		sb.append("    fieldName: ").append(toIndentedString(fieldName)).append("\n");
 		sb.append("    fieldValue: ").append(toIndentedString(fieldValue)).append("\n");
+		sb.append("    fieldLocation: ").append(toIndentedString(fieldLocation)).append("\n");
 		sb.append("    originalDate: ").append(toIndentedString(originalDate)).append("\n");
 		sb.append("    modifiedDate: ").append(toIndentedString(modifiedDate)).append("\n");
 		sb.append("    objectType: ").append(toIndentedString(objectType)).append("\n");
