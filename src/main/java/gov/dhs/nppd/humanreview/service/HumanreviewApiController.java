@@ -1,6 +1,10 @@
 package gov.dhs.nppd.humanreview.service;
 
-import java.io.IOException;
+import static org.openapitools.model.HumanReviewItem.ActionEnum.CONFIRM_RISK;
+import static org.openapitools.model.HumanReviewItem.ActionEnum.EDIT;
+import static org.openapitools.model.HumanReviewItem.ActionEnum.NOT_PII;
+import static org.openapitools.model.HumanReviewItem.ActionEnum.REDACT;
+
 import java.time.OffsetDateTime;
 import java.util.Optional;
 
@@ -11,7 +15,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openapitools.api.HumanreviewApi;
 import org.openapitools.model.HumanReviewItem;
-import org.openapitools.model.HumanReviewItem.ActionEnum;
 import org.openapitools.model.JsonData;
 import org.openapitools.model.ListOfHumanReviewItems;
 import org.openapitools.repository.HumanreviewRepository;
@@ -29,8 +32,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.NativeWebRequest;
-
-import com.google.gson.JsonParser;
 
 import gov.dhs.nppd.humanreview.amq.Sender;
 import gov.dhs.nppd.humanreview.util.CommonUtil;
@@ -144,7 +145,6 @@ public class HumanreviewApiController implements HumanreviewApi {
 
 		HumanReviewItem hrItem = hrRepo.findByStixIdAndFieldName(stixId, fieldName);
 		String redactValue = "#####";
-		ActionEnum actionEnum = ActionEnum.CONFIRM_RISK;
 		LOGGER.info("id = " + stixId);
 		LOGGER.info("field = " + field);
 		LOGGER.info("fieldname = " + fieldName);
@@ -161,21 +161,21 @@ public class HumanreviewApiController implements HumanreviewApi {
 			} else {
 				switch (actionType) {
 				case "Confirm Risk":
-					hrItem.setAction(actionEnum.CONFIRM_RISK);
+					hrItem.setAction(CONFIRM_RISK);
 					hrItem.setStatus("Confirmed");
 					hrRepo.save(hrItem);
 					hrItem.setModifiedDate(OffsetDateTime.now());
 					hrItem.setFieldValue(acceptedValue);
 					return new ResponseEntity<Void>(org.springframework.http.HttpStatus.OK);
 				case "Edit":
-					hrItem.setAction(actionEnum.EDIT);
+					hrItem.setAction(EDIT);
 					hrItem.setModifiedDate(OffsetDateTime.now());
 					hrItem.setFieldValue(acceptedValue);
 					hrItem.setStatus("Edited");
 					hrRepo.save(hrItem);
 					return new ResponseEntity<Void>(org.springframework.http.HttpStatus.OK);
 				case "Not PII":
-					hrItem.setAction(actionEnum.NOT_PII);
+					hrItem.setAction(NOT_PII);
 					hrItem.setStatus("Not PII");
 					hrItem.setModifiedDate(OffsetDateTime.now());
 					hrItem.setFieldValue(acceptedValue);
@@ -184,7 +184,7 @@ public class HumanreviewApiController implements HumanreviewApi {
 				case "Redact":
 					hrItem.setFieldValue(redactValue);
 					hrItem.setModifiedDate(OffsetDateTime.now());
-					hrItem.setAction(actionEnum.REDACT);
+					hrItem.setAction(REDACT);
 					hrItem.setStatus("Redacted");
 					hrRepo.save(hrItem);
 					return new ResponseEntity<Void>(org.springframework.http.HttpStatus.OK);
