@@ -51,8 +51,7 @@ public class JsonDocProcessor extends Thread {
 				try {
 					loadJsonDoc(doc);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.error("Error Processing json doc: " + e.toString());
 				}
 			}
 		}
