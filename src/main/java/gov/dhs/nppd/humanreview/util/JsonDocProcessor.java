@@ -28,6 +28,7 @@ public class JsonDocProcessor extends Thread {
 	private Logger logger = LoggerFactory.getLogger(JsonDocProcessor.class);
 	private Hashtable<String, Object> elements = null;
 	private List<String> incomingDocs = new ArrayList<String>();
+	private JsonParser parser;
 	
 	@Autowired
 	private HumanreviewRepository hrRepo;
@@ -61,7 +62,7 @@ public class JsonDocProcessor extends Thread {
 	}
 
 	public void loadJsonDoc(String jsonDoc) throws IOException {
-		JsonParser parser = new JsonParser();
+	    parser = new JsonParser();
 
 		JsonObject jsonTree = parser.parse(jsonDoc).getAsJsonObject();
 		elements = new Hashtable<String, Object>();
@@ -112,6 +113,10 @@ public class JsonDocProcessor extends Thread {
 
 	}
 
+
+	public void setParser(JsonParser parser) {
+		this.parser = parser;
+	}
 
 	private void getElements(JsonObject jsonTree, String elName) {
 
