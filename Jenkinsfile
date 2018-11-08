@@ -55,6 +55,14 @@ pipeline {
                           alwaysLinkToLastBuild : true,
                           allowMissing          : false
                       ])
+                       publishHTML(target: [
+                          reportDir             : 'target',
+                          reportFiles           : 'index.html',
+                          reportName            : 'Jacoco Code Coverage Report',
+                          keepAll               : true,
+                          alwaysLinkToLastBuild : true,
+                          allowMissing          : false
+                      ])
                   }
               }
               stage('Ensure SonarQube Webhook is configured') {
