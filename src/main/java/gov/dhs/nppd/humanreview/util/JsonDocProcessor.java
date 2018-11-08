@@ -43,23 +43,6 @@ public class JsonDocProcessor extends Thread {
 	@Autowired
 	private JsonDataRepository jsonDataRepo;
 
-	@Override
-	public void run() {
-		LOGGER.info("Json Doc processor starts ...");
-	
-		String doc = null;
-		synchronized (incomingDocs) {
-			if (!incomingDocs.isEmpty()) {
-				doc = incomingDocs.remove(0);
-			}
-		}
-		if (doc != null) {
-			LOGGER.info("processing incoming json doc ...");
-			loadJsonDoc(doc);
-		}
-		LOGGER.info("Json Doc processor ends ...");
-	}
-
 	public void loadJsonDoc(String jsonDoc){
 		JsonParser parser = new JsonParser();
 
@@ -91,6 +74,7 @@ public class JsonDocProcessor extends Thread {
 			String stixId = jsonTree.get("guid").toString().replaceAll("^\"|\"$", "");
 			jsonData.setStixId(stixId);
 			jsonData.setOriginalJson(jsonDoc);
+			jsonData.setModifiedJson(jsonDoc);
 			
 			int beginIndex = hrItemPath.indexOf('.');
 			int endIndex = hrItemPath.lastIndexOf('.');

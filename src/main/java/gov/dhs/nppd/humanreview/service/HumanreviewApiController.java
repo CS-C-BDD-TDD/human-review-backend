@@ -236,24 +236,23 @@ public class HumanreviewApiController implements HumanreviewApi {
 						if (aList.get(i).getStatus().equals("New")) {
 							aList.get(i).setStatus("Accepted");
 						}
-//						if (aList.get(i).getStatus().equals("Edited")) {
-//							em.joinTransaction();
-//							LOGGER.info("Loop iteration = " + i + jsonData.getStixId());
-//							em.createNamedQuery("editPIIinTitle")
-//									.setParameter(aList.get(i).getFieldLocation(), aList.get(i).getFieldValue())
-//									.executeUpdate();
-//						}
+						if (aList.get(i).getStatus().equals("Edited")) {
+
+							LOGGER.info("Loop iteration = " + i + jsonData.getStixId());
+							jsonDataRepo.updateJson(aList.get(i).getFieldLocation(), aList.get(i).getFieldValue(),
+									aList.get(i).getStixId());
+						}
 						LOGGER.info("Loop iteration = " + i + aList.toString());
 					}
 
-					String jsonString = jsonData.getOriginalJson();
+					String jsonString = jsonData.getModifiedJson();
 					LOGGER.info("jsonData = " + jsonData);
 					LOGGER.info("Loop iteration = " + jsonString);
 					jsonData.setModifiedJson(jsonString);
 					jsonDataRepo.save(jsonData);
 					sender.sendMessage(jsonString);
 					return new ResponseEntity<Void>(org.springframework.http.HttpStatus.OK);
-					
+
 				case "Disseminate":
 					boolean readyToDisseminate = true;
 					for (int i = 0; i < aList.size(); i++) {
@@ -262,7 +261,7 @@ public class HumanreviewApiController implements HumanreviewApi {
 						}
 					}
 					if (readyToDisseminate == true) {
-						String modJson = jsonData.getOriginalJson();
+						String modJson = jsonData.getModifiedJson();
 						jsonData.setModifiedJson(modJson);
 						jsonDataRepo.save(jsonData);
 						sender.sendMessage(modJson);
