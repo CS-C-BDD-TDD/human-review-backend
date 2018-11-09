@@ -25,7 +25,6 @@ import com.jayway.jsonpath.JsonPath;
 public class JsonDocProcessor {
 	private static final Logger LOGGER = LoggerFactory.getLogger(JsonDocProcessor.class);
 	private HashMap<String, Object> elements = null;
-	private List<String> incomingDocs = new ArrayList<>();
 	private static final String JSON_PROCESSING_ERROR = "Error Processing json doc: {}";
 
 	@Autowired
