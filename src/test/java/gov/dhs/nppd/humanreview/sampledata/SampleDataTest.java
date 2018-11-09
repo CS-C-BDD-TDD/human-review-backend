@@ -55,17 +55,65 @@ public class SampleDataTest {
 				System.out.println(insert);
 			}
 
-			String insertJsonData = String.format(INSERT_STMT_JSON_DATA, stixId, getJsonData(stixId), "");
+			String insertJsonData = String.format(INSERT_STMT_JSON_DATA, stixId, getJsonData(stixId),
+					getJsonData(stixId));
 			System.out.println(insertJsonData);
 		}
 		assertTrue(true);
 	}
 
+	private static final String STIX_SAMPLE = "{\n" + 
+			"  \"type\": \"bundle\",\n" + 
+			"  \"id\": \"bundle--%s\",\n" + 
+			"  \"spec_version\": \"2.0\",\n" + 
+			"  \"objects\": [\n" + 
+			"    {\n" + 
+			"      \"type\": \"threat-actor\",\n" + 
+			"      \"id\": \"threat-actor--dfaa8d77-07e2-4e28-b2c8-92e9f7b04428\",\n" + 
+			"      \"created\": \"2014-11-19T23:39:03.893Z\",\n" + 
+			"      \"modified\": \"2014-11-19T23:39:03.893Z\",\n" + 
+			"      \"name\": \"Disco Team Threat Actor Group\",\n" + 
+			"      \"description\": \"This organized threat actor group operates to create profit from all types of crime.\",\n" + 
+			"      \"labels\": [\n" + 
+			"        \"crime-syndicate\"\n" + 
+			"      ],\n" + 
+			"      \"aliases\": [\n" + 
+			"        \"Equipo del Discoteca\"\n" + 
+			"      ],\n" + 
+			"      \"roles\": [\n" + 
+			"        \"agent\"\n" + 
+			"      ],\n" + 
+			"      \"goals\": [\n" + 
+			"        \"Steal Credit Card information\"\n" + 
+			"      ],\n" + 
+			"      \"sophistication\": \"expert\",\n" + 
+			"      \"resource_level\": \"organization\",\n" + 
+			"      \"primary_motivation\": \"personal-gain\"\n" + 
+			"    },\n" + 
+			"    {\n" + 
+			"      \"type\": \"identity\",\n" + 
+			"      \"id\": \"identity--733c5838-34d9-4fbf-949c-62aba761184c\",\n" + 
+			"      \"created\": \"2016-08-23T18:05:49.307Z\",\n" + 
+			"      \"modified\": \"2016-08-23T18:05:49.307Z\",\n" + 
+			"      \"name\": \"Disco Team\",\n" + 
+			"      \"description\": \"Disco Team is the name of an organized threat actor crime-syndicate.\",\n" + 
+			"      \"identity_class\": \"organization\",\n" + 
+			"      \"contact_information\": \"disco-team@stealthemail.com\"\n" + 
+			"    },\n" + 
+			"    {\n" + 
+			"      \"type\": \"relationship\",\n" + 
+			"      \"id\": \"relationship--966c5838-34d9-4fbf-949c-62aba7611837\",\n" + 
+			"      \"created\": \"2016-08-23T18:05:49.307Z\",\n" + 
+			"      \"modified\": \"2016-08-23T18:05:49.307Z\",\n" + 
+			"      \"relationship_type\": \"attributed-to\",\n" + 
+			"      \"source_ref\": \"threat-actor--dfaa8d77-07e2-4e28-b2c8-92e9f7b04428\",\n" + 
+			"      \"target_ref\": \"identity--733c5838-34d9-4fbf-949c-62aba761184c\"\n" + 
+			"    }\n" + 
+			"  ]\n" + 
+			"}";
+	
 	private Object getJsonData(String stixId) {
-		return String
-				.format("{\n" + "        \"stix_id\": \"%s\",\n" + "        \"field_name\": \"Short_Description\",\n"
-						+ "        \"field_value\": \"PII presents\",\n" + "        \"object_type\": \"Package\",\n"
-						+ "        \"status\": \"New\",\n" + "        \"action\": \"\"\n" + "    }", stixId);
+		return String.format(STIX_SAMPLE, stixId);
 	}
 
 	private String getObjectType() {

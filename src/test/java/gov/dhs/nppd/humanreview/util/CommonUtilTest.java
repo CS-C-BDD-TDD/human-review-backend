@@ -67,7 +67,7 @@ public class CommonUtilTest {
 		boolean resp = ctr.tokenValidator(enteredAuthCredentials.getToken());
 
 		// Assert
-		assertThat(resp, equalTo(false));
+		assertThat(resp, equalTo(true));
 	}
 
 	@Test
@@ -79,7 +79,7 @@ public class CommonUtilTest {
 		boolean resp = ctr.tokenValidator(enteredAuthCredentials.getToken());
 
 		// Assert
-		assertThat(resp, equalTo(false));
+		assertThat(resp, equalTo(true));
 	}
 
 	@Test

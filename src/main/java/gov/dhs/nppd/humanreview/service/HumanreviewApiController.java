@@ -102,6 +102,7 @@ public class HumanreviewApiController implements HumanreviewApi {
 		LOGGER.debug("token: " + headers.get(TOKEN_STRING));
 		LOGGER.info("Checking for taken from user. Token: " + headers.get(TOKEN_STRING));
 		if (headers.get(TOKEN_STRING) == null || headers.get(TOKEN_STRING).isEmpty()) {
+			LOGGER.info("*** NO TOKEN! ***");
 			headers.add("Content-type", "application/json");
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).headers(headers).body(listOfHumanReviewItems);
 		}
@@ -114,6 +115,7 @@ public class HumanreviewApiController implements HumanreviewApi {
 			headers.add("Content-type", "application/json");
 			return ResponseEntity.ok().headers(headers).body(listOfHumanReviewItems);
 		} else {// token was not found
+			LOGGER.info("*** INVALID TOKEN! ***");
 			headers.add("Content-type", "application/json");
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).headers(headers).body(listOfHumanReviewItems);
 		}
@@ -233,36 +235,40 @@ public class HumanreviewApiController implements HumanreviewApi {
 				switch (groupAction) {
 				case "Accept All":
 					for (int i = 0; i < aList.size(); i++) {
+						LOGGER.info("aList.size = " + aList.size());
+						LOGGER.info("FieldLocation = " + aList.get(i).getFieldLocation());
+						LOGGER.info("FieldValue = " + aList.get(i).getFieldValue());
+						LOGGER.info("StixId = " + aList.get(i).getStixId());
+						jsonDataRepo.updateJson(aList.get(i).getFieldLocation(), aList.get(i).getFieldValue(),
+								aList.get(i).getStixId());
 						if (aList.get(i).getStatus().equals("New")) {
 							aList.get(i).setStatus("Accepted");
 						}
-//						if (aList.get(i).getStatus().equals("Edited")) {
-//							em.joinTransaction();
-//							LOGGER.info("Loop iteration = " + i + jsonData.getStixId());
-//							em.createNamedQuery("editPIIinTitle")
-//									.setParameter(aList.get(i).getFieldLocation(), aList.get(i).getFieldValue())
-//									.executeUpdate();
-//						}
-						LOGGER.info("Loop iteration = " + i + aList.toString());
+
+						LOGGER.info("ModifiedJson = " + jsonData.getModifiedJson());
 					}
 
-					String jsonString = jsonData.getOriginalJson();
+					String jsonString = jsonData.getModifiedJson();
 					LOGGER.info("jsonData = " + jsonData);
-					LOGGER.info("Loop iteration = " + jsonString);
+					LOGGER.info("jsonString = " + jsonString);
 					jsonData.setModifiedJson(jsonString);
 					jsonDataRepo.save(jsonData);
-					sender.sendMessage(jsonString);
 					return new ResponseEntity<Void>(org.springframework.http.HttpStatus.OK);
-					
+
 				case "Disseminate":
 					boolean readyToDisseminate = true;
 					for (int i = 0; i < aList.size(); i++) {
 						if (aList.get(i).getStatus().equals("New")) {
 							readyToDisseminate = false;
 						}
+						
 					}
 					if (readyToDisseminate == true) {
-						String modJson = jsonData.getOriginalJson();
+						for (int i = 0; i < aList.size(); i++) {
+							jsonDataRepo.updateJson(aList.get(i).getFieldLocation(), aList.get(i).getFieldValue(),
+									aList.get(i).getStixId());
+						}
+						String modJson = jsonData.getModifiedJson();
 						jsonData.setModifiedJson(modJson);
 						jsonDataRepo.save(jsonData);
 						sender.sendMessage(modJson);
