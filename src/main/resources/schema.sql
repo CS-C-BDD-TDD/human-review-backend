@@ -1,32 +1,33 @@
-CREATE TABLE Auth_Credentials
+USE humanreview;
+
+CREATE TABLE auth_credentials
 (
 	id INT, 
-	username VARCHAR, 
-	password VARCHAR, 
-	token VARCHAR, 
+	username VARCHAR(255), 
+	password VARCHAR(255), 
+	token VARCHAR(255), 
 	date TIMESTAMP,
 	PRIMARY KEY (id)
 );
 
-CREATE TABLE Human_Review_Item (
+CREATE TABLE human_review_item (
 
 	id INT primary key auto_increment, 
-	stix_id VARCHAR, 
+	stix_id VARCHAR(255), 
 	action INT, 
 	original_date TIMESTAMP, 
 	modified_date TIMESTAMP,
-	field_name VARCHAR, 
-	field_value VARCHAR,
-	field_location VARCHAR,
-	object_type VARCHAR, 
-	status VARCHAR,
-	PRIMARY KEY (id)
+	field_name VARCHAR(255), 
+	field_value VARCHAR(255),
+	field_location VARCHAR(255),
+	object_type VARCHAR(255), 
+	status VARCHAR(255)
 );
 
-CREATE TABLE Json_Data (
+CREATE TABLE json_data (
 
-	stix_id VARCHAR, 
-	original_json CLOB,
-	modified_json CLOB,
+	stix_id VARCHAR(255), 
+	original_json JSON,
+	modified_json JSON,
 	PRIMARY KEY (stix_id)
 );
