@@ -70,10 +70,7 @@ public class JsonDocProcessor {
 			LOGGER.info("Got elements.get = {}", elements.get(hrItemPath));
 			HumanReviewItem hrItem = new HumanReviewItem();
 			JsonData jsonData = new JsonData();
-			String stixId = jsonTree.get("id").toString().replaceAll("^\"|\"$", "");
-			if (stixId == null || stixId.isEmpty()) {
-				jsonTree.get("guid").toString().replaceAll("^\"|\"$", "");
-			}
+			String stixId = jsonTree.get("guid").toString().replaceAll("^\"|\"$", "");
 			jsonData.setStixId(stixId);
 			jsonData.setOriginalJson(jsonDoc);
 			jsonData.setModifiedJson(jsonDoc);
