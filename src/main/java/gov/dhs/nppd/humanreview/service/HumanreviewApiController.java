@@ -102,6 +102,7 @@ public class HumanreviewApiController implements HumanreviewApi {
 		LOGGER.debug("token: " + headers.get(TOKEN_STRING));
 		LOGGER.info("Checking for taken from user. Token: " + headers.get(TOKEN_STRING));
 		if (headers.get(TOKEN_STRING) == null || headers.get(TOKEN_STRING).isEmpty()) {
+			LOGGER.info("*** NO TOKEN! ***");
 			headers.add("Content-type", "application/json");
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).headers(headers).body(listOfHumanReviewItems);
 		}
@@ -114,6 +115,7 @@ public class HumanreviewApiController implements HumanreviewApi {
 			headers.add("Content-type", "application/json");
 			return ResponseEntity.ok().headers(headers).body(listOfHumanReviewItems);
 		} else {// token was not found
+			LOGGER.info("*** INVALID TOKEN! ***");
 			headers.add("Content-type", "application/json");
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).headers(headers).body(listOfHumanReviewItems);
 		}

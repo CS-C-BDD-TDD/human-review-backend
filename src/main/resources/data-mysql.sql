@@ -1,8 +1,5 @@
 USE humanreview;
 
-DROP TABLE auth_credentials;
-DROP TABLE human_review_item;
-DROP TABLE json_data;
 
 CREATE TABLE auth_credentials
 (

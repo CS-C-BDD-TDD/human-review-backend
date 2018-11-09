@@ -29,32 +29,31 @@ public class CommonUtil {
 	 * 
 	 */
 	public boolean tokenValidator(String token) {
-		LOGGER.debug("Current Token to validate: " + token);
-		LOGGER.debug("Current tokenTimeout " + tokenTimeout);
+		LOGGER.info("Current Token to validate: " + token);
+		LOGGER.info("Current tokenTimeout " + tokenTimeout);
 
 		// Checking if token is null or empty
 		if (token == null || token.isEmpty())
 			return false;
 
+		LOGGER.info("Afer Null: Current tokenTimeout " + tokenTimeout);
 		AuthCredentials tokenCheck = authCredentialsRepository.findByToken(token);
 
 		// Checking if the check from the DB is null
 		if (tokenCheck == null)
 			return false;
 
-		Date afterAddingMins = new Date(tokenCheck.getDate().getTime() + tokenTimeout);
-		Date now = new Date();
+		long lastAccessTime = tokenCheck.getDate().getTime();
+		long expiredTime = lastAccessTime + tokenTimeout;
+		long currentTime = System.currentTimeMillis();
 
-		LOGGER.debug("****************************");
-		LOGGER.debug("Current Time: " + now);
-		LOGGER.debug("Token Issue Time: " + tokenCheck.getDate());
-		LOGGER.debug("Token Expire Time: " + afterAddingMins);
-		LOGGER.debug("****************************");
+		LOGGER.info("****************************");
+		LOGGER.info("Current Time: " + currentTime);
+		LOGGER.info("Token Issue Time: " + lastAccessTime);
+		LOGGER.info("Token Expire Time: " + expiredTime);
+		LOGGER.info("****************************");
 
-		LOGGER.debug("tokenCheck.getDate().after(now): " + tokenCheck.getDate().after(now));
-		LOGGER.debug("afterAddingMins.before(now): " + afterAddingMins.before(now));
-
-		return !tokenCheck.getDate().after(now) && !afterAddingMins.before(now);
+		return currentTime < expiredTime;
 	}
 
 	public AuthCredentialsRepository getAuthCredentialsRepository() {
