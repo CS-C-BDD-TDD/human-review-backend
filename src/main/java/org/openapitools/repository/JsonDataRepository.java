@@ -13,8 +13,8 @@ public interface JsonDataRepository extends CrudRepository<JsonData, Long> {
 	JsonData findByStixId(String stixId);
 
 	@Modifying
-	@Query("update JsonData set modified_json=JSON_REPLACE(modified_json, fieldLocation, fieldValue) where stix_id=stixId")
-	public void updateJson(@Param("field_location") String fieldLocation, @Param("field_value") String fieldValue,
-			@Param("stixID") String stixId);
+	@Query("update JsonData set modified_json=JSON_REPLACE(modified_json, :field_location, :field_value) where stix_id=:stix_id")
+	public void updateJson(@Param("field_location") String field_location, @Param("field_value") String field_value,
+			@Param("stix_id") String stix_id);
 
 }

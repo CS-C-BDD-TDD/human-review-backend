@@ -233,24 +233,24 @@ public class HumanreviewApiController implements HumanreviewApi {
 				switch (groupAction) {
 				case "Accept All":
 					for (int i = 0; i < aList.size(); i++) {
+						LOGGER.info("aList.size = " + aList.size());
+						LOGGER.info("FieldLocation = " + aList.get(i).getFieldLocation());
+						LOGGER.info("FieldValue = " + aList.get(i).getFieldValue());
+						LOGGER.info("StixId = " + aList.get(i).getStixId());
+						jsonDataRepo.updateJson(aList.get(i).getFieldLocation(), aList.get(i).getFieldValue(),
+								aList.get(i).getStixId());
 						if (aList.get(i).getStatus().equals("New")) {
 							aList.get(i).setStatus("Accepted");
 						}
-						if (aList.get(i).getStatus().equals("Edited")) {
 
-							LOGGER.info("Loop iteration = " + i + jsonData.getStixId());
-							jsonDataRepo.updateJson(aList.get(i).getFieldLocation(), aList.get(i).getFieldValue(),
-									aList.get(i).getStixId());
-						}
-						LOGGER.info("Loop iteration = " + i + aList.toString());
+						LOGGER.info("ModifiedJson = " + jsonData.getModifiedJson());
 					}
 
 					String jsonString = jsonData.getModifiedJson();
 					LOGGER.info("jsonData = " + jsonData);
-					LOGGER.info("Loop iteration = " + jsonString);
+					LOGGER.info("jsonString = " + jsonString);
 					jsonData.setModifiedJson(jsonString);
 					jsonDataRepo.save(jsonData);
-					sender.sendMessage(jsonString);
 					return new ResponseEntity<Void>(org.springframework.http.HttpStatus.OK);
 
 				case "Disseminate":
@@ -259,8 +259,13 @@ public class HumanreviewApiController implements HumanreviewApi {
 						if (aList.get(i).getStatus().equals("New")) {
 							readyToDisseminate = false;
 						}
+						
 					}
 					if (readyToDisseminate == true) {
+						for (int i = 0; i < aList.size(); i++) {
+							jsonDataRepo.updateJson(aList.get(i).getFieldLocation(), aList.get(i).getFieldValue(),
+									aList.get(i).getStixId());
+						}
 						String modJson = jsonData.getModifiedJson();
 						jsonData.setModifiedJson(modJson);
 						jsonDataRepo.save(jsonData);

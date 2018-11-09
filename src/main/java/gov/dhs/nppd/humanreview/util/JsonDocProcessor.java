@@ -43,6 +43,14 @@ public class JsonDocProcessor {
 	private JsonDataRepository jsonDataRepo;
 
 	public void loadJsonDoc(String jsonDoc) {
+		String test = jsonDoc;
+		LOGGER.info("Storing Document= " + test);
+		
+		JsonData jsonData = new JsonData();
+		
+		jsonData.setOriginalJson(test);
+		jsonData.setModifiedJson(test);
+		
 		JsonParser parser = new JsonParser();
 
 		JsonObject jsonTree = parser.parse(jsonDoc).getAsJsonObject();
@@ -69,18 +77,15 @@ public class JsonDocProcessor {
 			LOGGER.info("Got hrItemPath = {}", hrItemPath);
 			LOGGER.info("Got elements.get = {}", elements.get(hrItemPath));
 			HumanReviewItem hrItem = new HumanReviewItem();
-			JsonData jsonData = new JsonData();
 			String stixId = jsonTree.get("guid").toString().replaceAll("^\"|\"$", "");
 			jsonData.setStixId(stixId);
-			jsonData.setOriginalJson(jsonDoc);
-			jsonData.setModifiedJson(jsonDoc);
 
 			int beginIndex = hrItemPath.indexOf('.');
 			int endIndex = hrItemPath.lastIndexOf('.');
 			int endIndexForFieldObject = hrItemPath.indexOf('[');
 			hrItem.setStixId(stixId);
 			hrItem.setFieldName(hrItemPath.substring(endIndex + 1));
-			hrItem.setFieldValue(elements.get(hrItemPath).toString().replace("!!!###HUMAN REVIEW###!!!", ""));
+			hrItem.setFieldValue(elements.get(hrItemPath).toString().replace("!!!###HUMAN REVIEW###!!!", "").replaceAll("^\"|\"$", ""));
 			hrItem.setFieldLocation(hrItemPath);
 			hrItem.setAction(HumanReviewItem.ActionEnum.BLANK);
 			hrItem.setStatus("New");
@@ -89,6 +94,7 @@ public class JsonDocProcessor {
 			hrItem.setObjectType(hrItemPath.substring(beginIndex + 1, endIndexForFieldObject));
 			LOGGER.info("Got hritem = {}", hrItem);
 			hrRepo.save(hrItem);
+			LOGGER.info("Checking again Document= " + test);
 			jsonDataRepo.save(jsonData);
 
 		});

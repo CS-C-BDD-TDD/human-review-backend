@@ -133,7 +133,7 @@ public class JsonData {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("class HumanReviewItem {\n");
+		sb.append("{\n");
 		sb.append("    originalJson: ").append(toIndentedString(originalJson)).append("\n");
 		sb.append("    modifiedJson: ").append(toIndentedString(modifiedJson)).append("\n");
 		sb.append("}");
