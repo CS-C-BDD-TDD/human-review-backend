@@ -8,6 +8,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.junit.Assert.assertTrue;
 
+import javax.persistence.EntityManager;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -23,8 +25,9 @@ import org.springframework.http.ResponseEntity;
 import gov.dhs.nppd.humanreview.amq.Sender;
 import gov.dhs.nppd.humanreview.util.CommonUtil;
 
-@ComponentScan(basePackages = { "org.openapitools", "org.openapitools.api", "org.openapitools.configuration",
-		"gov.dhs.nppd.model", "gov.dhs.nppd.api", "gov.dhs.nppd.repository" })
+@ComponentScan(basePackages = { "org.openapitools", "org.openapitools.api",
+		"org.openapitools.configuration", "gov.dhs.nppd.model", "gov.dhs.nppd.api",
+		"gov.dhs.nppd.repository" })
 public class HumanreviewApiControllerTest {
 
 	private HumanreviewApiController hrApiCtrl = new HumanreviewApiController(null, null);
@@ -37,6 +40,7 @@ public class HumanreviewApiControllerTest {
 	private String fieldName;
 	private ListOfHumanReviewItems hrItemList;
 	private HttpHeaders headers;
+	private EntityManager mockEnitytManager;
 
 	@Before
 	public void setup() {
@@ -44,16 +48,19 @@ public class HumanreviewApiControllerTest {
 		mockCommonUtil = Mockito.mock(CommonUtil.class);
 		mockSender = Mockito.mock(Sender.class);
 		mockJsonRepo = Mockito.mock(JsonDataRepository.class);
+		mockEnitytManager = Mockito.mock(EntityManager.class);
 		hrItemList = new ListOfHumanReviewItems();
 		Mockito.when(mockHrRepo.findAll()).thenReturn(hrItemList);
 		Mockito.when(mockCommonUtil.tokenValidator("Random")).thenReturn(true);
 		Mockito.when(mockSender.sendMessage("Random")).thenReturn("Random");
+		Mockito.doNothing().when(mockEnitytManager).refresh(Mockito.any());
 		headers = new HttpHeaders();
 		headers.add("token", "Random");
 		hrApiCtrl.setHrRepo(mockHrRepo);
 		hrApiCtrl.setCommonUtil(mockCommonUtil);
 		hrApiCtrl.setSender(mockSender);
 		hrApiCtrl.setJsonDataRepo(mockJsonRepo);
+		hrApiCtrl.setEm(mockEnitytManager);
 		stixId = "stix-id-1";
 		fieldName = "field-name-a";
 		expectedFieldValue = "accepted-value";
@@ -97,12 +104,13 @@ public class HumanreviewApiControllerTest {
 		expectedHumanReviewItem.setFieldName(fieldName);
 		expectedHumanReviewItem.setFieldValue(expectedFieldValue);
 
-		Mockito.when(mockHrRepo.findByStixIdAndFieldName(stixId, fieldName)).thenReturn(expectedHumanReviewItem);
+		Mockito.when(mockHrRepo.findByStixIdAndFieldName(stixId, fieldName))
+				.thenReturn(expectedHumanReviewItem);
 		hrApiCtrl.setHrRepo(mockHrRepo);
 
 		// when I update the field
-		hrApiCtrl.humanreviewStixIdFieldPut(headers, stixId, fieldName, "original-value", expectedFieldValue, fieldName,
-				"Invalid");
+		hrApiCtrl.humanreviewStixIdFieldPut(headers, stixId, fieldName, "original-value",
+				expectedFieldValue, fieldName, "Invalid");
 
 		Mockito.verify(mockHrRepo, Mockito.times(0)).save(expectedHumanReviewItem);
 	}
@@ -116,18 +124,20 @@ public class HumanreviewApiControllerTest {
 		expectedHumanReviewItem.setFieldName(fieldName);
 		expectedHumanReviewItem.setFieldValue(expectedFieldValue);
 
-		Mockito.when(mockHrRepo.findByStixIdAndFieldName(stixId, fieldName)).thenReturn(expectedHumanReviewItem);
+		Mockito.when(mockHrRepo.findByStixIdAndFieldName(stixId, fieldName))
+				.thenReturn(expectedHumanReviewItem);
 		hrApiCtrl.setHrRepo(mockHrRepo);
 
 		String[] actionList = { "Confirm Risk", "Edit", "Not PII", "Redact" };
 
 		for (String action : actionList) {
 			// when I update the field
-			hrApiCtrl.humanreviewStixIdFieldPut(headers, stixId, fieldName, "original-value", expectedFieldValue,
-					fieldName, action);
+			hrApiCtrl.humanreviewStixIdFieldPut(headers, stixId, fieldName, "original-value",
+					expectedFieldValue, fieldName, action);
 
 			// then I should get a successful update of the record
-			HumanReviewItem actualHumaReviewItem = hrApiCtrl.getHumanReviewItemByStixIdAndFieldName(stixId, fieldName);
+			HumanReviewItem actualHumaReviewItem = hrApiCtrl
+					.getHumanReviewItemByStixIdAndFieldName(stixId, fieldName);
 
 			assertThat(actualHumaReviewItem, equalTo(expectedHumanReviewItem));
 		}
@@ -141,11 +151,12 @@ public class HumanreviewApiControllerTest {
 		hrApiCtrl.setHrRepo(mockHrRepo);
 
 		// When or my Act
-		ResponseEntity<Void> result = hrApiCtrl.humanreviewStixIdFieldPut(headers, stixId, fieldName, "original-value",
-				"", fieldName, "some-action");
+		ResponseEntity<Void> result = hrApiCtrl.humanreviewStixIdFieldPut(headers, stixId,
+				fieldName, "original-value", "", fieldName, "some-action");
 
 		// Then or Assert
-		assertThat(result.getStatusCodeValue(), equalTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()));
+		assertThat(result.getStatusCodeValue(),
+				equalTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()));
 	}
 
 	@Test
@@ -155,10 +166,11 @@ public class HumanreviewApiControllerTest {
 		headers.remove("token");
 		hrApiCtrl.setHrRepo(mockHrRepo);
 
-		ResponseEntity<Void> result = hrApiCtrl.humanreviewStixIdFieldPut(headers, stixId, fieldName, "original-value",
-				"", fieldName, "some-action");
+		ResponseEntity<Void> result = hrApiCtrl.humanreviewStixIdFieldPut(headers, stixId,
+				fieldName, "original-value", "", fieldName, "some-action");
 		// Then or Assert
-		assertThat(result.getStatusCodeValue(), equalTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()));
+		assertThat(result.getStatusCodeValue(),
+				equalTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()));
 
 	}
 
@@ -170,10 +182,11 @@ public class HumanreviewApiControllerTest {
 		headers.set("token", "");
 		hrApiCtrl.setHrRepo(mockHrRepo);
 
-		ResponseEntity<Void> result = hrApiCtrl.humanreviewStixIdFieldPut(headers, stixId, fieldName, "original-value",
-				"", fieldName, "some-action");
+		ResponseEntity<Void> result = hrApiCtrl.humanreviewStixIdFieldPut(headers, stixId,
+				fieldName, "original-value", "", fieldName, "some-action");
 		// Then or Assert
-		assertThat(result.getStatusCodeValue(), equalTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()));
+		assertThat(result.getStatusCodeValue(),
+				equalTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()));
 
 	}
 
@@ -185,10 +198,11 @@ public class HumanreviewApiControllerTest {
 		headers.set("token", "xyz");
 		hrApiCtrl.setHrRepo(mockHrRepo);
 
-		ResponseEntity<Void> result = hrApiCtrl.humanreviewStixIdFieldPut(headers, stixId, fieldName, "original-value",
-				"", fieldName, "some-action");
+		ResponseEntity<Void> result = hrApiCtrl.humanreviewStixIdFieldPut(headers, stixId,
+				fieldName, "original-value", "", fieldName, "some-action");
 		// Then or Assert
-		assertThat(result.getStatusCodeValue(), equalTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()));
+		assertThat(result.getStatusCodeValue(),
+				equalTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()));
 
 	}
 
@@ -203,7 +217,8 @@ public class HumanreviewApiControllerTest {
 		ResponseEntity<ListOfHumanReviewItems> resp = hrApiCtrl.humanreviewPendingGet(headers);
 
 		// Then or Assert
-		assertThat(resp.getStatusCodeValue(), equalTo(org.springframework.http.HttpStatus.FORBIDDEN.value()));
+		assertThat(resp.getStatusCodeValue(),
+				equalTo(org.springframework.http.HttpStatus.FORBIDDEN.value()));
 
 	}
 
@@ -218,7 +233,8 @@ public class HumanreviewApiControllerTest {
 		ResponseEntity<ListOfHumanReviewItems> resp = hrApiCtrl.humanreviewPendingGet(headers);
 
 		// Then or Assert
-		assertThat(resp.getStatusCodeValue(), equalTo(org.springframework.http.HttpStatus.FORBIDDEN.value()));
+		assertThat(resp.getStatusCodeValue(),
+				equalTo(org.springframework.http.HttpStatus.FORBIDDEN.value()));
 
 	}
 
@@ -244,7 +260,7 @@ public class HumanreviewApiControllerTest {
 		String[] groupActionList = { "Accept All", "Disseminate", "Do Not Disseminate" };
 
 		for (String groupAction : groupActionList) {
-		// when I update the field
+			// when I update the field
 			hrApiCtrl.humanreviewStixIdPut(headers, stixId, groupAction);
 		}
 		// Then or Assert
@@ -269,12 +285,14 @@ public class HumanreviewApiControllerTest {
 		hrApiCtrl.setJsonDataRepo(mockJsonRepo);
 
 		// When or my Act
-		ResponseEntity<Void> result = hrApiCtrl.humanreviewStixIdPut(headers, stixId, "Disseminate");
+		ResponseEntity<Void> result = hrApiCtrl.humanreviewStixIdPut(headers, stixId,
+				"Disseminate");
 
 		// Then or Assert
-		assertThat(result.getStatusCodeValue(), equalTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()));
+		assertThat(result.getStatusCodeValue(),
+				equalTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()));
 	}
-	
+
 	@Test
 	public void shouldGetBadRequestForGroupUpdateGivenHumanReviewItemNotExist() {
 		// Given or Arrange
@@ -283,12 +301,13 @@ public class HumanreviewApiControllerTest {
 		hrApiCtrl.setHrRepo(mockHrRepo);
 
 		// When or my Act
-		ResponseEntity<Void> result = 	hrApiCtrl.humanreviewStixIdPut(headers, stixId, null);
+		ResponseEntity<Void> result = hrApiCtrl.humanreviewStixIdPut(headers, stixId, null);
 
 		// Then or Assert
-		assertThat(result.getStatusCodeValue(), equalTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()));
+		assertThat(result.getStatusCodeValue(),
+				equalTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()));
 	}
-	
+
 	@Test
 	public void shouldGetBadRequestForGroupUpdateGivenNullToken() {
 		// Given or Arrange
@@ -296,12 +315,13 @@ public class HumanreviewApiControllerTest {
 		headers.remove("token");
 		hrApiCtrl.setHrRepo(mockHrRepo);
 
-		ResponseEntity<Void> result = 	hrApiCtrl.humanreviewStixIdPut(headers, stixId, "Accept All");
+		ResponseEntity<Void> result = hrApiCtrl.humanreviewStixIdPut(headers, stixId, "Accept All");
 		// Then or Assert
-		assertThat(result.getStatusCodeValue(), equalTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()));
+		assertThat(result.getStatusCodeValue(),
+				equalTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()));
 
 	}
-	
+
 	@Test
 	public void shouldGetBadRequestForGroupUpdateGivenEmptyToken() {
 		// Given or Arrange
@@ -310,12 +330,13 @@ public class HumanreviewApiControllerTest {
 		headers.set("token", "");
 		hrApiCtrl.setHrRepo(mockHrRepo);
 
-		ResponseEntity<Void> result = 	hrApiCtrl.humanreviewStixIdPut(headers, stixId, "Accept All");
+		ResponseEntity<Void> result = hrApiCtrl.humanreviewStixIdPut(headers, stixId, "Accept All");
 		// Then or Assert
-		assertThat(result.getStatusCodeValue(), equalTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()));
+		assertThat(result.getStatusCodeValue(),
+				equalTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()));
 
 	}
-	
+
 	@Test
 	public void shouldGetBadRequestForGroupUpdateGivenBadToken() {
 		// Given or Arrange
@@ -324,12 +345,13 @@ public class HumanreviewApiControllerTest {
 		headers.set("token", "xyz");
 		hrApiCtrl.setHrRepo(mockHrRepo);
 
-		ResponseEntity<Void> result = 	hrApiCtrl.humanreviewStixIdPut(headers, stixId, "Accept All");
+		ResponseEntity<Void> result = hrApiCtrl.humanreviewStixIdPut(headers, stixId, "Accept All");
 		// Then or Assert
-		assertThat(result.getStatusCodeValue(), equalTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()));
+		assertThat(result.getStatusCodeValue(),
+				equalTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()));
 
 	}
-	
+
 	@Test
 	public void shouldGetBadRequestWhenGroupActionNotExist() {
 		// Given or Arrange
@@ -347,10 +369,12 @@ public class HumanreviewApiControllerTest {
 		hrApiCtrl.setJsonDataRepo(mockJsonRepo);
 
 		// When or my Act
-		ResponseEntity<Void> result = hrApiCtrl.humanreviewStixIdPut(headers, stixId, "some-action");
+		ResponseEntity<Void> result = hrApiCtrl.humanreviewStixIdPut(headers, stixId,
+				"some-action");
 
 		// Then or Assert
-		assertThat(result.getStatusCodeValue(), equalTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()));
+		assertThat(result.getStatusCodeValue(),
+				equalTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()));
 	}
 
 	@Test
@@ -361,12 +385,13 @@ public class HumanreviewApiControllerTest {
 		hrApiCtrl.setHrRepo(mockHrRepo);
 
 		// When or my Act
-		ResponseEntity<String> result = 	hrApiCtrl.humanreviewStixIdPost(headers, hrItem);
+		ResponseEntity<String> result = hrApiCtrl.humanreviewStixIdPost(headers, hrItem);
 
 		// Then or Assert
-		assertThat(result.getStatusCodeValue(), equalTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()));
+		assertThat(result.getStatusCodeValue(),
+				equalTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()));
 	}
-	
+
 	@Test
 	public void shouldGetBadRequestForCreateFieldGivenNullToken() {
 		// Given or Arrange
@@ -375,12 +400,13 @@ public class HumanreviewApiControllerTest {
 		headers.remove("token");
 		hrApiCtrl.setHrRepo(mockHrRepo);
 
-		ResponseEntity<String> result = 	hrApiCtrl.humanreviewStixIdPost(headers, hrItem);
+		ResponseEntity<String> result = hrApiCtrl.humanreviewStixIdPost(headers, hrItem);
 		// Then or Assert
-		assertThat(result.getStatusCodeValue(), equalTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()));
+		assertThat(result.getStatusCodeValue(),
+				equalTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()));
 
 	}
-	
+
 	@Test
 	public void shouldGetBadRequestForCreateFieldGivenEmptyToken() {
 		// Given or Arrange
@@ -390,12 +416,13 @@ public class HumanreviewApiControllerTest {
 		headers.set("token", "");
 		hrApiCtrl.setHrRepo(mockHrRepo);
 
-		ResponseEntity<String> result = 	hrApiCtrl.humanreviewStixIdPost(headers, hrItem);
+		ResponseEntity<String> result = hrApiCtrl.humanreviewStixIdPost(headers, hrItem);
 		// Then or Assert
-		assertThat(result.getStatusCodeValue(), equalTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()));
+		assertThat(result.getStatusCodeValue(),
+				equalTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()));
 
 	}
-	
+
 	@Test
 	public void shouldGetBadRequestForCreateFieldGivenBadToken() {
 		// Given or Arrange
@@ -405,12 +432,13 @@ public class HumanreviewApiControllerTest {
 		headers.set("token", "xyz");
 		hrApiCtrl.setHrRepo(mockHrRepo);
 
-		ResponseEntity<String> result = 	hrApiCtrl.humanreviewStixIdPost(headers, hrItem);
+		ResponseEntity<String> result = hrApiCtrl.humanreviewStixIdPost(headers, hrItem);
 		// Then or Assert
-		assertThat(result.getStatusCodeValue(), equalTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()));
+		assertThat(result.getStatusCodeValue(),
+				equalTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()));
 
 	}
-	
+
 	@Test
 	public void shouldCreateFieldByStixIdWithValidHRItem() {
 		HumanReviewItem hrItem = new HumanReviewItem();

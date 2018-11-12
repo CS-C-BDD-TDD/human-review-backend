@@ -80,6 +80,10 @@ public class HumanreviewApiController implements HumanreviewApi {
 	@Autowired
 	protected EntityManager em;
 
+	public void setEm(EntityManager em) {
+		this.em = em;
+	}
+
 	/**
 	 * Get HR item pending list
 	 * 
@@ -296,13 +300,13 @@ public class HumanreviewApiController implements HumanreviewApi {
 					hrItem.getStixId());
 		});
 
-		//em.refresh(jsonData);
+		em.refresh(jsonData);
 
 		LOGGER.info("Sending ...: " + jsonData.getModifiedJson());
 		sender.sendMessage(jsonData.getModifiedJson());
-		
+
 		jsonDataRepo.delete(jsonData);
-		
+
 		aList.stream().forEach(hrItem -> {
 			LOGGER.info("HR Item: " + hrItem);
 			hrRepo.delete(hrItem);
