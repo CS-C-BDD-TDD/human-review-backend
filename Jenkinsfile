@@ -157,7 +157,15 @@ pipeline {
 INPUT Required:
 ${buildUrl}input/
 
-If the above link does not contain "promote" and "abort" buttons, someone else has already approved or aborted the promotion"""
+If the above link does not contain "promote" and "abort" buttons, someone else has already approved or aborted the promotion
+
+Please review the following before promoting:
+ * OWASP Dependency Scanner Report:
+      ${buildUrl}/OWASP_20Dependency_20Check_20Report/
+ * JaCoCo Unit Test Report:
+      ${buildUrl}/Jacoco_20Unit_20Test_20Report/
+ * SonarQube reports:
+      https://sonarqube-labs-ci-cd.apps.domino.rht-labs.com/dashboard?id=gov.dhs.nppd%3Ahuman-review-backend"""
                 }
             }
         }
