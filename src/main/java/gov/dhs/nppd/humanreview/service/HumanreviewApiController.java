@@ -93,9 +93,12 @@ public class HumanreviewApiController implements HumanreviewApi {
 	 */
 	@Override
 	@ApiOperation(value = "", nickname = "humanreviewPendingGet", notes = "", response = ListOfHumanReviewItems.class, tags = {})
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ListOfHumanReviewItems.class) })
-	@RequestMapping(value = "/humanreview/pending", produces = { "application/json" }, method = RequestMethod.GET)
-	public ResponseEntity<ListOfHumanReviewItems> humanreviewPendingGet(@RequestHeader HttpHeaders headers) {
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "OK", response = ListOfHumanReviewItems.class) })
+	@RequestMapping(value = "/humanreview/pending", produces = {
+			"application/json" }, method = RequestMethod.GET)
+	public ResponseEntity<ListOfHumanReviewItems> humanreviewPendingGet(
+			@RequestHeader HttpHeaders headers) {
 
 		ListOfHumanReviewItems listOfHumanReviewItems = new ListOfHumanReviewItems();
 
@@ -104,7 +107,8 @@ public class HumanreviewApiController implements HumanreviewApi {
 		if (headers.get(TOKEN_STRING) == null || headers.get(TOKEN_STRING).isEmpty()) {
 			LOGGER.info("*** NO TOKEN! ***");
 			headers.add("Content-type", "application/json");
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).headers(headers).body(listOfHumanReviewItems);
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).headers(headers)
+					.body(listOfHumanReviewItems);
 		}
 
 		String tokenHeader = headers.get(TOKEN_STRING).get(0);
@@ -117,7 +121,8 @@ public class HumanreviewApiController implements HumanreviewApi {
 		} else {// token was not found
 			LOGGER.info("*** INVALID TOKEN! ***");
 			headers.add("Content-type", "application/json");
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).headers(headers).body(listOfHumanReviewItems);
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).headers(headers)
+					.body(listOfHumanReviewItems);
 		}
 	}
 
@@ -239,8 +244,8 @@ public class HumanreviewApiController implements HumanreviewApi {
 						LOGGER.info("FieldLocation = " + aList.get(i).getFieldLocation());
 						LOGGER.info("FieldValue = " + aList.get(i).getFieldValue());
 						LOGGER.info("StixId = " + aList.get(i).getStixId());
-						jsonDataRepo.updateJson(aList.get(i).getFieldLocation(), aList.get(i).getFieldValue(),
-								aList.get(i).getStixId());
+						jsonDataRepo.updateJson(aList.get(i).getFieldLocation(),
+								aList.get(i).getFieldValue(), aList.get(i).getStixId());
 						if (aList.get(i).getStatus().equals("New")) {
 							aList.get(i).setStatus("Accepted");
 						}
@@ -256,26 +261,8 @@ public class HumanreviewApiController implements HumanreviewApi {
 					return new ResponseEntity<Void>(org.springframework.http.HttpStatus.OK);
 
 				case "Disseminate":
-					boolean readyToDisseminate = true;
-					for (int i = 0; i < aList.size(); i++) {
-						if (aList.get(i).getStatus().equals("New")) {
-							readyToDisseminate = false;
-						}
-						
-					}
-					if (readyToDisseminate == true) {
-						for (int i = 0; i < aList.size(); i++) {
-							jsonDataRepo.updateJson(aList.get(i).getFieldLocation(), aList.get(i).getFieldValue(),
-									aList.get(i).getStixId());
-						}
-						String modJson = jsonData.getModifiedJson();
-						jsonData.setModifiedJson(modJson);
-						jsonDataRepo.save(jsonData);
-						sender.sendMessage(modJson);
-						return new ResponseEntity<Void>(org.springframework.http.HttpStatus.OK);
-					} else {
-						return new ResponseEntity<>(org.springframework.http.HttpStatus.BAD_REQUEST);
-					}
+					return disseminate(aList, jsonData);
+
 				case "Do Not Disseminate":
 					return new ResponseEntity<Void>(org.springframework.http.HttpStatus.OK);
 
@@ -290,6 +277,40 @@ public class HumanreviewApiController implements HumanreviewApi {
 
 	}
 
+	private ResponseEntity<Void> disseminate(ListOfHumanReviewItems aList, JsonData jsonData) {
+		boolean readyToDisseminate = true;
+		for (int i = 0; i < aList.size(); i++) {
+			if (aList.get(i).getStatus().equals("New")) {
+				readyToDisseminate = false;
+				break;
+			}
+		}
+
+		if (!readyToDisseminate) {
+			return new ResponseEntity<>(org.springframework.http.HttpStatus.BAD_REQUEST);
+		}
+
+		aList.stream().forEach(hrItem -> {
+			LOGGER.info("HR Item: " + hrItem);
+			jsonDataRepo.updateJson(hrItem.getFieldLocation(), hrItem.getFieldValue(),
+					hrItem.getStixId());
+		});
+
+		//em.refresh(jsonData);
+
+		LOGGER.info("Sending ...: " + jsonData.getModifiedJson());
+		sender.sendMessage(jsonData.getModifiedJson());
+		
+		jsonDataRepo.delete(jsonData);
+		
+		aList.stream().forEach(hrItem -> {
+			LOGGER.info("HR Item: " + hrItem);
+			hrRepo.delete(hrItem);
+		});
+
+		return new ResponseEntity<Void>(org.springframework.http.HttpStatus.OK);
+	}
+
 	/**
 	 * Create a HR item.
 	 * 
@@ -301,7 +322,8 @@ public class HumanreviewApiController implements HumanreviewApi {
 	 */
 	@ApiOperation(value = "", nickname = "humanreviewPost", notes = "", response = String.class, tags = {})
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class) })
-	@RequestMapping(value = "/humanreview/{stix_id}", consumes = { "application/json" }, method = RequestMethod.POST)
+	@RequestMapping(value = "/humanreview/{stix_id}", consumes = {
+			"application/json" }, method = RequestMethod.POST)
 	public ResponseEntity<String> humanreviewStixIdPost(@RequestHeader HttpHeaders headers,
 			@ApiParam(value = "Allow the user to create a HR item", required = true) @Valid @RequestBody HumanReviewItem hrItem) {
 
@@ -322,7 +344,8 @@ public class HumanreviewApiController implements HumanreviewApi {
 
 				hrRepo.save(hrItem);
 
-				return ResponseEntity.status(HttpStatus.OK).body(" New record created " + hrItem.getStixId());
+				return ResponseEntity.status(HttpStatus.OK)
+						.body(" New record created " + hrItem.getStixId());
 			}
 		} else {// token was not found
 			headers.add("Content-type", "application/json");

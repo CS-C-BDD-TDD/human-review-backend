@@ -60,3 +60,15 @@ Verify ActiveMq is up by visiting
 using admin:admin 
 
 Create the `inbound.stix` and `outbound.stix` queues under the Queues tab.  Click on the Send button to create a message to send using ActiveMQ.
+
+## environment vars for testing:
+
+export MYSQL_HOST=172.17.0.2
+export MYSQL_PORT=3306
+export MYSQL_DATABASE=humanreview
+export MYSQL_USER=user
+export MYSQL_PASSWORD=password
+export MQ_BROKER_TCP=localhost
+export MQ_PORT_TCP=61616
+export MQ_USERNAME=admin
+export MQ_PASSWORD=admin

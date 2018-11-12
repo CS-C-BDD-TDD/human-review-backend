@@ -234,6 +234,8 @@ public class HumanreviewApiControllerTest {
 
 		JsonData expectedJsonData = new JsonData();
 		expectedJsonData.setStixId(stixId);
+		expectedJsonData.setOriginalJson(expectedFieldValue);
+		expectedJsonData.setModifiedJson(expectedFieldValue);
 
 		Mockito.when(mockHrRepo.findByStixId(stixId)).thenReturn(hrItemList);
 		Mockito.when(mockJsonRepo.findByStixId(stixId)).thenReturn(expectedJsonData);
@@ -246,7 +248,7 @@ public class HumanreviewApiControllerTest {
 			hrApiCtrl.humanreviewStixIdPut(headers, stixId, groupAction);
 		}
 		// Then or Assert
-		Mockito.verify(mockJsonRepo, Mockito.times(2)).save(expectedJsonData);
+		Mockito.verify(mockJsonRepo, Mockito.times(1)).save(expectedJsonData);
 	}
 
 	@Test
