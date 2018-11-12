@@ -216,9 +216,16 @@ SonarQube reports reside at:
 Please see attached:
       OWASP Dependency Scanner Report (dependency-check-report.html)
       JaCoCo Unit Test Report* (jacoco-unit-test-report-no-js.zip)
-
+Also available at:
+      OWASP Dependency Scanner Report:
+         ${buildUrl}/OWASP_20Dependency_20Check_20Report/
+      JaCoCo Unit Test Report:
+         ${buildUrl}/Jacoco_20Unit_20Test_20Report/
+         
 * The JaCoCo Unit Test Report has been modified slightly to remove all JavaScript report formatting files; as most email servers will not allow the transmission of Zip attachments container JavaScript (*.js) files. The unmodified JaCoCo report is available at:
       ${buildUrl}/artifact/jacoco-unit-test-report.zip
+
+
 
 SonarQube reports reside at:
       https://sonarqube-labs-ci-cd.apps.domino.rht-labs.com/dashboard?id=gov.dhs.nppd%3Ahuman-review-backend"""
