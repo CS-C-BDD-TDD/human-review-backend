@@ -76,7 +76,7 @@ public class JsonDocProcessor {
 			LOGGER.info("Got hrItemPath = {}", hrItemPath);
 			LOGGER.info("Got elements.get = {}", elements.get(hrItemPath));
 			HumanReviewItem hrItem = new HumanReviewItem();
-			String stixId = jsonTree.get("guid").toString().replaceAll("^\"|\"$", "");
+			String stixId = jsonTree.get("id").toString().replaceAll("^\"|\"$", "");
 			jsonData.setStixId(stixId);
 
 			int beginIndex = hrItemPath.indexOf('.');
