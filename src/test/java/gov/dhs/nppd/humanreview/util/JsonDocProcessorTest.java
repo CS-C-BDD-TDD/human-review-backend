@@ -28,7 +28,7 @@ public class JsonDocProcessorTest {
 				"	\"cybox_object_id\": \"NCCIC:Object-b4971868-4860-4deb-8705-ca9d8922d6b0\",\r\n" + 
 				"	\"ip_value_calculated_start\": 87175888,\r\n" + 
 				"	\"ip_value_calculated_end\": 87175888,\r\n" + 
-				"	\"guid\": \"f7daa741-662e-4746-83b8-1d6f0e5c8f33\",\r\n" + 
+				"	\"id\": \"f7daa741-662e-4746-83b8-1d6f0e5c8f33\",\r\n" + 
 				"	\"course_of_actions\": [],\r\n" + 
 				"	\"ind_course_of_actions\": [{\r\n" + 
 				"		\"title\": \"!!!###HUMAN REVIEW###!!!This is the title of the CISA defensive measure. \",\r\n" + 
