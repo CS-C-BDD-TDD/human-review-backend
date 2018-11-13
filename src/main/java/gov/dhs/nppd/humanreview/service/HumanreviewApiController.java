@@ -13,6 +13,8 @@ import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.openapitools.api.HumanreviewApi;
 import org.openapitools.model.HumanReviewItem;
 import org.openapitools.model.JsonData;
@@ -301,9 +303,17 @@ public class HumanreviewApiController implements HumanreviewApi {
 		});
 
 		em.refresh(jsonData);
-
-		LOGGER.info("Sending ...: " + jsonData.getModifiedJson());
-		sender.sendMessage(jsonData.getModifiedJson());
+		
+		try {
+			JSONObject jsonDoc = new JSONObject(jsonData.getModifiedJson());    
+			String stixDoc = jsonDoc.toString(2);	
+		
+			LOGGER.info("Sending ...: " + stixDoc);
+			sender.sendMessage(stixDoc);
+        } catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		jsonDataRepo.delete(jsonData);
 
