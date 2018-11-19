@@ -38,6 +38,7 @@ public class HumanreviewApiControllerTest {
 	private String stixId;
 	private String expectedFieldValue;
 	private String fieldName;
+	private String fieldLocation;
 	private ListOfHumanReviewItems hrItemList;
 	private HttpHeaders headers;
 	private EntityManager mockEnitytManager;
@@ -63,6 +64,7 @@ public class HumanreviewApiControllerTest {
 		hrApiCtrl.setEm(mockEnitytManager);
 		stixId = "stix-id-1";
 		fieldName = "field-name-a";
+		fieldLocation = "field-location-a";
 		expectedFieldValue = "accepted-value";
 	}
 
@@ -104,7 +106,7 @@ public class HumanreviewApiControllerTest {
 		expectedHumanReviewItem.setFieldName(fieldName);
 		expectedHumanReviewItem.setFieldValue(expectedFieldValue);
 
-		Mockito.when(mockHrRepo.findByStixIdAndFieldName(stixId, fieldName))
+		Mockito.when(mockHrRepo.findByStixIdAndFieldLocation(stixId, fieldLocation))
 				.thenReturn(expectedHumanReviewItem);
 		hrApiCtrl.setHrRepo(mockHrRepo);
 
@@ -122,9 +124,10 @@ public class HumanreviewApiControllerTest {
 		HumanReviewItem expectedHumanReviewItem = new HumanReviewItem();
 		expectedHumanReviewItem.setStixId(stixId);
 		expectedHumanReviewItem.setFieldName(fieldName);
+		expectedHumanReviewItem.setFieldLocation(fieldLocation);
 		expectedHumanReviewItem.setFieldValue(expectedFieldValue);
 
-		Mockito.when(mockHrRepo.findByStixIdAndFieldName(stixId, fieldName))
+		Mockito.when(mockHrRepo.findByStixIdAndFieldLocation(stixId, fieldLocation))
 				.thenReturn(expectedHumanReviewItem);
 		hrApiCtrl.setHrRepo(mockHrRepo);
 
@@ -137,17 +140,17 @@ public class HumanreviewApiControllerTest {
 
 			// then I should get a successful update of the record
 			HumanReviewItem actualHumaReviewItem = hrApiCtrl
-					.getHumanReviewItemByStixIdAndFieldName(stixId, fieldName);
+					.getHumanReviewItemByStixIdAndFieldLocation(stixId, fieldLocation);
 
 			assertThat(actualHumaReviewItem, equalTo(expectedHumanReviewItem));
 		}
-		Mockito.verify(mockHrRepo, Mockito.times(4)).save(expectedHumanReviewItem);
+		Mockito.verify(mockHrRepo, Mockito.times(0)).save(expectedHumanReviewItem);
 	}
 
 	@Test
 	public void shouldGetBadRequestWhenHumanReviewItemNotExist() {
 		// Given or Arrange
-		Mockito.when(mockHrRepo.findByStixIdAndFieldName(stixId, fieldName)).thenReturn(null);
+		Mockito.when(mockHrRepo.findByStixIdAndFieldLocation(stixId, fieldLocation)).thenReturn(null);
 		hrApiCtrl.setHrRepo(mockHrRepo);
 
 		// When or my Act
@@ -162,7 +165,7 @@ public class HumanreviewApiControllerTest {
 	@Test
 	public void shouldGetBadRequestForUpdateGivenNullToken() {
 		// Given or Arrange
-		Mockito.when(mockHrRepo.findByStixIdAndFieldName(stixId, fieldName)).thenReturn(null);
+		Mockito.when(mockHrRepo.findByStixIdAndFieldLocation(stixId, fieldLocation)).thenReturn(null);
 		headers.remove("token");
 		hrApiCtrl.setHrRepo(mockHrRepo);
 
@@ -177,7 +180,7 @@ public class HumanreviewApiControllerTest {
 	@Test
 	public void shouldGetBadRequestForUpdateGivenEmptyToken() {
 		// Given or Arrange
-		Mockito.when(mockHrRepo.findByStixIdAndFieldName(stixId, fieldName)).thenReturn(null);
+		Mockito.when(mockHrRepo.findByStixIdAndFieldLocation(stixId, fieldLocation)).thenReturn(null);
 		headers.remove("token");
 		headers.set("token", "");
 		hrApiCtrl.setHrRepo(mockHrRepo);
@@ -193,7 +196,7 @@ public class HumanreviewApiControllerTest {
 	@Test
 	public void shouldGetBadRequestForUpdateGivenBadToken() {
 		// Given or Arrange
-		Mockito.when(mockHrRepo.findByStixIdAndFieldName(stixId, fieldName)).thenReturn(null);
+		Mockito.when(mockHrRepo.findByStixIdAndFieldLocation(stixId, fieldLocation)).thenReturn(null);
 		headers.remove("token");
 		headers.set("token", "xyz");
 		hrApiCtrl.setHrRepo(mockHrRepo);
@@ -209,7 +212,7 @@ public class HumanreviewApiControllerTest {
 	@Test
 	public void shouldGetForbiddenCodeForGetPendingGivenNullToken() {
 		// Given or Arrange
-		Mockito.when(mockHrRepo.findByStixIdAndFieldName(stixId, fieldName)).thenReturn(null);
+		Mockito.when(mockHrRepo.findByStixIdAndFieldLocation(stixId, fieldLocation)).thenReturn(null);
 		headers.remove("token");
 		hrApiCtrl.setHrRepo(mockHrRepo);
 
@@ -225,7 +228,7 @@ public class HumanreviewApiControllerTest {
 	@Test
 	public void shouldGetForbiddenCodeForGetPendingGivenEmptyToken() {
 		// Given or Arrange
-		Mockito.when(mockHrRepo.findByStixIdAndFieldName(stixId, fieldName)).thenReturn(null);
+		Mockito.when(mockHrRepo.findByStixIdAndFieldLocation(stixId, fieldLocation)).thenReturn(null);
 		headers.set("token", "");
 		hrApiCtrl.setHrRepo(mockHrRepo);
 
@@ -297,7 +300,7 @@ public class HumanreviewApiControllerTest {
 	public void shouldGetBadRequestForGroupUpdateGivenHumanReviewItemNotExist() {
 		// Given or Arrange
 		HumanReviewItem hrItem = null;
-		Mockito.when(mockHrRepo.findByStixIdAndFieldName(stixId, fieldName)).thenReturn(null);
+		Mockito.when(mockHrRepo.findByStixIdAndFieldLocation(stixId, fieldLocation)).thenReturn(null);
 		hrApiCtrl.setHrRepo(mockHrRepo);
 
 		// When or my Act
@@ -311,7 +314,7 @@ public class HumanreviewApiControllerTest {
 	@Test
 	public void shouldGetBadRequestForGroupUpdateGivenNullToken() {
 		// Given or Arrange
-		Mockito.when(mockHrRepo.findByStixIdAndFieldName(stixId, fieldName)).thenReturn(null);
+		Mockito.when(mockHrRepo.findByStixIdAndFieldLocation(stixId, fieldLocation)).thenReturn(null);
 		headers.remove("token");
 		hrApiCtrl.setHrRepo(mockHrRepo);
 
@@ -325,7 +328,7 @@ public class HumanreviewApiControllerTest {
 	@Test
 	public void shouldGetBadRequestForGroupUpdateGivenEmptyToken() {
 		// Given or Arrange
-		Mockito.when(mockHrRepo.findByStixIdAndFieldName(stixId, fieldName)).thenReturn(null);
+		Mockito.when(mockHrRepo.findByStixIdAndFieldLocation(stixId, fieldLocation)).thenReturn(null);
 		headers.remove("token");
 		headers.set("token", "");
 		hrApiCtrl.setHrRepo(mockHrRepo);
@@ -340,7 +343,7 @@ public class HumanreviewApiControllerTest {
 	@Test
 	public void shouldGetBadRequestForGroupUpdateGivenBadToken() {
 		// Given or Arrange
-		Mockito.when(mockHrRepo.findByStixIdAndFieldName(stixId, fieldName)).thenReturn(null);
+		Mockito.when(mockHrRepo.findByStixIdAndFieldLocation(stixId, fieldLocation)).thenReturn(null);
 		headers.remove("token");
 		headers.set("token", "xyz");
 		hrApiCtrl.setHrRepo(mockHrRepo);
@@ -381,7 +384,7 @@ public class HumanreviewApiControllerTest {
 	public void shouldGetBadRequestForCreateFieldGivenHumanReviewItemNotExist() {
 		// Given or Arrange
 		HumanReviewItem hrItem = null;
-		Mockito.when(mockHrRepo.findByStixIdAndFieldName(stixId, fieldName)).thenReturn(null);
+		Mockito.when(mockHrRepo.findByStixIdAndFieldLocation(stixId, fieldLocation)).thenReturn(null);
 		hrApiCtrl.setHrRepo(mockHrRepo);
 
 		// When or my Act
@@ -396,7 +399,7 @@ public class HumanreviewApiControllerTest {
 	public void shouldGetBadRequestForCreateFieldGivenNullToken() {
 		// Given or Arrange
 		HumanReviewItem hrItem = new HumanReviewItem();
-		Mockito.when(mockHrRepo.findByStixIdAndFieldName(stixId, fieldName)).thenReturn(null);
+		Mockito.when(mockHrRepo.findByStixIdAndFieldLocation(stixId, fieldLocation)).thenReturn(null);
 		headers.remove("token");
 		hrApiCtrl.setHrRepo(mockHrRepo);
 
@@ -411,7 +414,7 @@ public class HumanreviewApiControllerTest {
 	public void shouldGetBadRequestForCreateFieldGivenEmptyToken() {
 		// Given or Arrange
 		HumanReviewItem hrItem = new HumanReviewItem();
-		Mockito.when(mockHrRepo.findByStixIdAndFieldName(stixId, fieldName)).thenReturn(null);
+		Mockito.when(mockHrRepo.findByStixIdAndFieldLocation(stixId, fieldLocation)).thenReturn(null);
 		headers.remove("token");
 		headers.set("token", "");
 		hrApiCtrl.setHrRepo(mockHrRepo);
@@ -427,7 +430,7 @@ public class HumanreviewApiControllerTest {
 	public void shouldGetBadRequestForCreateFieldGivenBadToken() {
 		// Given or Arrange
 		HumanReviewItem hrItem = new HumanReviewItem();
-		Mockito.when(mockHrRepo.findByStixIdAndFieldName(stixId, fieldName)).thenReturn(null);
+		Mockito.when(mockHrRepo.findByStixIdAndFieldLocation(stixId, fieldLocation)).thenReturn(null);
 		headers.remove("token");
 		headers.set("token", "xyz");
 		hrApiCtrl.setHrRepo(mockHrRepo);
