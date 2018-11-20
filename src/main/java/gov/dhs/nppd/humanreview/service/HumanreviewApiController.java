@@ -153,14 +153,14 @@ public class HumanreviewApiController implements HumanreviewApi {
 			@ApiParam(value = "The field to be updated", required = true) @PathVariable("field") String field,
 			@ApiParam(value = "", required = true, defaultValue = "null") @RequestParam(value = "original_value", required = true) String originalValue,
 			@ApiParam(value = "", required = true, defaultValue = "null") @RequestParam(value = "accepted_value", required = true) String acceptedValue,
-			@ApiParam(value = "", required = true, defaultValue = "null") @RequestParam(value = "field_name", required = true) String fieldName,
+			@ApiParam(value = "", required = true, defaultValue = "null") @RequestParam(value = "field_location", required = true) String fieldLocation,
 			@ApiParam(value = "", required = true, defaultValue = "null") @RequestParam(value = "action_type", required = true) String actionType) {
 
-		HumanReviewItem hrItem = hrRepo.findByStixIdAndFieldName(stixId, fieldName);
+		HumanReviewItem hrItem = hrRepo.findByStixIdAndFieldLocation(stixId, fieldLocation);
 		String redactValue = "#####";
 		LOGGER.info("id = " + stixId);
 		LOGGER.info("field = " + field);
-		LOGGER.info("fieldname = " + fieldName);
+		LOGGER.info("fieldname = " + fieldLocation);
 
 		if (headers.get(TOKEN_STRING) == null || headers.get(TOKEN_STRING).isEmpty()) {
 			headers.add("Content-type", "application/json");
@@ -270,6 +270,11 @@ public class HumanreviewApiController implements HumanreviewApi {
 					return disseminate(aList, jsonData);
 
 				case "Do Not Disseminate":
+					//Remove the HumanReviewItems from the HumanreviewRepository
+					aList.stream().forEach(hrItem -> {
+						LOGGER.info("HR Item: " + hrItem);
+						hrRepo.delete(hrItem);
+					});
 					return new ResponseEntity<Void>(org.springframework.http.HttpStatus.OK);
 
 				default:
@@ -315,8 +320,10 @@ public class HumanreviewApiController implements HumanreviewApi {
 			e.printStackTrace();
 		}
 
+		//Remove the jsonData from the JsonData database
 		jsonDataRepo.delete(jsonData);
 
+		//Remove the HumanReviewItems from the HumanReview database
 		aList.stream().forEach(hrItem -> {
 			LOGGER.info("HR Item: " + hrItem);
 			hrRepo.delete(hrItem);
@@ -395,8 +402,8 @@ public class HumanreviewApiController implements HumanreviewApi {
 		this.sender = sender;
 	}
 
-	public HumanReviewItem getHumanReviewItemByStixIdAndFieldName(String stixId, String fieldName) {
-		return hrRepo.findByStixIdAndFieldName(stixId, fieldName);
+	public HumanReviewItem getHumanReviewItemByStixIdAndFieldLocation(String stixId, String fieldLocation) {
+		return hrRepo.findByStixIdAndFieldLocation(stixId, fieldLocation);
 	}
 
 	public JsonData getJsonDataByStixId(String stixId) {
