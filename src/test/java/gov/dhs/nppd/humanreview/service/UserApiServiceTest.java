@@ -11,16 +11,18 @@ import org.openapitools.model.AuthCredentials;
 import org.openapitools.repository.AuthCredentialsRepository;
 import org.springframework.http.ResponseEntity;
 
-public class UserApiControllerTest {
+import gov.dhs.nppd.humanreview.controller.UserApiController;
 
-	private UserApiController ctr;
+public class UserApiServiceTest {
+
+	private UserApiService service;
 	private AuthCredentialsRepository mockAuthCredentialsRepository;
 	private AuthCredentials enteredAuthCredentials;
 	private AuthCredentials expectedAuthCredentials;
 
 	@Before
 	public void setup() {
-		ctr = new UserApiController(null, null);
+		service = new UserApiService();
 		mockAuthCredentialsRepository = Mockito.mock(AuthCredentialsRepository.class);
 
 		enteredAuthCredentials = new AuthCredentials();
@@ -38,10 +40,10 @@ public class UserApiControllerTest {
 		Mockito.when(mockAuthCredentialsRepository.findByUsernameAndPassword(enteredAuthCredentials.getUsername(),
 				enteredAuthCredentials.getPassword())).thenReturn(expectedAuthCredentials);
 
-		ctr.setAuthCredentialsRepository(mockAuthCredentialsRepository);
+		service.setAuthCredentialsRepository(mockAuthCredentialsRepository);
 
 		// Act
-		ResponseEntity<String> resp = ctr.userPut(enteredAuthCredentials);
+		ResponseEntity<String> resp = service.userPut(enteredAuthCredentials);
 		String actualToken = resp.getBody();
 
 		// Assert
@@ -54,10 +56,10 @@ public class UserApiControllerTest {
 		Mockito.when(mockAuthCredentialsRepository.findByUsernameAndPassword(enteredAuthCredentials.getUsername(),
 				enteredAuthCredentials.getPassword())).thenReturn(null);
 
-		ctr.setAuthCredentialsRepository(mockAuthCredentialsRepository);
+		service.setAuthCredentialsRepository(mockAuthCredentialsRepository);
 
 		// Act
-		ResponseEntity<String> resp = ctr.userPut(enteredAuthCredentials);
+		ResponseEntity<String> resp = service.userPut(enteredAuthCredentials);
 		String actualToken = resp.getBody();
 
 		// Assert
@@ -66,8 +68,7 @@ public class UserApiControllerTest {
 
 	@Test
 	public void shouldMakeIt100Percent() {
-		ctr.getAuthCredentialsRepository();
-		ctr.getRequest();
+		service.getAuthCredentialsRepository();
 		assertTrue(true);
 
 	}
