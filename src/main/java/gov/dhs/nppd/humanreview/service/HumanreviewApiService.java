@@ -66,7 +66,7 @@ public class HumanreviewApiService {
 	}
 	
 	
-	@HystrixCommand(fallbackMethod = "reliable")
+	@HystrixCommand(fallbackMethod = "reliableGet")
 	public ResponseEntity<ListOfHumanReviewItems> humanreviewPendingGet(HttpHeaders headers) {
 
 		ListOfHumanReviewItems listOfHumanReviewItems = new ListOfHumanReviewItems();
@@ -95,7 +95,7 @@ public class HumanreviewApiService {
 		}
 	}
 	
-	@HystrixCommand(fallbackMethod = "reliable")
+	@HystrixCommand(fallbackMethod = "reliableFieldPut")
 	public ResponseEntity<Void> humanreviewStixIdFieldPut(HttpHeaders headers,String stixId,String field,String originalValue,String acceptedValue,
 			String fieldLocation, String actionType) {
 
@@ -155,7 +155,7 @@ public class HumanreviewApiService {
 		}
 	}
 	
-	@HystrixCommand(fallbackMethod = "reliable")
+	@HystrixCommand(fallbackMethod = "reliableStixIdPut")
 	public ResponseEntity<Void> humanreviewStixIdPut(
 			@ApiParam(value = "The ID of the STIX document", required = true) @RequestHeader HttpHeaders headers,
 			@PathVariable("stix_id") String stixId,
@@ -219,7 +219,7 @@ public class HumanreviewApiService {
 
 	}
 	
-	@HystrixCommand(fallbackMethod = "reliable")
+	@HystrixCommand(fallbackMethod = "reliablePost")
 	public ResponseEntity<String> humanreviewStixIdPost( HttpHeaders headers, HumanReviewItem hrItem) {
 
 		if (headers.get(TOKEN_STRING) == null || headers.get(TOKEN_STRING).isEmpty()) {
@@ -248,7 +248,6 @@ public class HumanreviewApiService {
 		}
 	}
 	
-	@HystrixCommand(fallbackMethod = "reliable")
 	private ResponseEntity<Void> disseminate(ListOfHumanReviewItems aList, JsonData jsonData) {
 		boolean readyToDisseminate = true;
 		for (int i = 0; i < aList.size(); i++) {
@@ -297,10 +296,42 @@ public class HumanreviewApiService {
 	 * Circuit Break response if the system goes down/is overloaded. 
 	 * @return The Bandwidth Limit Exceeded HTTP Status code along with same message in body
 	 */
-	public  ResponseEntity<String> reliable() {
-		HttpHeaders headers = new HttpHeaders();
+	public  ResponseEntity<ListOfHumanReviewItems> reliableGet(HttpHeaders headers) {
+		headers = new HttpHeaders();
 		headers.add("Content-type", "text/plain");
-	    return ResponseEntity.status(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED).headers(headers).body("Bandwidth Limit Exceeded");
+		ListOfHumanReviewItems listOfHumanReviewItems = new ListOfHumanReviewItems();;
+		return ResponseEntity.status(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED).headers(headers).body(listOfHumanReviewItems);
+	}
+	
+	/**
+	 * Circuit Break response if the system goes down/is overloaded. 
+	 * @return The Bandwidth Limit Exceeded HTTP Status code along with same message in body
+	 */
+	public  ResponseEntity<Void> reliableFieldPut(HttpHeaders headers,String stixId,String field,String originalValue,String acceptedValue,
+			String fieldLocation, String actionType) {
+		headers = new HttpHeaders();
+		headers.add("Content-type", "text/plain");
+		return new ResponseEntity<Void>(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED);
+	}
+	
+	/**
+	 * Circuit Break response if the system goes down/is overloaded. 
+	 * @return The Bandwidth Limit Exceeded HTTP Status code along with same message in body
+	 */
+	public  ResponseEntity<Void> reliableStixIdPut(HttpHeaders headers, String stixId, String groupAction) {
+		headers = new HttpHeaders();
+		headers.add("Content-type", "text/plain");
+		return new ResponseEntity<Void>(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED);
+	}
+	
+	/**
+	 * Circuit Break response if the system goes down/is overloaded. 
+	 * @return The Bandwidth Limit Exceeded HTTP Status code along with same message in body
+	 */
+	public  ResponseEntity<String> reliablePost(HttpHeaders headers, HumanReviewItem hrItem) {
+		headers = new HttpHeaders();
+		headers.add("Content-type", "text/plain");
+		return ResponseEntity.status(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED).headers(headers).body("Bandwidth Limit Exceeded");
 	}
 	
 	public HumanreviewRepository getHrRepo() {

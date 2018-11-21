@@ -65,7 +65,7 @@ public class UserApiService {
 	 * Circuit Break response if the system goes down/is overloaded. 
 	 * @return The Bandwidth Limit Exceeded HTTP Status code along with same message in body
 	 */
-	public  ResponseEntity<String> reliable() {
+	public  ResponseEntity<String> reliable(AuthCredentials authCredentials) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Content-type", "text/plain");
 	    return ResponseEntity.status(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED).headers(headers).body("Bandwidth Limit Exceeded");

@@ -1,31 +1,18 @@
 package gov.dhs.nppd.humanreview.controller;
 
-import static org.openapitools.model.HumanReviewItem.ActionEnum.CONFIRM_RISK;
-import static org.openapitools.model.HumanReviewItem.ActionEnum.EDIT;
-import static org.openapitools.model.HumanReviewItem.ActionEnum.NOT_PII;
-import static org.openapitools.model.HumanReviewItem.ActionEnum.REDACT;
-
-import java.time.OffsetDateTime;
 import java.util.Optional;
 
-import javax.persistence.EntityManager;
 import javax.validation.Valid;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.openapitools.api.HumanreviewApi;
 import org.openapitools.model.HumanReviewItem;
-import org.openapitools.model.JsonData;
 import org.openapitools.model.ListOfHumanReviewItems;
 import org.openapitools.repository.HumanreviewRepository;
-import org.openapitools.repository.JsonDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,12 +20,10 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.NativeWebRequest;
 
-import gov.dhs.nppd.humanreview.amq.Sender;
 import gov.dhs.nppd.humanreview.service.HumanreviewApiService;
-import gov.dhs.nppd.humanreview.util.CommonUtil;
-import gov.dhs.nppd.humanreview.util.JsonDocProcessor;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -46,7 +31,9 @@ import io.swagger.annotations.ApiResponses;
 
 @javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2018-10-11T09:52:13.189-04:00[America/New_York]")
 
-@Controller
+@EnableCircuitBreaker
+@RestController
+@SpringBootApplication
 @RequestMapping("${openapi.humanReview.base-path:/api/v1}")
 public class HumanreviewApiController implements HumanreviewApi {
 
