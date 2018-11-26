@@ -278,8 +278,7 @@ public class HumanreviewApiService {
 			LOGGER.info("Sending ...: " + stixDoc);
 			sender.sendMessage(stixDoc);
         } catch (JSONException e) {
-			// TODO Auto-generated catch block
-        	LOGGER.info("JSONException ...: " + e);
+        	return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 		//Remove the jsonData from the JsonData database
