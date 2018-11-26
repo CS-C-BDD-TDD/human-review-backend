@@ -9,7 +9,6 @@ import org.openapitools.model.AuthCredentials;
 import org.openapitools.repository.AuthCredentialsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +21,6 @@ import io.swagger.annotations.ApiParam;
 
 @javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2018-10-11T09:52:13.189-04:00[America/New_York]")
 
-@EnableCircuitBreaker
 @RestController
 @SpringBootApplication
 @RequestMapping("${openapi.humanReview.base-path:/api/v1}")

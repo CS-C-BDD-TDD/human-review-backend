@@ -42,8 +42,9 @@ public class JsonDocProcessor {
 	private JsonDataRepository jsonDataRepo;
 
 	public void loadJsonDoc(String jsonDoc) {
+		
 		String test = jsonDoc;
-		LOGGER.info("Storing Document= " + test);
+		LOGGER.info("Storing Document= {}", test);
 		
 		JsonData jsonData = new JsonData();
 		
@@ -53,50 +54,55 @@ public class JsonDocProcessor {
 		JsonParser parser = new JsonParser();
 
 		JsonObject jsonTree = parser.parse(jsonDoc).getAsJsonObject();
-		elements = new HashMap<>();
-		List<String> hrItemPaths = new ArrayList<>();
-
-		getElements(jsonTree, "$");
-		LOGGER.info("*** Found {} elmenents (primitives & null)", elements.size());
-		LOGGER.info(">>> searching human review");
-
-		elements.keySet().stream().forEach(path -> {
-			String value = elements.get(path).toString();
-			if (value != null && value.contains("!!!###HUMAN REVIEW###!!!")) {
-				hrItemPaths.add(path);
-			}
-		});
-
-		LOGGER.info("*** Found {} HR items", hrItemPaths.size());
-
-		hrItemPaths.stream().forEach(hrItemPath -> {
-			LOGGER.info(">>> {}: {}", hrItemPath, elements.get(hrItemPath));
-			LOGGER.info("<<< {}: {}", hrItemPath, JsonPath.read(jsonDoc, hrItemPath));
-
-			LOGGER.info("Got hrItemPath = {}", hrItemPath);
-			LOGGER.info("Got elements.get = {}", elements.get(hrItemPath));
-			HumanReviewItem hrItem = new HumanReviewItem();
-			String stixId = jsonTree.get("id").toString().replaceAll("^\"|\"$", "");
-			jsonData.setStixId(stixId);
-
-			int beginIndex = hrItemPath.indexOf('.');
-			int endIndex = hrItemPath.lastIndexOf('.');
-			int endIndexForFieldObject = hrItemPath.indexOf('[');
-			hrItem.setStixId(stixId);
-			hrItem.setFieldName(hrItemPath.substring(endIndex + 1));
-			hrItem.setFieldValue(elements.get(hrItemPath).toString().replace("!!!###HUMAN REVIEW###!!!", "").replaceAll("^\"|\"$", ""));
-			hrItem.setFieldLocation(hrItemPath);
-			hrItem.setAction(HumanReviewItem.ActionEnum.BLANK);
-			hrItem.setStatus("New");
-			hrItem.setModifiedDate(OffsetDateTime.now());
-			hrItem.setOriginalDate(OffsetDateTime.now());
-			hrItem.setObjectType(hrItemPath.substring(beginIndex + 1, endIndexForFieldObject));
-			LOGGER.info("Got hritem = {}", hrItem);
-			hrRepo.save(hrItem);
-			LOGGER.info("Checking again Document= " + test);
-			jsonDataRepo.save(jsonData);
-
-		});
+		String stixId = jsonTree.get("id").toString().replaceAll("^\"|\"$", "");
+		JsonData idCheck = jsonDataRepo.findByStixId(stixId);
+		LOGGER.info("idCheck value = {}", idCheck);
+		if(idCheck == null) {
+			elements = new HashMap<>();
+			List<String> hrItemPaths = new ArrayList<>();
+	
+			getElements(jsonTree, "$");
+			LOGGER.info("*** Found {} elmenents (primitives & null)", elements.size());
+			LOGGER.info(">>> searching human review");
+	
+			elements.keySet().stream().forEach(path -> {
+				String value = elements.get(path).toString();
+				if (value != null && value.contains("!!!###HUMAN REVIEW###!!!")) {
+					hrItemPaths.add(path);
+				}
+			});
+	
+			LOGGER.info("*** Found {} HR items", hrItemPaths.size());
+	
+			hrItemPaths.stream().forEach(hrItemPath -> {
+				LOGGER.info(">>> {}: {}", hrItemPath, elements.get(hrItemPath));
+				LOGGER.info("<<< {}: {}", hrItemPath, JsonPath.read(jsonDoc, hrItemPath));
+	
+				LOGGER.info("Got hrItemPath = {}", hrItemPath);
+				LOGGER.info("Got elements.get = {}", elements.get(hrItemPath));
+				HumanReviewItem hrItem = new HumanReviewItem();
+				
+				jsonData.setStixId(stixId);
+	
+				int beginIndex = hrItemPath.indexOf('.');
+				int endIndex = hrItemPath.lastIndexOf('.');
+				int endIndexForFieldObject = hrItemPath.indexOf('[');
+				hrItem.setStixId(stixId);
+				hrItem.setFieldName(hrItemPath.substring(endIndex + 1));
+				hrItem.setFieldValue(elements.get(hrItemPath).toString().replace("!!!###HUMAN REVIEW###!!!", "").replaceAll("^\"|\"$", ""));
+				hrItem.setFieldLocation(hrItemPath);
+				hrItem.setAction(HumanReviewItem.ActionEnum.BLANK);
+				hrItem.setStatus("New");
+				hrItem.setModifiedDate(OffsetDateTime.now());
+				hrItem.setOriginalDate(OffsetDateTime.now());
+				hrItem.setObjectType(hrItemPath.substring(beginIndex + 1, endIndexForFieldObject));
+				LOGGER.info("Got hritem = {}", hrItem);
+				hrRepo.save(hrItem);
+				LOGGER.info("Checking again Document= {}", test);
+				jsonDataRepo.save(jsonData);
+	
+			});
+		}
 
 	}
 
@@ -120,7 +126,9 @@ public class JsonDocProcessor {
 					if (jsonTree.get(entry.getKey()) instanceof JsonArray) {
 						JsonArray array = jsonTree.get(entry.getKey()).getAsJsonArray();
 						for (int i = 0; i < array.size(); i++) {
-							getElements(array.get(i).getAsJsonObject(), curElName + "[" + i + "]");
+							if (array.get(i).getAsJsonObject() instanceof JsonObject) {
+								getElements(array.get(i).getAsJsonObject(), curElName + "[" + i + "]");
+							}
 						}
 					}
 				} catch (Exception e) {

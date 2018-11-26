@@ -23,7 +23,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
 import gov.dhs.nppd.humanreview.amq.Sender;
-import gov.dhs.nppd.humanreview.controller.HumanreviewApiController;
 import gov.dhs.nppd.humanreview.util.CommonUtil;
 
 @ComponentScan(basePackages = { "org.openapitools", "org.openapitools.api",
@@ -113,7 +112,7 @@ public class HumanreviewApiServiceTest {
 
 		// when I update the field
 		hrApiService.humanreviewStixIdFieldPut(headers, stixId, fieldName, "original-value",
-				expectedFieldValue, fieldName, "Invalid");
+				expectedFieldValue, fieldLocation, "Invalid");
 
 		Mockito.verify(mockHrRepo, Mockito.times(0)).save(expectedHumanReviewItem);
 	}
@@ -136,8 +135,8 @@ public class HumanreviewApiServiceTest {
 
 		for (String action : actionList) {
 			// when I update the field
-			hrApiService.humanreviewStixIdFieldPut(headers, stixId, fieldLocation, "original-value",
-					expectedFieldValue, fieldName, action);
+			hrApiService.humanreviewStixIdFieldPut(headers, stixId, fieldName, "original-value",
+					expectedFieldValue, fieldLocation, action);
 
 			// then I should get a successful update of the record
 			HumanReviewItem actualHumaReviewItem = hrApiService
@@ -145,7 +144,7 @@ public class HumanreviewApiServiceTest {
 
 			assertThat(actualHumaReviewItem, equalTo(expectedHumanReviewItem));
 		}
-		Mockito.verify(mockHrRepo, Mockito.times(0)).save(expectedHumanReviewItem);
+		Mockito.verify(mockHrRepo, Mockito.times(4)).save(expectedHumanReviewItem);
 	}
 
 	@Test
@@ -156,7 +155,7 @@ public class HumanreviewApiServiceTest {
 
 		// When or my Act
 		ResponseEntity<Void> result = hrApiService.humanreviewStixIdFieldPut(headers, stixId,
-				fieldLocation, "original-value", "", fieldName, "some-action");
+				fieldName, "original-value", "", fieldLocation, "some-action");
 
 		// Then or Assert
 		assertThat(result.getStatusCodeValue(),
@@ -171,7 +170,7 @@ public class HumanreviewApiServiceTest {
 		hrApiService.setHrRepo(mockHrRepo);
 
 		ResponseEntity<Void> result = hrApiService.humanreviewStixIdFieldPut(headers, stixId,
-				fieldLocation, "original-value", "", fieldName, "some-action");
+				fieldName, "original-value", "", fieldLocation, "some-action");
 		// Then or Assert
 		assertThat(result.getStatusCodeValue(),
 				equalTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()));
@@ -187,7 +186,7 @@ public class HumanreviewApiServiceTest {
 		hrApiService.setHrRepo(mockHrRepo);
 
 		ResponseEntity<Void> result = hrApiService.humanreviewStixIdFieldPut(headers, stixId,
-				fieldLocation, "original-value", "", fieldName, "some-action");
+				fieldName, "original-value", "", fieldLocation, "some-action");
 		// Then or Assert
 		assertThat(result.getStatusCodeValue(),
 				equalTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()));
@@ -203,7 +202,7 @@ public class HumanreviewApiServiceTest {
 		hrApiService.setHrRepo(mockHrRepo);
 
 		ResponseEntity<Void> result = hrApiService.humanreviewStixIdFieldPut(headers, stixId,
-				fieldLocation, "original-value", "", fieldName, "some-action");
+				fieldName, "original-value", "", fieldLocation, "some-action");
 		// Then or Assert
 		assertThat(result.getStatusCodeValue(),
 				equalTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()));
@@ -459,6 +458,7 @@ public class HumanreviewApiServiceTest {
 	public void shouldMakeIt100Percent() {
 		hrApiService.getHrRepo();
 		hrApiService.getCommonUtil();
+		hrApiService.fallback();
 		assertTrue(true);
 	}
 }

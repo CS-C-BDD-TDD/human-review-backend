@@ -6,10 +6,8 @@ import static org.openapitools.model.HumanReviewItem.ActionEnum.NOT_PII;
 import static org.openapitools.model.HumanReviewItem.ActionEnum.REDACT;
 
 import java.time.OffsetDateTime;
-import java.util.Optional;
 
 import javax.persistence.EntityManager;
-import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,6 +27,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
 import gov.dhs.nppd.humanreview.amq.Sender;
@@ -37,6 +36,7 @@ import gov.dhs.nppd.humanreview.util.JsonDocProcessor;
 import io.swagger.annotations.ApiParam;
 
 @Service
+@DefaultProperties(defaultFallback = "fallback")
 public class HumanreviewApiService {
 
 	private static final String TOKEN_STRING = "token";
@@ -66,7 +66,7 @@ public class HumanreviewApiService {
 	}
 	
 	
-	@HystrixCommand(fallbackMethod = "reliableGet")
+	@HystrixCommand
 	public ResponseEntity<ListOfHumanReviewItems> humanreviewPendingGet(HttpHeaders headers) {
 
 		ListOfHumanReviewItems listOfHumanReviewItems = new ListOfHumanReviewItems();
@@ -95,7 +95,7 @@ public class HumanreviewApiService {
 		}
 	}
 	
-	@HystrixCommand(fallbackMethod = "reliableFieldPut")
+	@HystrixCommand
 	public ResponseEntity<Void> humanreviewStixIdFieldPut(HttpHeaders headers,String stixId,String field,String originalValue,String acceptedValue,
 			String fieldLocation, String actionType) {
 
@@ -122,28 +122,28 @@ public class HumanreviewApiService {
 					hrRepo.save(hrItem);
 					hrItem.setModifiedDate(OffsetDateTime.now());
 					hrItem.setFieldValue(acceptedValue);
-					return new ResponseEntity<Void>(org.springframework.http.HttpStatus.OK);
+					return new ResponseEntity<>(org.springframework.http.HttpStatus.OK);
 				case "Edit":
 					hrItem.setAction(EDIT);
 					hrItem.setModifiedDate(OffsetDateTime.now());
 					hrItem.setFieldValue(acceptedValue);
 					hrItem.setStatus("Edited");
 					hrRepo.save(hrItem);
-					return new ResponseEntity<Void>(org.springframework.http.HttpStatus.OK);
+					return new ResponseEntity<>(org.springframework.http.HttpStatus.OK);
 				case "Not PII":
 					hrItem.setAction(NOT_PII);
 					hrItem.setStatus("Not PII");
 					hrItem.setModifiedDate(OffsetDateTime.now());
 					hrItem.setFieldValue(acceptedValue);
 					hrRepo.save(hrItem);
-					return new ResponseEntity<Void>(org.springframework.http.HttpStatus.OK);
+					return new ResponseEntity<>(org.springframework.http.HttpStatus.OK);
 				case "Redact":
 					hrItem.setFieldValue(redactValue);
 					hrItem.setModifiedDate(OffsetDateTime.now());
 					hrItem.setAction(REDACT);
 					hrItem.setStatus("Redacted");
 					hrRepo.save(hrItem);
-					return new ResponseEntity<Void>(org.springframework.http.HttpStatus.OK);
+					return new ResponseEntity<>(org.springframework.http.HttpStatus.OK);
 				default:
 					return new ResponseEntity<>(org.springframework.http.HttpStatus.BAD_REQUEST);
 				}
@@ -155,7 +155,7 @@ public class HumanreviewApiService {
 		}
 	}
 	
-	@HystrixCommand(fallbackMethod = "reliableStixIdPut")
+	@HystrixCommand
 	public ResponseEntity<Void> humanreviewStixIdPut(
 			@ApiParam(value = "The ID of the STIX document", required = true) @RequestHeader HttpHeaders headers,
 			@PathVariable("stix_id") String stixId,
@@ -183,6 +183,7 @@ public class HumanreviewApiService {
 						LOGGER.info("StixId = " + aList.get(i).getStixId());
 						jsonDataRepo.updateJson(aList.get(i).getFieldLocation(),
 								aList.get(i).getFieldValue(), aList.get(i).getStixId());
+						LOGGER.info("Made it pass updateJson!" );
 						if (aList.get(i).getStatus().equals("New")) {
 							aList.get(i).setStatus("Accepted");
 						}
@@ -195,7 +196,7 @@ public class HumanreviewApiService {
 					LOGGER.info("jsonString = " + jsonString);
 					jsonData.setModifiedJson(jsonString);
 					jsonDataRepo.save(jsonData);
-					return new ResponseEntity<Void>(org.springframework.http.HttpStatus.OK);
+					return new ResponseEntity<>(org.springframework.http.HttpStatus.OK);
 
 				case "Disseminate":
 					return disseminate(aList, jsonData);
@@ -206,7 +207,8 @@ public class HumanreviewApiService {
 						LOGGER.info("HR Item: " + hrItem);
 						hrRepo.delete(hrItem);
 					});
-					return new ResponseEntity<Void>(org.springframework.http.HttpStatus.OK);
+					
+					return new ResponseEntity<>(org.springframework.http.HttpStatus.OK);
 
 				default:
 					return new ResponseEntity<>(org.springframework.http.HttpStatus.BAD_REQUEST);
@@ -219,7 +221,7 @@ public class HumanreviewApiService {
 
 	}
 	
-	@HystrixCommand(fallbackMethod = "reliablePost")
+	@HystrixCommand
 	public ResponseEntity<String> humanreviewStixIdPost( HttpHeaders headers, HumanReviewItem hrItem) {
 
 		if (headers.get(TOKEN_STRING) == null || headers.get(TOKEN_STRING).isEmpty()) {
@@ -277,7 +279,7 @@ public class HumanreviewApiService {
 			sender.sendMessage(stixDoc);
         } catch (JSONException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+        	LOGGER.info("JSONException ...: " + e);
 		}
 
 		//Remove the jsonData from the JsonData database
@@ -289,49 +291,15 @@ public class HumanreviewApiService {
 			hrRepo.delete(hrItem);
 		});
 
-		return new ResponseEntity<Void>(org.springframework.http.HttpStatus.OK);
+		return new ResponseEntity<>(org.springframework.http.HttpStatus.OK);
 	}
-	
+
 	/**
 	 * Circuit Break response if the system goes down/is overloaded. 
 	 * @return The Bandwidth Limit Exceeded HTTP Status code along with same message in body
 	 */
-	public  ResponseEntity<ListOfHumanReviewItems> reliableGet(HttpHeaders headers) {
-		headers = new HttpHeaders();
-		headers.add("Content-type", "text/plain");
-		ListOfHumanReviewItems listOfHumanReviewItems = new ListOfHumanReviewItems();;
-		return ResponseEntity.status(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED).headers(headers).body(listOfHumanReviewItems);
-	}
-	
-	/**
-	 * Circuit Break response if the system goes down/is overloaded. 
-	 * @return The Bandwidth Limit Exceeded HTTP Status code along with same message in body
-	 */
-	public  ResponseEntity<Void> reliableFieldPut(HttpHeaders headers,String stixId,String field,String originalValue,String acceptedValue,
-			String fieldLocation, String actionType) {
-		headers = new HttpHeaders();
-		headers.add("Content-type", "text/plain");
-		return new ResponseEntity<Void>(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED);
-	}
-	
-	/**
-	 * Circuit Break response if the system goes down/is overloaded. 
-	 * @return The Bandwidth Limit Exceeded HTTP Status code along with same message in body
-	 */
-	public  ResponseEntity<Void> reliableStixIdPut(HttpHeaders headers, String stixId, String groupAction) {
-		headers = new HttpHeaders();
-		headers.add("Content-type", "text/plain");
-		return new ResponseEntity<Void>(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED);
-	}
-	
-	/**
-	 * Circuit Break response if the system goes down/is overloaded. 
-	 * @return The Bandwidth Limit Exceeded HTTP Status code along with same message in body
-	 */
-	public  ResponseEntity<String> reliablePost(HttpHeaders headers, HumanReviewItem hrItem) {
-		headers = new HttpHeaders();
-		headers.add("Content-type", "text/plain");
-		return ResponseEntity.status(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED).headers(headers).body("Bandwidth Limit Exceeded");
+	public  ResponseEntity<Void> fallback() {
+		return new ResponseEntity<>(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED);
 	}
 	
 	public HumanreviewRepository getHrRepo() {

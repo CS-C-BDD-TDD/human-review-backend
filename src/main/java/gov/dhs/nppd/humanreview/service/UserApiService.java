@@ -1,7 +1,5 @@
 package gov.dhs.nppd.humanreview.service;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.validation.Valid;
@@ -19,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
-import gov.dhs.nppd.humanreview.controller.UserApiController;
 import io.swagger.annotations.ApiParam;
 
 @Service
@@ -42,7 +39,6 @@ public class UserApiService {
 	public ResponseEntity<String> userPut(
 			@ApiParam(value = "Allow the user to submit their credentials and on success return a token for use in making other REST calls", required = true) @Valid @RequestBody AuthCredentials authCredentials) {
 		HttpHeaders headers = new HttpHeaders();
-		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date date = new Date();
 		headers.add("Content-type", "text/plain");
 		LOGGER.info("Checking user name and password for user:" + authCredentials.getUsername());
@@ -65,7 +61,7 @@ public class UserApiService {
 	 * Circuit Break response if the system goes down/is overloaded. 
 	 * @return The Bandwidth Limit Exceeded HTTP Status code along with same message in body
 	 */
-	public  ResponseEntity<String> reliable(AuthCredentials authCredentials) {
+	public  ResponseEntity<String> reliable() {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Content-type", "text/plain");
 	    return ResponseEntity.status(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED).headers(headers).body("Bandwidth Limit Exceeded");
