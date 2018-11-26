@@ -6,10 +6,8 @@ import static org.openapitools.model.HumanReviewItem.ActionEnum.NOT_PII;
 import static org.openapitools.model.HumanReviewItem.ActionEnum.REDACT;
 
 import java.time.OffsetDateTime;
-import java.util.Optional;
 
 import javax.persistence.EntityManager;
-import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -276,8 +274,7 @@ public class HumanreviewApiService {
 			LOGGER.info("Sending ...: " + stixDoc);
 			sender.sendMessage(stixDoc);
         } catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+        	return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 		//Remove the jsonData from the JsonData database
