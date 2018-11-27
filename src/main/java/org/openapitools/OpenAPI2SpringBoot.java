@@ -1,16 +1,21 @@
 package org.openapitools;
 
+import javax.jms.ConnectionFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jms.DefaultJmsListenerContainerFactoryConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.jms.annotation.EnableJms;
+import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
+import org.springframework.jms.config.JmsListenerContainerFactory;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -63,6 +68,19 @@ public class OpenAPI2SpringBoot implements CommandLineRunner {
 			}
 
 		};
+	}
+	
+	@Bean
+	public JmsListenerContainerFactory<?> topicListenerFactory(ConnectionFactory connectionFactory,
+	                                                DefaultJmsListenerContainerFactoryConfigurer configurer) {
+	    DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
+	 
+	    configurer.configure(factory, connectionFactory);
+	    // You could still override some of Boot's default if necessary.
+	    
+	    factory.setPubSubDomain(true);
+	    // This provides all boot's default to this factory, including the message converter
+	    return factory;
 	}
 }
 

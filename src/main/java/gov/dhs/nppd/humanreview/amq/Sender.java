@@ -10,14 +10,14 @@ import org.springframework.stereotype.Component;
 public class Sender {		
 	
 	private static final Logger LOGGER = LogManager.getLogger(Sender.class);
+	public static final String OUTBOUND_TOPICS = "outbound.topic";
 	
 	@Autowired
 	JmsTemplate jmsTemplate;
 	
-	//@SendTo("outbound.stix")
 	public String sendMessage(String jsonMessage) {
 		LOGGER.info("--------Sent message: " + jsonMessage);		
-		jmsTemplate.convertAndSend("outbound.stix", jsonMessage);
+		jmsTemplate.convertAndSend(OUTBOUND_TOPICS, jsonMessage);
 		return jsonMessage;
 		
 	}
