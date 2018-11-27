@@ -20,7 +20,7 @@ public class Listener {
 	@Autowired
 	JsonDocProcessor jsonDocProc;
 	
-	@JmsListener(destination = INBOUND_TOPIC, containerFactory = "topicListenerFactory")
+	@JmsListener(destination = INBOUND_TOPIC)
 	public void receiveMessage(@Payload String jsonMessage) throws IOException {
 		LOGGER.info("********Received: " + jsonMessage);
 		jsonDocProc.loadJsonDoc(jsonMessage);

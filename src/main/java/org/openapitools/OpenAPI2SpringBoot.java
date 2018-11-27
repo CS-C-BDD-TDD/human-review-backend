@@ -70,17 +70,17 @@ public class OpenAPI2SpringBoot implements CommandLineRunner {
 		};
 	}
 	
-	@Bean
-	public JmsListenerContainerFactory<?> topicListenerFactory(ConnectionFactory connectionFactory,
-	                                                DefaultJmsListenerContainerFactoryConfigurer configurer) {
-	    DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
-	 
-	    configurer.configure(factory, connectionFactory);
-	    // You could still override some of Boot's default if necessary.
-	    
-	    factory.setPubSubDomain(true);
-	    // This provides all boot's default to this factory, including the message converter
-	    return factory;
-	}
+//	@Bean
+//	public JmsListenerContainerFactory<?> topicListenerFactory(ConnectionFactory connectionFactory,
+//	                                                DefaultJmsListenerContainerFactoryConfigurer configurer) {
+//	    DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
+//	 
+//	    configurer.configure(factory, connectionFactory);
+//	    // You could still override some of Boot's default if necessary.
+//	    
+//	    factory.setPubSubDomain(true);
+//	    // This provides all boot's default to this factory, including the message converter
+//	    return factory;
+//	}
 }
 
