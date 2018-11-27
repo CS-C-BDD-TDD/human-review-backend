@@ -14,10 +14,13 @@ import gov.dhs.nppd.humanreview.util.JsonDocProcessor;
 @Component
 public class Listener {
 	private static final Logger LOGGER = LogManager.getLogger(Listener.class);
+	
+	public static final String INBOUND_TOPIC = "inbound.topic";
+	
 	@Autowired
 	JsonDocProcessor jsonDocProc;
 	
-	@JmsListener(destination = "inbound.stix")
+	@JmsListener(destination = INBOUND_TOPIC)
 	public void receiveMessage(@Payload String jsonMessage) throws IOException {
 		LOGGER.info("********Received: " + jsonMessage);
 		jsonDocProc.loadJsonDoc(jsonMessage);
