@@ -118,10 +118,10 @@ public class HumanreviewApiService {
 				switch (actionType) {
 				case "Confirm Risk":
 					hrItem.setAction(CONFIRM_RISK);
-					hrItem.setStatus("Confirmed");
-					hrRepo.save(hrItem);
+					hrItem.setStatus("Confirmed");					
 					hrItem.setModifiedDate(OffsetDateTime.now());
 					hrItem.setFieldValue(acceptedValue);
+					hrRepo.save(hrItem);
 					return new ResponseEntity<>(org.springframework.http.HttpStatus.OK);
 				case "Edit":
 					hrItem.setAction(EDIT);

@@ -3,7 +3,7 @@ package org.openapitools.model;
 import java.util.Objects;
 import java.util.ArrayList;
 import java.util.List;
-import org.openapitools.model.HumanReviewItem;
+
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 
