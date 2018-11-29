@@ -35,7 +35,7 @@ import gov.dhs.nppd.humanreview.util.CommonUtil;
 import gov.dhs.nppd.humanreview.util.JsonDocProcessor;
 import io.swagger.annotations.ApiParam;
 
-@Service
+@Service("humanreviewApiService")
 @DefaultProperties(defaultFallback = "fallback")
 public class HumanreviewApiService {
 
@@ -58,7 +58,7 @@ public class HumanreviewApiService {
 	@Autowired
 	Sender sender;
 
-	@Autowired //Switch this out to use the new EntityManager Created
+	//@Autowired //Switch this out to use the new EntityManager Created
 	//protected EntityManager em;
 
 	//public void setEm(EntityManager em) {

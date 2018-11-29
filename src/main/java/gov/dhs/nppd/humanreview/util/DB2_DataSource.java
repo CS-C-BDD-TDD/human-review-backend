@@ -32,7 +32,7 @@ public class DB2_DataSource {
                 = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(db2Datasource());
         em.setPackagesToScan(
-                new String[]{"org.openapitools.model"});
+                new String[]{"org.openapitools.model.humanreview"});
         em.setPersistenceUnitName("db2EntityManager");
         HibernateJpaVendorAdapter vendorAdapter
                 = new HibernateJpaVendorAdapter();

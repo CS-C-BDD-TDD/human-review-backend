@@ -28,7 +28,7 @@ public class DB1_DataSource {
     public LocalContainerEntityManagerFactoryBean db1EntityManager() {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(db1Datasource());
-        em.setPackagesToScan(new String[]{"org.openapitools.model"});
+        em.setPackagesToScan(new String[]{"org.openapitools.model.auth"});
         em.setPersistenceUnitName("db1EntityManager");
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);

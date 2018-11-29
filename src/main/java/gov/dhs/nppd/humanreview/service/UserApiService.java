@@ -19,7 +19,7 @@ import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
 import io.swagger.annotations.ApiParam;
 
-@Service
+@Service("userApiService")
 public class UserApiService {
 
 	private static final Logger LOGGER = LogManager.getLogger(UserApiService.class);
