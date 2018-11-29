@@ -19,7 +19,7 @@ import gov.dhs.nppd.humanreview.amq.Sender;
 
 @SpringBootApplication
 @ComponentScan(basePackages = { "org.openapitools", "org.openapitools.api", "org.openapitools.configuration",
-		"gov.dhs.nppd.humanreview" })
+		"gov.dhs.nppd.humanreview", "gov.dhs.nppd.humanreview.controller", "gov.dhs.nppd.humanreview.service" })
 @Configuration
 @EnableAspectJAutoProxy
 @EnableJms

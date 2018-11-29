@@ -9,7 +9,7 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
-import org.openapitools.model.AuthCredentials;
+import org.openapitools.model.auth.AuthCredentials;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;

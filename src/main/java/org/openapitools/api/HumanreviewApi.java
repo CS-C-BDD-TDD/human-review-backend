@@ -9,9 +9,9 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
-import org.openapitools.model.APIOptionsResultList;
-import org.openapitools.model.HumanReviewItem;
-import org.openapitools.model.ListOfHumanReviewItems;
+import org.openapitools.model.humanreview.APIOptionsResultList;
+import org.openapitools.model.humanreview.HumanReviewItem;
+import org.openapitools.model.humanreview.ListOfHumanReviewItems;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

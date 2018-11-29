@@ -1,6 +1,6 @@
 package org.openapitools.repository.auth;
 
-import org.openapitools.model.AuthCredentials;
+import org.openapitools.model.auth.AuthCredentials;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

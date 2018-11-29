@@ -1,6 +1,6 @@
 package org.openapitools.repository.humanreview;
 
-import org.openapitools.model.JsonData;
+import org.openapitools.model.humanreview.JsonData;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;

@@ -1,9 +1,9 @@
 package gov.dhs.nppd.humanreview.service;
 
-import static org.openapitools.model.HumanReviewItem.ActionEnum.CONFIRM_RISK;
-import static org.openapitools.model.HumanReviewItem.ActionEnum.EDIT;
-import static org.openapitools.model.HumanReviewItem.ActionEnum.NOT_PII;
-import static org.openapitools.model.HumanReviewItem.ActionEnum.REDACT;
+import static org.openapitools.model.humanreview.HumanReviewItem.ActionEnum.CONFIRM_RISK;
+import static org.openapitools.model.humanreview.HumanReviewItem.ActionEnum.EDIT;
+import static org.openapitools.model.humanreview.HumanReviewItem.ActionEnum.NOT_PII;
+import static org.openapitools.model.humanreview.HumanReviewItem.ActionEnum.REDACT;
 
 import java.time.OffsetDateTime;
 
@@ -13,9 +13,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.openapitools.model.HumanReviewItem;
-import org.openapitools.model.JsonData;
-import org.openapitools.model.ListOfHumanReviewItems;
+import org.openapitools.model.humanreview.HumanReviewItem;
+import org.openapitools.model.humanreview.JsonData;
+import org.openapitools.model.humanreview.ListOfHumanReviewItems;
 import org.openapitools.repository.humanreview.HumanreviewRepository;
 import org.openapitools.repository.humanreview.JsonDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,10 +44,10 @@ public class HumanreviewApiService {
 	
 	//
 	@Autowired
-	private HumanreviewRepository hrRepo;
+	HumanreviewRepository hrRepo;
 
 	@Autowired
-	private CommonUtil commonUtil;
+	CommonUtil commonUtil;
 
 	@Autowired
 	private JsonDataRepository jsonDataRepo;

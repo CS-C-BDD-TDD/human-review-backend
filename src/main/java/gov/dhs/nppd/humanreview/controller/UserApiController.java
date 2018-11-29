@@ -5,7 +5,7 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import org.openapitools.api.UserApi;
-import org.openapitools.model.AuthCredentials;
+import org.openapitools.model.auth.AuthCredentials;
 import org.openapitools.repository.auth.AuthCredentialsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -7,7 +7,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.openapitools.model.AuthCredentials;
+import org.openapitools.model.auth.AuthCredentials;
 import org.openapitools.repository.auth.AuthCredentialsRepository;
 import org.springframework.http.ResponseEntity;
 

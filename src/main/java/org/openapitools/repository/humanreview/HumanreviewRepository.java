@@ -1,7 +1,7 @@
 package org.openapitools.repository.humanreview;
 
-import org.openapitools.model.HumanReviewItem;
-import org.openapitools.model.ListOfHumanReviewItems;
+import org.openapitools.model.humanreview.HumanReviewItem;
+import org.openapitools.model.humanreview.ListOfHumanReviewItems;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

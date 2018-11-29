@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.openapitools.model.HumanReviewItem;
-import org.openapitools.model.JsonData;
+import org.openapitools.model.humanreview.HumanReviewItem;
+import org.openapitools.model.humanreview.JsonData;
 import org.openapitools.repository.humanreview.HumanreviewRepository;
 import org.openapitools.repository.humanreview.JsonDataRepository;
 import org.slf4j.Logger;

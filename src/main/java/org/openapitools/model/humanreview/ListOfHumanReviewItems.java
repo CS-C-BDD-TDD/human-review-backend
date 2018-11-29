@@ -1,4 +1,4 @@
-package org.openapitools.model;
+package org.openapitools.model.humanreview;
 
 import java.util.Objects;
 import java.util.ArrayList;

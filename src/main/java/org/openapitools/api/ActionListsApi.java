@@ -5,8 +5,9 @@
  */
 package org.openapitools.api;
 
-import org.openapitools.model.ActionList;
 import io.swagger.annotations.*;
+
+import org.openapitools.model.humanreview.ActionList;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

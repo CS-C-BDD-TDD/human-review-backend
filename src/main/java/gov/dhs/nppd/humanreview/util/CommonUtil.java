@@ -2,7 +2,7 @@ package gov.dhs.nppd.humanreview.util;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openapitools.model.AuthCredentials;
+import org.openapitools.model.auth.AuthCredentials;
 import org.openapitools.repository.auth.AuthCredentialsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
