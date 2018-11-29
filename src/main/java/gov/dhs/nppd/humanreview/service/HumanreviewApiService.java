@@ -59,11 +59,11 @@ public class HumanreviewApiService {
 	Sender sender;
 
 	@Autowired //Switch this out to use the new EntityManager Created
-	protected EntityManager em;
+	//protected EntityManager em;
 
-	public void setEm(EntityManager em) {
-		this.em = em;
-	}
+	//public void setEm(EntityManager em) {
+	//	this.em = em;
+	//}
 	
 	
 	@HystrixCommand
@@ -269,7 +269,7 @@ public class HumanreviewApiService {
 					hrItem.getStixId());
 		});
 
-		em.refresh(jsonData);
+		//em.refresh(jsonData);
 		
 		try {
 			JSONObject jsonDoc = new JSONObject(jsonData.getModifiedJson());    
