@@ -9,8 +9,8 @@ import javax.jms.JMSException;
 
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.openapitools.repository.HumanreviewRepository;
-import org.openapitools.repository.JsonDataRepository;
+import org.openapitools.repository.humanreview.HumanreviewRepository;
+import org.openapitools.repository.humanreview.JsonDataRepository;
 
 public class JsonDocProcessorTest {
 	

@@ -2,7 +2,7 @@ package gov.dhs.nppd.humanreview.repository;
 
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.openapitools.repository.HumanreviewRepository;
+import org.openapitools.repository.humanreview.HumanreviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class HumanreviewRepositoryTest {

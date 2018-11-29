@@ -18,7 +18,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 
 @Configuration
-@EnableJpaRepositories(basePackages = {"org.openapitools.repository"},
+@EnableJpaRepositories(basePackages = {"org.openapitools.repository.humanreview"},
         entityManagerFactoryRef = "db2EntityManager",
         transactionManagerRef = "db2TransactionManager")
 public class DB2_DataSource {
@@ -39,7 +39,7 @@ public class DB2_DataSource {
         em.setJpaVendorAdapter(vendorAdapter);
         HashMap<String, Object> properties = new HashMap<>();
         properties.put("hibernate.dialect",
-                env.getProperty("hibernate.dialect"));
+                env.getProperty("spring.jooq.sql-dialect"));
         properties.put("hibernate.show-sql",
                 env.getProperty("jdbc.show-sql"));
         em.setJpaPropertyMap(properties);

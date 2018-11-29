@@ -7,8 +7,8 @@ import java.util.List;
 
 import org.openapitools.model.HumanReviewItem;
 import org.openapitools.model.JsonData;
-import org.openapitools.repository.HumanreviewRepository;
-import org.openapitools.repository.JsonDataRepository;
+import org.openapitools.repository.humanreview.HumanreviewRepository;
+import org.openapitools.repository.humanreview.JsonDataRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -7,7 +7,7 @@ import javax.validation.Valid;
 import org.openapitools.api.HumanreviewApi;
 import org.openapitools.model.HumanReviewItem;
 import org.openapitools.model.ListOfHumanReviewItems;
-import org.openapitools.repository.HumanreviewRepository;
+import org.openapitools.repository.humanreview.HumanreviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.HttpHeaders;

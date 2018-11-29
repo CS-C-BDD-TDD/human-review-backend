@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.openapitools.model.AuthCredentials;
-import org.openapitools.repository.AuthCredentialsRepository;
+import org.openapitools.repository.auth.AuthCredentialsRepository;
 
 public class CommonUtilTest {
 

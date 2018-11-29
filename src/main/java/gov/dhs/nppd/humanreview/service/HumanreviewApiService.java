@@ -16,8 +16,8 @@ import org.json.JSONObject;
 import org.openapitools.model.HumanReviewItem;
 import org.openapitools.model.JsonData;
 import org.openapitools.model.ListOfHumanReviewItems;
-import org.openapitools.repository.HumanreviewRepository;
-import org.openapitools.repository.JsonDataRepository;
+import org.openapitools.repository.humanreview.HumanreviewRepository;
+import org.openapitools.repository.humanreview.JsonDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -58,7 +58,7 @@ public class HumanreviewApiService {
 	@Autowired
 	Sender sender;
 
-	@Autowired
+	@Autowired //Switch this out to use the new EntityManager Created
 	protected EntityManager em;
 
 	public void setEm(EntityManager em) {
