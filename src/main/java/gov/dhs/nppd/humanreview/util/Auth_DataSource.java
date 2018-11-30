@@ -18,18 +18,18 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
 @EnableJpaRepositories(basePackages = {"org.openapitools.repository.auth"},
-        entityManagerFactoryRef = "db1EntityManager",
-        transactionManagerRef = "db1TransactionManager")
-public class DB1_DataSource {
+        entityManagerFactoryRef = "authEntityManager",
+        transactionManagerRef = "authTransactionManager")
+public class Auth_DataSource {
     @Autowired
     private Environment env;
     @Bean
     @Primary
-    public LocalContainerEntityManagerFactoryBean db1EntityManager() {
+    public LocalContainerEntityManagerFactoryBean authEntityManager() {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-        em.setDataSource(db1Datasource());
+        em.setDataSource(authDatasource());
         em.setPackagesToScan(new String[]{"org.openapitools.model.auth"});
-        em.setPersistenceUnitName("db1EntityManager");
+        em.setPersistenceUnitName("authEntityManager");
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
         HashMap<String, Object> properties = new HashMap<>();
@@ -43,27 +43,27 @@ public class DB1_DataSource {
 
     @Primary
     @Bean
-    public DataSource db1Datasource() {
+    public DataSource authDatasource() {
 
         DriverManagerDataSource dataSource
                 = new DriverManagerDataSource();
         dataSource.setDriverClassName(
                 env.getProperty("jdbc.driver-class-name"));
-        dataSource.setUrl(env.getProperty("db1.datasource.url"));
-        dataSource.setUsername(env.getProperty("db1.datasource.username"));
-        dataSource.setPassword(env.getProperty("db1.datasource.password"));
+        dataSource.setUrl(env.getProperty("auth.datasource.url"));
+        dataSource.setUsername(env.getProperty("auth.datasource.username"));
+        dataSource.setPassword(env.getProperty("auth.datasource.password"));
 
         return dataSource;
     }
 
     @Primary
     @Bean
-    public PlatformTransactionManager db1TransactionManager() {
+    public PlatformTransactionManager authTransactionManager() {
 
         JpaTransactionManager transactionManager
                 = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(
-                db1EntityManager().getObject());
+                authEntityManager().getObject());
         return transactionManager;
     }
 }

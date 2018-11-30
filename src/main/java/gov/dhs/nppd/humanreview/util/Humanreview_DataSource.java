@@ -19,21 +19,21 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
 @EnableJpaRepositories(basePackages = {"org.openapitools.repository.humanreview"},
-        entityManagerFactoryRef = "db2EntityManager",
-        transactionManagerRef = "db2TransactionManager")
-public class DB2_DataSource {
+        entityManagerFactoryRef = "humanreviewEntityManager",
+        transactionManagerRef = "humanreviewTransactionManager")
+public class Humanreview_DataSource {
 
     @Autowired
     private Environment env;
 
     @Bean
-    public LocalContainerEntityManagerFactoryBean db2EntityManager() {
+    public LocalContainerEntityManagerFactoryBean humanreviewEntityManager() {
         LocalContainerEntityManagerFactoryBean em
                 = new LocalContainerEntityManagerFactoryBean();
-        em.setDataSource(db2Datasource());
+        em.setDataSource(humanreviewDatasource());
         em.setPackagesToScan(
                 new String[]{"org.openapitools.model.humanreview"});
-        em.setPersistenceUnitName("db2EntityManager");
+        em.setPersistenceUnitName("humanreviewEntityManager");
         HibernateJpaVendorAdapter vendorAdapter
                 = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
@@ -47,24 +47,24 @@ public class DB2_DataSource {
     }
 
     @Bean
-    public DataSource db2Datasource() {
+    public DataSource humanreviewDatasource() {
         DriverManagerDataSource dataSource
                 = new DriverManagerDataSource();
         dataSource.setDriverClassName(
                 env.getProperty("jdbc.driver-class-name"));
-        dataSource.setUrl(env.getProperty("db2.datasource.url"));
-        dataSource.setUsername(env.getProperty("db2.datasource.username"));
-        dataSource.setPassword(env.getProperty("db2.datasource.password"));
+        dataSource.setUrl(env.getProperty("humanreview.datasource.url"));
+        dataSource.setUsername(env.getProperty("humanreview.datasource.username"));
+        dataSource.setPassword(env.getProperty("humanreview.datasource.password"));
 
         return dataSource;
     }
 
     @Bean
-    public PlatformTransactionManager db2TransactionManager() {
+    public PlatformTransactionManager humanreviewTransactionManager() {
         JpaTransactionManager transactionManager
                 = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(
-                db2EntityManager().getObject());
+        		humanreviewEntityManager().getObject());
         return transactionManager;
     }
 }

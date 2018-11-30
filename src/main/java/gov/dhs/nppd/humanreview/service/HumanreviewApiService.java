@@ -269,6 +269,7 @@ public class HumanreviewApiService {
 					hrItem.getStixId());
 		});
 
+		//TODO Replace this line of code
 		//em.refresh(jsonData);
 		
 		try {
