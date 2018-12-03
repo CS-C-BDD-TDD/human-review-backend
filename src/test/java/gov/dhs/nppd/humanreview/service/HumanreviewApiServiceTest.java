@@ -267,7 +267,7 @@ public class HumanreviewApiServiceTest {
 			hrApiService.humanreviewStixIdPut(headers, stixId, groupAction);
 		}
 		// Then or Assert
-		Mockito.verify(mockJsonRepo, Mockito.times(1)).save(expectedJsonData);
+		Mockito.verify(mockJsonRepo, Mockito.times(2)).save(expectedJsonData);
 	}
 
 	@Test
