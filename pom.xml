@@ -18,6 +18,8 @@
 		<serenity.cli.version>1.11.0</serenity.cli.version>
 		<serenity.cucumber.version>1.6.13</serenity.cucumber.version>
 		<sonar.exclusions>**/*openapi*/**/*</sonar.exclusions>
+		<sonar.exclusions>**/*src/main/java/gov/dhs/nppd/humanreview/util*/**/*</sonar.exclusions>
+		<sonar.exclusions>**/*src/main/java/gov/dhs/nppd/humanreview/controller*/**/*</sonar.exclusions>
 		<tomcat.embeded>8.5.34</tomcat.embeded>
 
 	</properties>
