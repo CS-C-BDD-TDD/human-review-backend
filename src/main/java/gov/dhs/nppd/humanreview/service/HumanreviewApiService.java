@@ -8,7 +8,6 @@ import static org.openapitools.model.humanreview.HumanReviewItem.ActionEnum.REDA
 import java.time.OffsetDateTime;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -60,12 +59,12 @@ public class HumanreviewApiService {
 	@Autowired
 	Sender sender;
 
-	@PersistenceContext
-	protected EntityManager em;
+	//@Autowired //Switch this out to use the new EntityManager Created
+	//protected EntityManager em;
 
-	public void setEm(EntityManager em) {
-		this.em = em;
-	}
+	//public void setEm(EntityManager em) {
+	//	this.em = em;
+	//}
 	
 	
 	@HystrixCommand
@@ -273,8 +272,8 @@ public class HumanreviewApiService {
 		});
 
 		//TODO Replace this line of code
-		em.refresh(jsonData);
-		
+		//em.refresh(jsonData);
+		jsonDataRepo.save(jsonData);
 		try {
 			JSONObject jsonDoc = new JSONObject(jsonData.getModifiedJson());    
 			String stixDoc = jsonDoc.toString(2);	
