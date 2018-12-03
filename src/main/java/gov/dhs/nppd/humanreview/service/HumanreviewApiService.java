@@ -63,9 +63,9 @@ public class HumanreviewApiService {
 	@PersistenceContext
 	protected EntityManager em;
 
-	//public void setEm(EntityManager em) {
-	//	this.em = em;
-	//}
+	public void setEm(EntityManager em) {
+		this.em = em;
+	}
 	
 	
 	@HystrixCommand

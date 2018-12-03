@@ -61,7 +61,7 @@ public class HumanreviewApiServiceTest {
 		hrApiService.setCommonUtil(mockCommonUtil);
 		hrApiService.setSender(mockSender);
 		hrApiService.setJsonDataRepo(mockJsonRepo);
-	//	hrApiService.setEm(mockEnitytManager);
+		hrApiService.setEm(mockEnitytManager);
 		stixId = "stix-id-1";
 		fieldName = "field-name-a";
 		fieldLocation = "field-location-a";
