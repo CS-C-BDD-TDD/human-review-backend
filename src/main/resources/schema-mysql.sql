@@ -1,5 +1,5 @@
 
-CREATE TABLE auth_credentials
+CREATE TABLE Auth_Credentials
 (
 	id INT, 
 	username VARCHAR(255), 
@@ -9,13 +9,13 @@ CREATE TABLE auth_credentials
 	PRIMARY KEY (id)
 );
 
-CREATE TABLE human_review_item (
+CREATE TABLE Human_Review_Item (
 
 	id INT primary key auto_increment, 
 	stix_id VARCHAR(255), 
 	action INT, 
-	original_date TIMESTAMP, 
-	modified_date TIMESTAMP,
+	original_date DATETIME, 
+	modified_date DATETIME,
 	field_name VARCHAR(255), 
 	field_value VARCHAR(255),
 	field_location VARCHAR(255),
@@ -23,7 +23,7 @@ CREATE TABLE human_review_item (
 	status VARCHAR(255)
 );
 
-CREATE TABLE json_data (
+CREATE TABLE Json_Data (
 
 	stix_id VARCHAR(255), 
 	original_json JSON,
