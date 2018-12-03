@@ -41,7 +41,7 @@ public class HumanreviewApiService {
 
 	private static final String TOKEN_STRING = "token";
 	private static final Logger LOGGER = LogManager.getLogger(HumanreviewApiService.class);
-	
+
 	//
 	@Autowired
 	private HumanreviewRepository hrRepo;
@@ -64,8 +64,7 @@ public class HumanreviewApiService {
 	public void setEm(EntityManager em) {
 		this.em = em;
 	}
-	
-	
+
 	@HystrixCommand
 	public ResponseEntity<ListOfHumanReviewItems> humanreviewPendingGet(HttpHeaders headers) {
 
@@ -76,8 +75,7 @@ public class HumanreviewApiService {
 		if (headers.get(TOKEN_STRING) == null || headers.get(TOKEN_STRING).isEmpty()) {
 			LOGGER.info("*** NO TOKEN! ***");
 			headers.add("Content-type", "application/json");
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).headers(headers)
-					.body(listOfHumanReviewItems);
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).headers(headers).body(listOfHumanReviewItems);
 		}
 
 		String tokenHeader = headers.get(TOKEN_STRING).get(0);
@@ -90,15 +88,17 @@ public class HumanreviewApiService {
 		} else {// token was not found
 			LOGGER.info("*** INVALID TOKEN! ***");
 			headers.add("Content-type", "application/json");
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).headers(headers)
-					.body(listOfHumanReviewItems);
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).headers(headers).body(listOfHumanReviewItems);
 		}
 	}
-	
-	@HystrixCommand
-	public ResponseEntity<Void> humanreviewStixIdFieldPut(HttpHeaders headers,String stixId,String field,String originalValue,String acceptedValue,
-			String fieldLocation, String actionType) {
 
+	@HystrixCommand
+	public ResponseEntity<Void> humanreviewStixIdFieldPut(HttpHeaders headers, String stixId, String field,
+			String originalValue, String acceptedValue, String fieldLocation, String actionType) {
+
+		LOGGER.info(
+				"*** headers {}\nstixId {}\nfield {}\noriginalValue {}\nacceptedValue {}\nfieldLocation {}\nactionType {}",
+				headers, stixId, field, originalValue, acceptedValue, fieldLocation, actionType);
 		HumanReviewItem hrItem = hrRepo.findByStixIdAndFieldLocation(stixId, fieldLocation);
 		String redactValue = "#####";
 		LOGGER.info("id = " + stixId);
@@ -154,7 +154,7 @@ public class HumanreviewApiService {
 			return new ResponseEntity<>(org.springframework.http.HttpStatus.BAD_REQUEST);
 		}
 	}
-	
+
 	@HystrixCommand
 	public ResponseEntity<Void> humanreviewStixIdPut(
 			@ApiParam(value = "The ID of the STIX document", required = true) @RequestHeader HttpHeaders headers,
@@ -181,9 +181,9 @@ public class HumanreviewApiService {
 						LOGGER.info("FieldLocation = " + aList.get(i).getFieldLocation());
 						LOGGER.info("FieldValue = " + aList.get(i).getFieldValue());
 						LOGGER.info("StixId = " + aList.get(i).getStixId());
-						jsonDataRepo.updateJson(aList.get(i).getFieldLocation(),
-								aList.get(i).getFieldValue(), aList.get(i).getStixId());
-						LOGGER.info("Made it pass updateJson!" );
+						jsonDataRepo.updateJson(aList.get(i).getFieldLocation(), aList.get(i).getFieldValue(),
+								aList.get(i).getStixId());
+						LOGGER.info("Made it pass updateJson!");
 						if (aList.get(i).getStatus().equals("New")) {
 							aList.get(i).setStatus("Accepted");
 						}
@@ -202,12 +202,12 @@ public class HumanreviewApiService {
 					return disseminate(aList, jsonData);
 
 				case "Do Not Disseminate":
-					//Remove the HumanReviewItems from the HumanreviewRepository
+					// Remove the HumanReviewItems from the HumanreviewRepository
 					aList.stream().forEach(hrItem -> {
 						LOGGER.info("HR Item: " + hrItem);
 						hrRepo.delete(hrItem);
 					});
-					
+
 					return new ResponseEntity<>(org.springframework.http.HttpStatus.OK);
 
 				default:
@@ -220,9 +220,9 @@ public class HumanreviewApiService {
 		}
 
 	}
-	
+
 	@HystrixCommand
-	public ResponseEntity<String> humanreviewStixIdPost( HttpHeaders headers, HumanReviewItem hrItem) {
+	public ResponseEntity<String> humanreviewStixIdPost(HttpHeaders headers, HumanReviewItem hrItem) {
 
 		if (headers.get(TOKEN_STRING) == null || headers.get(TOKEN_STRING).isEmpty()) {
 			headers.add("Content-type", "application/json");
@@ -241,16 +241,17 @@ public class HumanreviewApiService {
 
 				hrRepo.save(hrItem);
 
-				return ResponseEntity.status(HttpStatus.OK)
-						.body(" New record created " + hrItem.getStixId());
+				return ResponseEntity.status(HttpStatus.OK).body(" New record created " + hrItem.getStixId());
 			}
 		} else {// token was not found
 			headers.add("Content-type", "application/json");
 			return new ResponseEntity<>(org.springframework.http.HttpStatus.BAD_REQUEST);
 		}
 	}
-	
+
 	private ResponseEntity<Void> disseminate(ListOfHumanReviewItems aList, JsonData jsonData) {
+		LOGGER.info("disseminating list {} and jsonData {}", aList, jsonData);
+
 		boolean readyToDisseminate = true;
 		for (int i = 0; i < aList.size(); i++) {
 			if (aList.get(i).getStatus().equals("New")) {
@@ -258,33 +259,33 @@ public class HumanreviewApiService {
 				break;
 			}
 		}
-
+		LOGGER.info("ready to disseminate {}", readyToDisseminate);
 		if (!readyToDisseminate) {
+			LOGGER.info("**** Not ready to disseminate!");
 			return new ResponseEntity<>(org.springframework.http.HttpStatus.BAD_REQUEST);
 		}
 
 		aList.stream().forEach(hrItem -> {
 			LOGGER.info("HR Item: " + hrItem);
-			jsonDataRepo.updateJson(hrItem.getFieldLocation(), hrItem.getFieldValue(),
-					hrItem.getStixId());
+			jsonDataRepo.updateJson(hrItem.getFieldLocation(), hrItem.getFieldValue(), hrItem.getStixId());
 		});
 
 		em.refresh(jsonData);
-		
+
 		try {
-			JSONObject jsonDoc = new JSONObject(jsonData.getModifiedJson());    
-			String stixDoc = jsonDoc.toString(2);	
-		
+			JSONObject jsonDoc = new JSONObject(jsonData.getModifiedJson());
+			String stixDoc = jsonDoc.toString(2);
+
 			LOGGER.info("Sending ...: " + stixDoc);
 			sender.sendMessage(stixDoc);
-        } catch (JSONException e) {
-        	return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (JSONException e) {
+			return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
-		//Remove the jsonData from the JsonData database
+		// Remove the jsonData from the JsonData database
 		jsonDataRepo.delete(jsonData);
 
-		//Remove the HumanReviewItems from the HumanReview database
+		// Remove the HumanReviewItems from the HumanReview database
 		aList.stream().forEach(hrItem -> {
 			LOGGER.info("HR Item: " + hrItem);
 			hrRepo.delete(hrItem);
@@ -294,13 +295,15 @@ public class HumanreviewApiService {
 	}
 
 	/**
-	 * Circuit Break response if the system goes down/is overloaded. 
-	 * @return The Bandwidth Limit Exceeded HTTP Status code along with same message in body
+	 * Circuit Break response if the system goes down/is overloaded.
+	 * 
+	 * @return The Bandwidth Limit Exceeded HTTP Status code along with same message
+	 *         in body
 	 */
-	public  ResponseEntity<Void> fallback() {
+	public ResponseEntity<Void> fallback() {
 		return new ResponseEntity<>(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED);
 	}
-	
+
 	public HumanreviewRepository getHrRepo() {
 		return hrRepo;
 	}
@@ -336,7 +339,5 @@ public class HumanreviewApiService {
 	public JsonData getJsonDataByStixId(String stixId) {
 		return jsonDataRepo.findByStixId(stixId);
 	}
-
-	
 
 }
