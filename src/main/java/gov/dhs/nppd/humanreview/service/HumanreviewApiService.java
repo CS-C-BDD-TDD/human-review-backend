@@ -23,6 +23,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -155,6 +156,7 @@ public class HumanreviewApiService {
 		}
 	}
 	
+	@Transactional
 	@HystrixCommand
 	public ResponseEntity<Void> humanreviewStixIdPut(
 			@ApiParam(value = "The ID of the STIX document", required = true) @RequestHeader HttpHeaders headers,
@@ -181,16 +183,16 @@ public class HumanreviewApiService {
 						LOGGER.info("FieldLocation = " + aList.get(i).getFieldLocation());
 						LOGGER.info("FieldValue = " + aList.get(i).getFieldValue());
 						LOGGER.info("StixId = " + aList.get(i).getStixId());
-						jsonDataRepo.updateJson(aList.get(i).getFieldLocation(),
-								aList.get(i).getFieldValue(), aList.get(i).getStixId());
 						LOGGER.info("Made it pass updateJson!" );
 						if (aList.get(i).getStatus().equals("New")) {
 							aList.get(i).setStatus("Accepted");
+							hrRepo.save(aList.get(i));
+							LOGGER.info("Accepted value" );
 						}
 
 						LOGGER.info("ModifiedJson = " + jsonData.getModifiedJson());
 					}
-
+					
 					String jsonString = jsonData.getModifiedJson();
 					LOGGER.info("jsonData = " + jsonData);
 					LOGGER.info("jsonString = " + jsonString);
