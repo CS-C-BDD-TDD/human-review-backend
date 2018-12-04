@@ -13,6 +13,16 @@ mvn verify
 The report will be generated at the following directory.
 target/dependency-check-report.html
 
+## Local MYSQL database
+If MYSQL is not already installed on your local machine
+install it from https://dev.mysql.com/doc/mysql-getting-started/en/
+Login to MYSQL and run the following commands:
+CREATE DATABASE humanreview;
+Run commands from schema-humanreview.sql
+
+CREATE DATABASE login;
+Run commands from schema-login.sql
+
 ## In memory database
 The h2 in memory database is located at the following url.
 http://localhost:8080/h2-console
@@ -63,9 +73,11 @@ Create the `inbound.stix` and `outbound.stix` queues under the Queues tab.  Clic
 
 ## environment vars for testing:
 
-export MYSQL_HOST=172.17.0.2
+export MYSQL_HOST=localhost
+export LOGIN_HOST=localhost
 export MYSQL_PORT=3306
-export MYSQL_DATABASE=humanreview
+export HUMANREVIEW_DATABASE=humanreview
+export LOGIN_DATABASE=login
 export MYSQL_USER=user
 export MYSQL_PASSWORD=password
 export MQ_BROKER_TCP=localhost
