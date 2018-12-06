@@ -4,7 +4,27 @@ def devProject = 'yellowdog-dev'
 
 pipeline {
     agent {
-        label 'jenkins-slave-mvn'
+        kubernetes {
+        label "maven-${env.BUILD_ID}"
+        defaultContainer 'jenkins-slave-mvn'
+        yaml """
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    pod-template: jenkins-slave-mvn
+spec:
+  containers:
+  - name: jenkins-slave-npm
+    image: docker-registry.default.svc:5000/yellowdog/jenkins-slave-mvn
+    tty: true
+    env:
+    - name: PATH
+      value: "/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin:/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.191.b12-0.el7_5.x86_64/bin"
+    command:
+    - cat
+"""
+        }
     }
     environment {
         PROJECT_NAME = 'human-review-backend'
