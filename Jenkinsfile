@@ -36,9 +36,11 @@ spec:
         stage('Build App') {
           steps {
             script {
+              echo 'Before which commands'
               sh 'which java'
               sh 'which mvn'
               sh 'which javac'
+              echo 'After which commands'
               withSonarQubeEnv('sonarqube') {
                 try {
                   def output = sh returnStdout: true, script: 'mvn install sonar:sonar'
