@@ -2,6 +2,8 @@ def ciProject = 'yellowdog'
 def testProject = 'yellowdog-test'
 def devProject = 'yellowdog-dev'
 
+def overridePath = '/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin:/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.191.b12-0.el7_5.x86_64/bin:/opt/rh/rh-maven33/root/usr/bin/mvn'
+
 pipeline {
   agent {
     kubernetes {
@@ -36,76 +38,78 @@ spec:
         stage('Build App') {
           steps {
             container('jenkins-slave-mvn') {
-              script {
-                echo 'Before which commands'
-                sh 'which java'
-                sh 'which mvn'
-                sh 'which javac'
-                echo 'After which commands'
-                withSonarQubeEnv('sonarqube') {
-                  try {
-                    def output = sh returnStdout: true, script: 'mvn install sonar:sonar'
-                    echo output
-                  } catch (error) {
-                    publishHTML(target: [
-                            reportDir            : 'target',
-                            reportFiles          : 'dependency-check-report.html',
-                            reportName           : 'OWASP Dependency Check Report',
-                            keepAll              : true,
-                            alwaysLinkToLastBuild: true,
-                            allowMissing         : true
-                    ])
-                    publishHTML([
-                            allowMissing         : true,
-                            alwaysLinkToLastBuild: false,
-                            keepAll              : true,
-                            reportDir            : 'target/site/jacoco/',
-                            reportFiles          : 'index.html',
-                            reportName           : 'Jacoco Unit Test Report'
-                    ])
-                    zip dir: 'target/site/jacoco/',
-                            glob: '',
-                            zipFile: 'target/site/jacoco/jacoco-unit-tests.zip',
-                            archive: false
-  //                  emailext to: 'kfrankli@redhat.com',
-  //                          attachmentsPattern: '**/*.zip',
-  //                          subject: "Pipeline Build ${currentBuild.fullDisplayName} Unit Test Reports",
-  //                          body: """Pipeline Build ${
-  //                            currentBuild.fullDisplayName
-  //                          } Unit Test Reports attached."""
-                    throw error
+              withEnv(["PATH=${overridePath}"]) {
+                script {
+                  echo 'Before which commands'
+                  sh 'which java'
+                  sh 'which mvn'
+                  sh 'which javac'
+                  echo 'After which commands'
+                  withSonarQubeEnv('sonarqube') {
+                    try {
+                      def output = sh returnStdout: true, script: 'mvn install sonar:sonar'
+                      echo output
+                    } catch (error) {
+                      publishHTML(target: [
+                              reportDir            : 'target',
+                              reportFiles          : 'dependency-check-report.html',
+                              reportName           : 'OWASP Dependency Check Report',
+                              keepAll              : true,
+                              alwaysLinkToLastBuild: true,
+                              allowMissing         : true
+                      ])
+                      publishHTML([
+                              allowMissing         : true,
+                              alwaysLinkToLastBuild: false,
+                              keepAll              : true,
+                              reportDir            : 'target/site/jacoco/',
+                              reportFiles          : 'index.html',
+                              reportName           : 'Jacoco Unit Test Report'
+                      ])
+                      zip dir: 'target/site/jacoco/',
+                              glob: '',
+                              zipFile: 'target/site/jacoco/jacoco-unit-tests.zip',
+                              archive: false
+    //                  emailext to: 'kfrankli@redhat.com',
+    //                          attachmentsPattern: '**/*.zip',
+    //                          subject: "Pipeline Build ${currentBuild.fullDisplayName} Unit Test Reports",
+    //                          body: """Pipeline Build ${
+    //                            currentBuild.fullDisplayName
+    //                          } Unit Test Reports attached."""
+                      throw error
+                    }
+                  }
+                  def qualitygate = waitForQualityGate()
+                  if (qualitygate.status != "OK") {
+                    error "Pipeline aborted due to quality gate failure: ${qualitygate.status}"
                   }
                 }
-                def qualitygate = waitForQualityGate()
-                if (qualitygate.status != "OK") {
-                  error "Pipeline aborted due to quality gate failure: ${qualitygate.status}"
-                }
+                publishHTML(target: [
+                        reportDir            : 'target',
+                        reportFiles          : 'dependency-check-report.html',
+                        reportName           : 'OWASP Dependency Check Report',
+                        keepAll              : true,
+                        alwaysLinkToLastBuild: true,
+                        allowMissing         : false
+                ])
+                publishHTML(target: [
+                        reportDir            : 'target/site/jacoco/',
+                        reportFiles          : 'index.html',
+                        reportName           : 'Jacoco Unit Test Report',
+                        allowMissing         : true,
+                        alwaysLinkToLastBuild: false,
+                        keepAll              : true
+                ])
+                sh "mkdir jacoco-tmp && cp -r target/site/jacoco jacoco-tmp && rm jacoco-tmp/jacoco/jacoco-resources/*.js"
+                zip dir: 'target/site/jacoco/',
+                        glob: '',
+                        zipFile: 'jacoco-unit-test-report.zip',
+                        archive: true
+                zip dir: 'jacoco-tmp/jacoco/',
+                        glob: '',
+                        zipFile: 'jacoco-unit-test-report-no-js.zip',
+                        archive: false
               }
-              publishHTML(target: [
-                      reportDir            : 'target',
-                      reportFiles          : 'dependency-check-report.html',
-                      reportName           : 'OWASP Dependency Check Report',
-                      keepAll              : true,
-                      alwaysLinkToLastBuild: true,
-                      allowMissing         : false
-              ])
-              publishHTML(target: [
-                      reportDir            : 'target/site/jacoco/',
-                      reportFiles          : 'index.html',
-                      reportName           : 'Jacoco Unit Test Report',
-                      allowMissing         : true,
-                      alwaysLinkToLastBuild: false,
-                      keepAll              : true
-              ])
-              sh "mkdir jacoco-tmp && cp -r target/site/jacoco jacoco-tmp && rm jacoco-tmp/jacoco/jacoco-resources/*.js"
-              zip dir: 'target/site/jacoco/',
-                      glob: '',
-                      zipFile: 'jacoco-unit-test-report.zip',
-                      archive: true
-              zip dir: 'jacoco-tmp/jacoco/',
-                      glob: '',
-                      zipFile: 'jacoco-unit-test-report-no-js.zip',
-                      archive: false
             }
           }
         }
@@ -121,8 +125,10 @@ spec:
           }
           steps {
             container('jenkins-slave-mvn') {
-              withSonarQubeEnv('sonarqube') {
-                sh "/usr/bin/curl -k -X POST -u \"${SONAR_AUTH_TOKEN}:\" -F \"name=Jenkins\" -F \"url=http://teams-yellowdog.cloudbees.svc:80/teams-yellowdog/sonarqube-webhook/\" http://sonarqube.sonarqube.svc:9000/api/webhooks/create"
+              withEnv(["PATH=${overridePath}"]) {
+                withSonarQubeEnv('sonarqube') {
+                  sh "/usr/bin/curl -k -X POST -u \"${SONAR_AUTH_TOKEN}:\" -F \"name=Jenkins\" -F \"url=http://teams-yellowdog.cloudbees.svc:80/teams-yellowdog/sonarqube-webhook/\" http://sonarqube.sonarqube.svc:9000/api/webhooks/create"
+                }
               }
             }
           }
@@ -133,7 +139,7 @@ spec:
       steps {
         container('jenkins-slave-mvn') {
           script {
-            withEnv(['PATH=/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin:$PATH']) {
+            withEnv(["PATH=${overridePath}"]) {
               sh 'oc login --token=$(cat /run/secrets/kubernetes.io/serviceaccount/token) --insecure-skip-tls-verify=true https://openshift.default.svc:443'
               sh "oc project ${ciProject}"
               sh "oc start-build ${env.PROJECT_NAME} --from-file=target/human-review-backend-*.jar --wait"
@@ -145,27 +151,29 @@ spec:
     stage('Promote to TEST') {
       steps {
         container('jenkins-slave-mvn') {
-          script {
-            sh "oc tag ${ciProject}/${env.PROJECT_NAME}:latest ${testProject}/${env.PROJECT_NAME}:latest"
+          withEnv(["PATH=${overridePath}"]) {
+            script {
+              sh "oc tag ${ciProject}/${env.PROJECT_NAME}:latest ${testProject}/${env.PROJECT_NAME}:latest"
 
-            def buildUrl = env.BUILD_URL
-            buildUrl = buildUrl.replaceAll(/\n*/, '')
+              def buildUrl = env.BUILD_URL
+              buildUrl = buildUrl.replaceAll(/\n*/, '')
 
-  //          emailext to: 'john.johnson@hq.dhs.gov,snayak@bcmcgroup.com,ncho@bcmcgroup.com,kfrankli@redhat.com',
-  //                  subject: "ACTION REQUIRED: Promote ${currentBuild.fullDisplayName} from TEST to DEMO?",
-  //                  body: """Successfully built and deployed ${currentBuild.fullDisplayName} to TEST, should this be promoted to DEMO?
-  //INPUT Required:
-  //${buildUrl}input/
-  //
-  //If the above link does not contain "promote" and "abort" buttons, someone else has already approved or aborted the promotion
-  //
-  //Please review the following before promoting:
-  // * OWASP Dependency Scanner Report:
-  //      ${buildUrl}/OWASP_20Dependency_20Check_20Report/
-  // * JaCoCo Unit Test Report:
-  //      ${buildUrl}/Jacoco_20Unit_20Test_20Report/
-  // * SonarQube reports:
-  //      https://sonarqube-sonarqube.apps.mgt.devsecops.gov/dashboard?id=gov.dhs.nppd%3Ahuman-review-backend"""
+    //          emailext to: 'john.johnson@hq.dhs.gov,snayak@bcmcgroup.com,ncho@bcmcgroup.com,kfrankli@redhat.com',
+    //                  subject: "ACTION REQUIRED: Promote ${currentBuild.fullDisplayName} from TEST to DEMO?",
+    //                  body: """Successfully built and deployed ${currentBuild.fullDisplayName} to TEST, should this be promoted to DEMO?
+    //INPUT Required:
+    //${buildUrl}input/
+    //
+    //If the above link does not contain "promote" and "abort" buttons, someone else has already approved or aborted the promotion
+    //
+    //Please review the following before promoting:
+    // * OWASP Dependency Scanner Report:
+    //      ${buildUrl}/OWASP_20Dependency_20Check_20Report/
+    // * JaCoCo Unit Test Report:
+    //      ${buildUrl}/Jacoco_20Unit_20Test_20Report/
+    // * SonarQube reports:
+    //      https://sonarqube-sonarqube.apps.mgt.devsecops.gov/dashboard?id=gov.dhs.nppd%3Ahuman-review-backend"""
+            }
           }
         }
       }
@@ -177,8 +185,10 @@ spec:
       }
       steps {
         container('jenkins-slave-mvn') {
-          script {
-            sh "oc tag ${ciProject}/${env.PROJECT_NAME}:latest ${devProject}/${env.PROJECT_NAME}:latest"
+          withEnv(["PATH=${overridePath}"]) {
+            script {
+              sh "oc tag ${ciProject}/${env.PROJECT_NAME}:latest ${devProject}/${env.PROJECT_NAME}:latest"
+            }
           }
         }
       }
