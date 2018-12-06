@@ -128,7 +128,7 @@ spec:
           }
         }
       }
-    }he world of the
+    }
     stage('Build Image') {
       steps {
         container('jenkins-slave-mvn') {
