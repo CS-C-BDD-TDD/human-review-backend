@@ -15,7 +15,7 @@ metadata:
     pod-template: jenkins-slave-mvn
 spec:
   containers:
-  - name: jenkins-slave-npm
+  - name: jenkins-slave-mvn
     image: docker-registry.default.svc:5000/yellowdog/jenkins-slave-mvn
     tty: true
     env:
