@@ -1,6 +1,6 @@
 def ciProject = 'yellowdog'
 def testProject = 'yellowdog-test'
-def devProject = 'yellowdog-dev'
+def devProject = 'yellowdog-demo'
 
 def mvnVersion = '1.0.0-SNAPSHOT'
 
