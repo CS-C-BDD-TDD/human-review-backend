@@ -38,7 +38,7 @@ spec:
                       script {
                          def pom = readMavenPom file: 'pom.xml'
                          version = pom.version
-                         withSonarQubeEnv('sonar') {
+                         withSonarQubeEnv('sonarqube') {
                            try {
                              sh 'mvn install sonar:sonar'
                            } catch (error) {
