@@ -42,7 +42,7 @@ spec:
                 script {
                   echo 'Before which commands'
                   sh 'echo $PATH'
-                  sh 'ls -l /opt/rh/'
+                  sh 'ls -l /opt/rh/rh-maven33/'
                   sh 'which mvn'
                   sh 'which javac'
                   echo 'After which commands'
