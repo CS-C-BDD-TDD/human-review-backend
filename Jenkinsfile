@@ -2,7 +2,7 @@ def ciProject = 'yellowdog'
 def testProject = 'yellowdog-test'
 def devProject = 'yellowdog-dev'
 
-def overridePath = '/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin:/usr/lib/jvm/java-openjdk:/bin:/opt/rh/rh-maven33/root/usr/bin/mvn'
+def overridePath = '/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin:/usr/lib/jvm/java-openjdk/bin:/opt/rh/rh-maven33/root/usr/bin/mvn'
 
 pipeline {
   agent {
