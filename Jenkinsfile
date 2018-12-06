@@ -40,7 +40,8 @@ spec:
               version = pom.version
               withSonarQubeEnv('sonarqube') {
                 try {
-                  sh 'mvn install sonar:sonar'
+                  def output = sh returnStdout: true, script: 'mvn install sonar:sonar'
+                  echo output
                 } catch (error) {
                   publishHTML(target: [
                           reportDir            : 'target',
