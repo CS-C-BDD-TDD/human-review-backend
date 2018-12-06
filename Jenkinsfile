@@ -1,13 +1,6 @@
-def ciProject = 'labs-ci-cd'
-def testProject = 'labs-test'
-def devProject = 'labs-dev'
-openshift.withCluster() {
-    openshift.withProject() {
-        ciProject = openshift.project()
-        testProject = ciProject.replaceFirst(/^labs-ci-cd/, 'labs-test')
-        devProject = ciProject.replaceFirst(/^labs-ci-cd/, 'labs-dev')
-    }
-}
+def ciProject = 'yellowdog'
+def testProject = 'yellowdog-test'
+def devProject = 'yellowdog-dev'
 
 pipeline {
     agent {
@@ -128,26 +121,20 @@ pipeline {
         }
         stage('Build Image') {
            steps {
-              sh "rm -rf ocp && mkdir -p ocp/deployments"
-              sh "pwd && ls -la target "
-              sh "cp target/human-review-backend-*.jar ocp/deployments"
               script {
-                 openshift.withCluster() {
-                    openshift.withProject("${ciProject}") {
-                       openshift.selector("bc", "human-review-backend").startBuild("--from-dir=./ocp","--follow", "--wait=true")
-                    }
-                 }
+                withEnv(['PATH=/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin:$PATH']) {
+                    sh 'oc login --token=$(cat /run/secrets/kubernetes.io/serviceaccount/token) --insecure-skip-tls-verify=true https://openshift.default.svc:443'
+                    sh "oc project ${ciProject}"
+                    sh "oc start-build ${env.PROJECT_NAME} --from-file=target/human-review-backend-*.jar --wait"
+                }
               }
            }
         }
         stage('Promote to TEST') {
             steps {
                 script {
-                    openshift.withCluster() {
-                        openshift.withProject("${ciProject}") {
-                            openshift.tag("human-review-backend:latest", "${testProject}/human-review-backend:latest")
-                        }
-                    }
+                    sh "oc tag ${ciProject}/${env.PROJECT_NAME}:latest ${testProject}/${env.PROJECT_NAME}:latest"
+
                     def buildUrl = env.BUILD_URL
                     buildUrl = buildUrl.replaceAll(/\n*/, '')
 
@@ -176,11 +163,7 @@ Please review the following before promoting:
           }
           steps {
               script {
-                  openshift.withCluster() {
-                      openshift.withProject("${ciProject}") {
-                          openshift.tag("human-review-backend:latest", "${devProject}/human-review-backend:latest")
-                      }
-                  }
+                sh "oc tag ${ciProject}/${env.PROJECT_NAME}:latest ${devProject}/${env.PROJECT_NAME}:latest"
               }
           }
         }
