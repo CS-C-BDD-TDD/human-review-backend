@@ -104,16 +104,16 @@ spec:
               stage('Ensure SonarQube Webhook is configured') {
                   when {
                       expression {
-                          withSonarQubeEnv('sonar') {
-                              def retVal = sh(returnStatus: true, script: "curl -u \"${SONAR_AUTH_TOKEN}:\" http://sonarqube:9000/api/webhooks/list | grep Jenkins")
+                          withSonarQubeEnv('sonarqube') {
+                              def retVal = sh(returnStatus: true, script: "curl -k -u \"${SONAR_AUTH_TOKEN}:\" http://sonarqube.sonarqube.svc:9000/api/webhooks/list | grep Jenkins")
                               echo "CURL COMMAND: ${retVal}"
                               return (retVal > 0)
                           }
                       }
                   }
                   steps {
-                      withSonarQubeEnv('sonar') {
-                          sh "curl -X POST -u \"${SONAR_AUTH_TOKEN}:\" -F \"name=Jenkins\" -F \"url=http://jenkins/sonarqube-webhook/\" http://sonarqube:9000/api/webhooks/create"
+                      withSonarQubeEnv('sonarqube') {
+                          sh "/usr/bin/curl -k -X POST -u \"${SONAR_AUTH_TOKEN}:\" -F \"name=Jenkins\" -F \"url=http://teams-yellowdog.cloudbees.svc:80/teams-yellowdog/sonarqube-webhook/\" http://sonarqube.sonarqube.svc:9000/api/webhooks/create"
                       }
                   }
               }
