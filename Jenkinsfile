@@ -41,6 +41,7 @@ spec:
               withEnv(["PATH=${overridePath}"]) {
                 script {
                   echo 'Before which commands'
+                  sh 'echo $PATH'
                   sh 'which java'
                   sh 'which mvn'
                   sh 'which javac'
