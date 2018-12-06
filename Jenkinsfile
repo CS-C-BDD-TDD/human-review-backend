@@ -38,6 +38,9 @@ spec:
             script {
               def pom = readMavenPom file: 'pom.xml'
               version = pom.version
+              sh 'which java'
+              sh 'which mvn'
+              sh 'which javac'
               withSonarQubeEnv('sonarqube') {
                 try {
                   def output = sh returnStdout: true, script: 'mvn install sonar:sonar'
