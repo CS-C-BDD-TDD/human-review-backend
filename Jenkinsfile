@@ -42,7 +42,7 @@ spec:
                 script {
                   echo 'Before which commands'
                   sh 'echo $PATH'
-                  sh 'which java'
+                  sh 'ls -l /usr/lib/jvm/'
                   sh 'which mvn'
                   sh 'which javac'
                   echo 'After which commands'
