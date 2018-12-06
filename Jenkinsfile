@@ -2,7 +2,9 @@ def ciProject = 'yellowdog'
 def testProject = 'yellowdog-test'
 def devProject = 'yellowdog-dev'
 
-def overridePath = '/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin:/usr/lib/jvm/java-openjdk/bin:/opt/rh/rh-maven33/root/usr/bin/mvn'
+def mvnVersion = '1.0.0-SNAPSHOT'
+
+def overridePath = '/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin:/usr/lib/jvm/java-openjdk/bin:/opt/rh/rh-maven33/root/usr/bin'
 
 pipeline {
   agent {
@@ -40,16 +42,11 @@ spec:
             container('jenkins-slave-mvn') {
               withEnv(["PATH=${overridePath}"]) {
                 script {
-                  echo 'Before which commands'
-                  sh 'echo $PATH'
-                  sh 'ls -l /opt/rh/rh-maven33/'
-                  sh 'which mvn'
-                  sh 'which javac'
-                  echo 'After which commands'
+                  def pom = readMavenPom file: 'pom.xml'
+                  mvnVersion = pom.version
                   withSonarQubeEnv('sonarqube') {
                     try {
-                      def output = sh returnStdout: true, script: 'mvn install sonar:sonar'
-                      echo output
+                      sh 'mvn install sonar:sonar'
                     } catch (error) {
                       publishHTML(target: [
                               reportDir            : 'target',
@@ -143,7 +140,7 @@ spec:
             withEnv(["PATH=${overridePath}"]) {
               sh 'oc login --token=$(cat /run/secrets/kubernetes.io/serviceaccount/token) --insecure-skip-tls-verify=true https://openshift.default.svc:443'
               sh "oc project ${ciProject}"
-              sh "oc start-build ${env.PROJECT_NAME} --from-file=target/human-review-backend-*.jar --wait"
+              sh "oc start-build ${env.PROJECT_NAME} --from-file=target/human-review-backend-${mvnVersion}.jar --wait"
             }
           }
         }
