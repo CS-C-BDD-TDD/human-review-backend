@@ -152,7 +152,7 @@ Please review the following before promoting:
  * JaCoCo Unit Test Report:
       ${buildUrl}/Jacoco_20Unit_20Test_20Report/
  * SonarQube reports:
-      https://sonarqube-labs-ci-cd.apps.domino.rht-labs.com/dashboard?id=gov.dhs.nppd%3Ahuman-review-backend"""
+      https://sonarqube-sonarqube.apps.mgt.devsecops.gov/dashboard?id=gov.dhs.nppd%3Ahuman-review-backend"""
                 }
             }
         }
@@ -184,7 +184,7 @@ Please see attached:
       OWASP Dependency Scanner Report (dependency-check-report.html)
 
 SonarQube reports reside at:
-      https://sonarqube-labs-ci-cd.apps.domino.rht-labs.com/dashboard?id=gov.dhs.nppd%3Ahuman-review-backend"""
+      https://sonarqube-sonarqube.apps.mgt.devsecops.gov/dashboard?id=gov.dhs.nppd%3Ahuman-review-backend"""
         }
       }
       success {
@@ -205,7 +205,7 @@ Reports also available at:
       JaCoCo Unit Test Report:
          ${buildUrl}/Jacoco_20Unit_20Test_20Report/
       SonarQube reports reside at:
-         https://sonarqube-labs-ci-cd.apps.domino.rht-labs.com/dashboard?id=gov.dhs.nppd%3Ahuman-review-backend
+         https://sonarqube-sonarqube.apps.mgt.devsecops.gov/dashboard?id=gov.dhs.nppd%3Ahuman-review-backend
 
 * The JaCoCo Unit Test Report has been modified slightly to remove all JavaScript report formatting files; as most email servers will not allow the transmission of Zip attachments container JavaScript (*.js) files. The unmodified JaCoCo report is available at:
       ${buildUrl}/artifact/jacoco-unit-test-report.zip"""
