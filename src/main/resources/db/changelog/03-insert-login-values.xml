@@ -8,7 +8,7 @@
 
   <changeSet id="03" author="dbrletic">
     <comment>Inserting Login</comment>
-    <insert tableName="login">
+    <insert tableName="Auth_Credentials">
       <column name="id" valueNumeric="1"/>
       <column name="username" value="User1"/>
       <column name="password" value="Pass1"/>
