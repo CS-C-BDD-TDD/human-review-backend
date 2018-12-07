@@ -7,7 +7,7 @@
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
 	<changeSet id="01" author="dbrletic">
-		<createTable tableName="authors" remarks="A table to contain all the login user">
+		<createTable tableName="login" remarks="A table to contain all the login user">
   			<column name="id" type="int">
     			<constraints nullable="false" primaryKey="true"/>
   			</column>
@@ -20,7 +20,7 @@
   			<column name="token" type="varchar(255)">
     			<constraints nullable="true"/>
   			</column>
-  			<column name="date" type="TIMESTAMP">
+  			<column name="date" type="timestamp">
     			<constraints nullable="true"/>
   			</column>
 		</createTable>
