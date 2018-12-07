@@ -18,6 +18,10 @@ metadata:
   labels:
     pod-template: jenkins-slave-mvn
 spec:
+  volumes:
+    - name: maven-cache-volume
+      persistentVolumeClaim:
+        claimName: maven-cache-volume
   containers:
   - name: jenkins-slave-mvn
     image: docker-registry.default.svc:5000/yellowdog/jenkins-slave-mvn
@@ -25,6 +29,9 @@ spec:
     env:
     - name: PATH
       value: "${overridePath}"
+    volumeMounts:
+      - mountPath: /home/jenkins/.m2/repository
+        name: maven-cache-volume
     command:
     - cat
 """
