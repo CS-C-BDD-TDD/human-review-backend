@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet id="02" author="dbrletic">
+		<createTable tableName="human_review_item" remarks="A table to contain all the human review items">
+  			<column name="id" type="int">
+    			<constraints nullable="false" primaryKey="true"/>
+  			</column>
+  			<column name="stix_id" type="varchar(255)">
+    			<constraints nullable="false"/>
+  			</column>
+  			<column name="action" type="int">
+    			<constraints nullable="false"/>
+  			</column>
+  			<column name="original_date" type="timestamp">
+    			<constraints nullable="false"/>
+  			</column>
+  			<column name="modified_date" type="timestamp">
+    			<constraints nullable="false"/>
+  			</column>
+  			<column name="field_name" type="varchar(255)">
+    			<constraints nullable="false"/>
+  			</column>
+  			<column name="field_value" type="varchar(255)">
+    			<constraints nullable="false"/>
+  			</column>
+  			<column name="field_location" type="varchar(255)">
+    			<constraints nullable="false"/>
+  			</column>
+  			<column name="object_type" type="varchar(255)">
+    			<constraints nullable="false"/>
+  			</column>
+  			<column name="status" type="varchar(255)">
+    			<constraints nullable="false"/>
+  			</column>
+		</createTable>
+		
+		<createTable tableName="json_data" remarks="A table to contain all the json data">
+  			<column name="stix_id" type="int">
+    			<constraints nullable="false" primaryKey="true"/>
+  			</column>
+  			<column name="original_json" type="BLOB">
+    			<constraints nullable="true"/>
+  			</column>
+  			<column name="modified_json" type="BLOB">
+    			<constraints nullable="true"/>
+  			</column>
+  		</createTable>
+	</changeSet>
+</databaseChangeLog>

@@ -267,6 +267,11 @@
 			<artifactId>hystrix-javanica</artifactId>
 			<version>1.5.18</version>
 		</dependency>
+		<!-- Liquibase  -->
+		<dependency>
+    		<groupId>org.liquibase</groupId>
+    		<artifactId>liquibase-core</artifactId>
+		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>

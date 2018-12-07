@@ -26,7 +26,7 @@ CREATE TABLE human_review_item (
 CREATE TABLE json_data (
 
 	stix_id VARCHAR(255), 
-	original_json JSON,
-	modified_json JSON,
+	original_json BLOB,
+	modified_json BLOB,
 	PRIMARY KEY (stix_id)
 );
