@@ -8,17 +8,17 @@
 
   <changeSet id="03" author="dbrletic">
     <comment>Inserting Login</comment>
-    <insert tableName="Auth_Credentials">
+    <insert tableName="auth_credentials">
       <column name="id" valueNumeric="1"/>
       <column name="username" value="User1"/>
       <column name="password" value="Pass1"/>
     </insert>
-    <insert tableName="Auth_Credentials">
+    <insert tableName="auth_credentials">
       <column name="id" valueNumeric="2"/>
       <column name="username" value="User2"/>
       <column name="password" value="Pass2"/>
     </insert>
-    <insert tableName="Auth_Credentials">
+    <insert tableName="auth_credentials">
       <column name="id" valueNumeric="3"/>
       <column name="username" value="User3"/>
       <column name="password" value="Pass3"/>

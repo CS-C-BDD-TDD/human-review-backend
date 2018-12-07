@@ -7,7 +7,7 @@
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
 	<changeSet id="01" author="dbrletic">
-		<createTable tableName="Auth_Credentials" remarks="A table to contain all the login user">
+		<createTable tableName="auth_credentials" remarks="A table to contain all the login user">
   			<column name="id" type="int">
     			<constraints nullable="false" primaryKey="true"/>
   			</column>
