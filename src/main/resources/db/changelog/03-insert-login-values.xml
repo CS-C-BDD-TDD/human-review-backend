@@ -13,12 +13,12 @@
       <column name="username" value="User1"/>
       <column name="password" value="Pass1"/>
     </insert>
-    <insert tableName="login">
+    <insert tableName="Auth_Credentials">
       <column name="id" valueNumeric="2"/>
       <column name="username" value="User2"/>
       <column name="password" value="Pass2"/>
     </insert>
-    <insert tableName="login">
+    <insert tableName="Auth_Credentials">
       <column name="id" valueNumeric="3"/>
       <column name="username" value="User3"/>
       <column name="password" value="Pass3"/>
