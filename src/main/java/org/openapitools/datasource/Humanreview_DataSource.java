@@ -5,6 +5,8 @@ import java.util.HashMap;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +28,7 @@ import liquibase.integration.spring.SpringLiquibase;
 @EnableJpaRepositories(basePackages = {"org.openapitools.repository.humanreview"},
         entityManagerFactoryRef = "humanreviewEntityManager",
         transactionManagerRef = "humanreviewTransactionManager")
+@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
 public class Humanreview_DataSource {
 
     @Autowired
