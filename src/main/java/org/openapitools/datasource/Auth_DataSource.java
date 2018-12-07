@@ -76,9 +76,10 @@ public class Auth_DataSource {
     
   
     @Bean
-    @ConfigurationProperties(prefix = "auth.datasource.liquibase")
     public LiquibaseProperties authLiquibaseProperties() {
-        return new LiquibaseProperties();
+    	LiquibaseProperties liquibaseProps = new LiquibaseProperties();
+    	liquibaseProps.setChangeLog(env.getProperty("auth.datasource.liquibase.change-log"));
+    	return liquibaseProps;
     }
 
     @Bean

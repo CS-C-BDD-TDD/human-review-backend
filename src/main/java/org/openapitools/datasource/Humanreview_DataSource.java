@@ -75,9 +75,10 @@ public class Humanreview_DataSource {
     
     
     @Bean
-    @ConfigurationProperties(prefix = "humanreview.datasource.liquibase")
     public LiquibaseProperties humanreviewLiquibaseProperties() {
-        return new LiquibaseProperties();
+    	LiquibaseProperties liquibaseProps = new LiquibaseProperties();
+    	liquibaseProps.setChangeLog(env.getProperty("humanreview.datasource.liquibase.change-log"));
+    	return liquibaseProps;
     }
 
     @Bean
